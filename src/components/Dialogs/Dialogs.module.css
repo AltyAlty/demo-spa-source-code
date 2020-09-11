@@ -1,0 +1,49 @@
+.dialogs {
+    display: grid;
+    grid-template-columns: 2fr 5fr 5fr;
+}
+
+.dialogsItems {
+    background-color: lemonchiffon;
+    padding: 10px;
+}
+
+.dialogsItems a {
+    color: firebrick;
+    text-decoration: none;
+}
+
+.dialogsItems .active{
+    color: gold;
+}
+
+.dialog img {
+    width: 30px;
+    height: 30px;
+    border-radius: 30px;
+}
+
+.messages {
+    background-color: darkseagreen;
+    padding: 10px;
+    color: white;
+}
+
+.incomingMessages {
+    background-color: rosybrown;
+    text-align: right;
+    padding: 10px;
+    color: white;
+}
+
+.messages img, .incomingMessages img {
+    width: 40px;
+    height: 40px;
+    border-radius: 30px;
+}
+
+.message, .incomingMessage {
+    min-height: 40px;
+    border: 1px outset greenyellow;
+}
+
