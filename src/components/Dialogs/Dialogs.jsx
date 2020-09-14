@@ -3,7 +3,8 @@ import s from './Dialogs.module.css';
 import DialogItem from "./DialogItem/DialogItem";
 import Message from "./Message/Message";
 import IncomingMessage from "./IncomingMessage/IncomingMessage";
-import {addMessageActionCreator, updateNewMessageTextActionCreator} from "../../redux/state";
+import {addMessageActionCreator, updateNewMessageTextActionCreator} from "../../redux/dialogs-reducer";
+
 
 function Dialogs(props) {
     let dialogsElements = props.dialogPage.dialogs.map(d => <DialogItem name={d.name}
