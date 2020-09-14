@@ -3,6 +3,7 @@ import s from './Dialogs.module.css';
 import DialogItem from "./DialogItem/DialogItem";
 import Message from "./Message/Message";
 import IncomingMessage from "./IncomingMessage/IncomingMessage";
+import {addMessageActionCreator, updateNewMessageTextActionCreator} from "../../redux/state";
 
 function Dialogs(props) {
     let dialogsElements = props.dialogPage.dialogs.map(d => <DialogItem name={d.name} id={d.id} avatar={d.avatar}/>);
@@ -13,13 +14,13 @@ function Dialogs(props) {
 
     let newMessageElement = React.createRef();
 
-    let addPost = () => {
-        props.dispatch({type: 'ADD-MESSAGE'});
+    let addMessage = () => {
+        props.dispatch(addMessageActionCreator());
     };
 
     let onMessageChange = () => {
         let message = newMessageElement.current.value;
-        let action = {type: 'UPDATE-NEW-MESSAGE-TEXT', newMessage: message};
+        let action = updateNewMessageTextActionCreator(message);
         props.dispatch(action);
     }
 
@@ -38,7 +39,7 @@ function Dialogs(props) {
                     </div>
 
                     <div>
-                        <button onClick={addPost}>Add message</button>
+                        <button onClick={addMessage}>Add message</button>
                     </div>
                 </div>
             </div>
