@@ -7,33 +7,23 @@ let store = {
 
     _state: {
         profilePage: {
-            posts: [
-                {id: 1, message: 'Hi, how are you?', likesCount: 2},
-                {id: 2, message: 'It\'s my first post', likesCount: 3}
+            postsData: [
+                {
+                    id: 1,
+                    message: 'Hi, how are you?',
+                    likesCount: 2
+                },
+                {
+                    id: 2,
+                    message: 'It\'s my first post',
+                    likesCount: 3
+                }
             ],
+
             newPostText: 'kamasutra'
         },
 
         dialogsPage: {
-            messagesData: [
-                {
-                    id: 1,
-                    message: 'Hi',
-                    avatar: 'https://b.thumbs.redditmedia.com/cyvZncBjYQXebbul-abNjTfVlSwkAvTXXH50do8ILSA.png'
-                },
-                {id: 2, message: '..', avatar: ''},
-                {
-                    id: 3,
-                    message: 'Fuck off',
-                    avatar: 'https://b.thumbs.redditmedia.com/cyvZncBjYQXebbul-abNjTfVlSwkAvTXXH50do8ILSA.png'
-                },
-                {
-                    id: 4,
-                    message: 'Bitch',
-                    avatar: 'https://b.thumbs.redditmedia.com/cyvZncBjYQXebbul-abNjTfVlSwkAvTXXH50do8ILSA.png'
-                }
-            ],
-
             dialogs: [
                 {
                     id: 1,
@@ -67,6 +57,25 @@ let store = {
                 }
             ],
 
+            messagesData: [
+                {
+                    id: 1,
+                    message: 'Hi',
+                    avatar: 'https://b.thumbs.redditmedia.com/cyvZncBjYQXebbul-abNjTfVlSwkAvTXXH50do8ILSA.png'
+                },
+                {id: 2, message: '..', avatar: ''},
+                {
+                    id: 3,
+                    message: 'Fuck off',
+                    avatar: 'https://b.thumbs.redditmedia.com/cyvZncBjYQXebbul-abNjTfVlSwkAvTXXH50do8ILSA.png'
+                },
+                {
+                    id: 4,
+                    message: 'Bitch',
+                    avatar: 'https://b.thumbs.redditmedia.com/cyvZncBjYQXebbul-abNjTfVlSwkAvTXXH50do8ILSA.png'
+                }
+            ],
+
             incomingMessagesData: [
                 {id: 1, message: '..', avatar: ''},
                 {
@@ -87,7 +96,7 @@ let store = {
         },
 
         sidebar: {
-            friends: [
+            friendsData: [
                 {
                     id: 1,
                     name: 'Abba',
@@ -124,7 +133,7 @@ let store = {
                 message: this._state.profilePage.newPostText,
                 likesCount: 0
             };
-            this._state.profilePage.posts.push(newPost);
+            this._state.profilePage.postsData.push(newPost);
             this._state.profilePage.newPostText = '';
             this._callSubscriber(this._state);
         }

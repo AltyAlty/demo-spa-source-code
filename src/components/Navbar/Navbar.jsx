@@ -5,7 +5,9 @@ import Sidebar from "./Sidebar/Sidebar";
 
 
 function Navbar(props) {
-    let sidebarElements = props.state.friends.map(f => <Sidebar name={f.name} id={f.id} avatar={f.avatar}/>);
+    let sidebarElements = props.state.friendsData.map(f => <Sidebar name={f.name}
+                                                                    id={f.id}
+                                                                    avatar={f.avatar}/>);
     return (
         <nav className={s.nav}>
             <div className={s.item}>
