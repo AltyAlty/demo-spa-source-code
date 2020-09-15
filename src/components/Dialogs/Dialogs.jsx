@@ -3,33 +3,30 @@ import s from './Dialogs.module.css';
 import DialogItem from "./DialogItem/DialogItem";
 import Message from "./Message/Message";
 import IncomingMessage from "./IncomingMessage/IncomingMessage";
-import {addMessageActionCreator, updateNewMessageTextActionCreator} from "../../redux/dialogs-reducer";
-
 
 function Dialogs(props) {
-    let dialogsElements = props.dialogPage.dialogs.map(d => <DialogItem name={d.name}
-                                                                        id={d.id}
-                                                                        avatar={d.avatar}/>);
+    let dialogsElements = props.dialogsPage.dialogs.map(d => <DialogItem name={d.name}
+                                                             id={d.id}
+                                                             avatar={d.avatar}/>);
 
-    let messagesElements = props.dialogPage.messagesData.map(m => <Message id={m.id}
-                                                                           message={m.message}
-                                                                           avatar={m.avatar}/>);
+    let messagesElements = props.dialogsPage.messagesData.map(m => <Message id={m.id}
+                                                                message={m.message}
+                                                                avatar={m.avatar}/>);
 
-    let incomingMessagesElement = props.dialogPage.incomingMessagesData.map(m => <IncomingMessage id={m.id}
-                                                                                                  message={m.message}
-                                                                                                  avatar={m.avatar}/>);
+    let incomingMessagesElement = props.dialogsPage.incomingMessagesData.map(m => <IncomingMessage id={m.id}
+                                                                                       message={m.message}
+                                                                                       avatar={m.avatar}/>);
 
-    let newMessageElement = React.createRef();
+    let newMessageText = props.dialogsPage.newMessageText;
 
-    let addMessage = () => {
-        props.dispatch(addMessageActionCreator());
+    let onMessageAddition = () => {
+        props.addMessage();
     };
 
-    let onMessageChange = () => {
-        let message = newMessageElement.current.value;
-        let action = updateNewMessageTextActionCreator(message);
-        props.dispatch(action);
-    }
+    let onMessageChange = (e) => {
+        let message = e.target.value;
+        props.updateNewMessageText(message);
+    };
 
     return (
         <div className={s.dialogs}>
@@ -44,13 +41,14 @@ function Dialogs(props) {
 
                 <div>
                     <div>
-                        <textarea onChange={onMessageChange}
-                                  ref={newMessageElement}
-                                  value={props.dialogPage.newMessageText} />
+                        <textarea value={newMessageText}
+                                  onChange={onMessageChange}
+                                  placeholder='Enter your message'>
+                        </textarea>
                     </div>
 
                     <div>
-                        <button onClick={addMessage}>Add message</button>
+                        <button onClick={onMessageAddition}>Add message</button>
                     </div>
                 </div>
             </div>
