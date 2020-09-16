@@ -1,22 +1,31 @@
 import React from 'react';
 import {addMessageActionCreator, updateNewMessageTextActionCreator} from "../../redux/dialogs-reducer";
 import Dialogs from "./Dialogs";
+import StoreContext from "../../StoreContext";
 
-function DialogsContainer(props) {
-    let state = props.store.getState();
-
-    let addMessage = () => {
-        props.store.dispatch(addMessageActionCreator());
-    };
-
-    let updateNewMessageText = (message) => {
-        props.store.dispatch(updateNewMessageTextActionCreator(message));
-    };
-
+function DialogsContainer() {
     return (
-        <Dialogs updateNewMessageText={updateNewMessageText}
-                 addMessage={addMessage}
-                 dialogsPage={state.dialogsPage}/>
+        <StoreContext.Consumer>
+            {
+                (store) => {
+                    let state = store.getState().dialogsPage;
+
+                    let addMessage = () => {
+                        store.dispatch(addMessageActionCreator());
+                    };
+
+                    let updateNewMessageText = (message) => {
+                        store.dispatch(updateNewMessageTextActionCreator(message));
+                    };
+
+                    return (
+                        <Dialogs updateNewMessageText={updateNewMessageText}
+                                 addMessage={addMessage}
+                                 dialogsPage={state}/>
+                    )
+                }
+            }
+        </StoreContext.Consumer>
     );
 }
 

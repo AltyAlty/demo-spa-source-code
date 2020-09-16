@@ -5,9 +5,9 @@ import Sidebar from "./Sidebar/Sidebar";
 
 
 function Navbar(props) {
-    let sidebarElements = props.sidebar.friendsData.map(f => <Sidebar name={f.name}
+    /*let sidebarElements = props.sidebar.friendsData.map(f => <Sidebar name={f.name}
                                                                     id={f.id}
-                                                                    avatar={f.avatar}/>);
+                                                                    avatar={f.avatar}/>);*/
     return (
         <nav className={s.nav}>
             <div className={s.item}>
@@ -36,7 +36,7 @@ function Navbar(props) {
 
             <div className={s.sidebarText}>Online:</div>
 
-            {sidebarElements}
+            {/*{sidebarElements}*/}
         </nav>
     );
 }

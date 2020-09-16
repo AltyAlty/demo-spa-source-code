@@ -8,7 +8,7 @@ function Profile(props) {
         <div className={s.profile}>
             <ProfileInfo/>
 
-            <MyPostsContainer store={props.store}/>
+            <MyPostsContainer/>
         </div>
     );
 }
