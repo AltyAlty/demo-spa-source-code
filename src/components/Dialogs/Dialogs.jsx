@@ -6,16 +6,19 @@ import IncomingMessage from "./IncomingMessage/IncomingMessage";
 
 function Dialogs(props) {
     let dialogsElements = props.dialogsPage.dialogs.map(d => <DialogItem name={d.name}
-                                                             id={d.id}
-                                                             avatar={d.avatar}/>);
+                                                                         id={d.id}
+                                                                         avatar={d.avatar}
+                                                                         key={d.id}/>);
 
     let messagesElements = props.dialogsPage.messagesData.map(m => <Message id={m.id}
-                                                                message={m.message}
-                                                                avatar={m.avatar}/>);
+                                                                            message={m.message}
+                                                                            avatar={m.avatar}
+                                                                            key={m.id}/>);
 
     let incomingMessagesElement = props.dialogsPage.incomingMessagesData.map(m => <IncomingMessage id={m.id}
-                                                                                       message={m.message}
-                                                                                       avatar={m.avatar}/>);
+                                                                                                   message={m.message}
+                                                                                                   avatar={m.avatar}
+                                                                                                   key={m.id}/>);
 
     let newMessageText = props.dialogsPage.newMessageText;
 
