@@ -10,14 +10,15 @@ import Music from "./components/Music/Music";
 import News from "./components/News/News";
 import Settings from "./components/Settings/Settings";
 import Friends from "./components/Friends/Friends";
+import NavbarContainer from "./components/Navbar/NavbarContainer";
 
 
-function App(props) {
+function App() {
     return (
         <div className='app-wrapper'>
             <Header/>
 
-            <Navbar /*sidebar={props.state.sidebar}
+            <NavbarContainer /*sidebar={props.state.sidebar}
                     dispatch={props.dispatch}*//>
 
             <div className='app-wrapper-content'>
