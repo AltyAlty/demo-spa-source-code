@@ -5,9 +5,10 @@ function IncomingMessage(props) {
     return (
         <div className={s.incomingMessage}>
             {props.message}
+
             <img src={props.avatar} alt="."/>
         </div>
     )
-}
+};
 
 export default IncomingMessage;

@@ -7,6 +7,6 @@ function Header(props) {
             <img src='https://seeklogo.com/images/Y/youtube-square-logo-3F9D037665-seeklogo.com.png' alt=""/>
         </header>
     );
-}
+};
 
 export default Header;

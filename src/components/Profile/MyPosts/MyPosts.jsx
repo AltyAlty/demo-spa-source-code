@@ -41,6 +41,6 @@ function MyPosts(props) {
             </div>
         </div>
     );
-}
+};
 
 export default MyPosts;

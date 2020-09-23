@@ -44,12 +44,12 @@ let initialState = {
         {id: 2, message: '..', avatar: ''},
         {
             id: 3,
-            message: 'Fuck off',
+            message: 'Fine',
             avatar: 'https://b.thumbs.redditmedia.com/cyvZncBjYQXebbul-abNjTfVlSwkAvTXXH50do8ILSA.png'
         },
         {
             id: 4,
-            message: 'Bitch',
+            message: 'You?',
             avatar: 'https://b.thumbs.redditmedia.com/cyvZncBjYQXebbul-abNjTfVlSwkAvTXXH50do8ILSA.png'
         }
     ],
@@ -71,7 +71,7 @@ let initialState = {
     ],
 
     newMessageText: 'kamasutra'
-}
+};
 
 const dialogsReducer = (state = initialState, action) => {
     switch (action.type) {

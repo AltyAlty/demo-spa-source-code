@@ -14,6 +14,6 @@ function ProfileInfo() {
             </div>
         </div>
     );
-}
+};
 
 export default ProfileInfo;

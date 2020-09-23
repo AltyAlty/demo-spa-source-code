@@ -7,6 +7,6 @@ function Music(props) {
             Music
         </div>
     );
-}
+};
 
 export default Music;

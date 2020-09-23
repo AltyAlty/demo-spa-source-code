@@ -7,6 +7,6 @@ function News(props) {
             News
         </div>
     );
-}
+};
 
 export default News;

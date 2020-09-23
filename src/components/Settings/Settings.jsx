@@ -7,6 +7,6 @@ function Settings(props) {
             Settings
         </div>
     );
-}
+};
 
 export default Settings;

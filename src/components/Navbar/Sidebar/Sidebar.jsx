@@ -1,9 +1,10 @@
 import React from 'react';
 import s from './Sidebar.module.css';
-import {NavLink} from "react-router-dom";
+import {NavLink} from 'react-router-dom';
 
 function Sidebar(props) {
     let path = "/dialogs/" + props.id;
+
     return (
         <div className={s.sidebar}>
             <div>
@@ -17,6 +18,6 @@ function Sidebar(props) {
             </div>
         </div>
     );
-}
+};
 
 export default Sidebar;

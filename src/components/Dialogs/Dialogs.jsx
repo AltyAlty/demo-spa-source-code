@@ -1,8 +1,8 @@
 import React from 'react';
 import s from './Dialogs.module.css';
-import DialogItem from "./DialogItem/DialogItem";
-import Message from "./Message/Message";
-import IncomingMessage from "./IncomingMessage/IncomingMessage";
+import DialogItem from './DialogItem/DialogItem';
+import Message from './Message/Message';
+import IncomingMessage from './IncomingMessage/IncomingMessage';
 
 function Dialogs(props) {
     let dialogsElements = props.dialogsPage.dialogs.map(d => <DialogItem name={d.name}
@@ -61,6 +61,6 @@ function Dialogs(props) {
             </div>
         </div>
     );
-}
+};
 
 export default Dialogs;

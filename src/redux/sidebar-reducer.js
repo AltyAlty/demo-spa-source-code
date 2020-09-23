@@ -16,10 +16,10 @@ let initialState = {
             avatar: 'https://b.thumbs.redditmedia.com/cyvZncBjYQXebbul-abNjTfVlSwkAvTXXH50do8ILSA.png'
         }
     ]
-}
+};
 
 const sidebarReducer = (state = initialState, action) => {
     return state;
-}
+};
 
 export default sidebarReducer;

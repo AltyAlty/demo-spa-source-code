@@ -1,13 +1,14 @@
 import React from 'react';
 import s from './Navbar.module.css';
-import {NavLink} from "react-router-dom";
-import Sidebar from "./Sidebar/Sidebar";
+import {NavLink} from 'react-router-dom';
+import Sidebar from './Sidebar/Sidebar';
 
 function Navbar(props) {
     let sidebarElements = props.sidebar.friendsData.map(f => <Sidebar name={f.name}
                                                                       id={f.id}
                                                                       avatar={f.avatar}
                                                                       key={f.id}/>);
+
     return (
         <nav className={s.nav}>
             <div className={s.item}>
@@ -43,6 +44,6 @@ function Navbar(props) {
             {sidebarElements}
         </nav>
     );
-}
+};
 
 export default Navbar;

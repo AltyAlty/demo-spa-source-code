@@ -7,6 +7,6 @@ function Friends(props) {
             Friends
         </div>
     );
-}
+};
 
 export default Friends;
