@@ -11,6 +11,7 @@ import Music from './components/Music/Music';
 import News from './components/News/News';
 import Settings from './components/Settings/Settings';
 import Friends from './components/Friends/Friends';
+import LoginPage from "./components/Login/Login";
 
 function App() {
     return (
@@ -27,6 +28,7 @@ function App() {
                 <Route path='/music/' render={() => <Music/>}/>
                 <Route path='/settings/' render={() => <Settings/>}/>
                 <Route path='/friends/' render={() => <Friends/>}/>
+                <Route path='/login/' render={() => <LoginPage/>}/>
             </div>
         </div>
     );
