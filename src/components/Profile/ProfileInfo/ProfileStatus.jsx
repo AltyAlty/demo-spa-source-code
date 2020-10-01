@@ -21,6 +21,10 @@ class ProfileStatus extends React.Component {
         });
     };
 
+    handleFocus = (event) => {
+        event.target.select();
+    }
+
     render() {
         return (
             <>
@@ -31,7 +35,7 @@ class ProfileStatus extends React.Component {
                 }
                 {this.state.editMode &&
                 <div>
-                    <input autoFocus={true} onBlur={this.deactivateEditMode.bind(this)} value={this.props.status}/>
+                    <input onFocus={this.handleFocus} autoFocus={true} onBlur={this.deactivateEditMode.bind(this)} value={this.props.status}/>
                 </div>
                 }
             </>
