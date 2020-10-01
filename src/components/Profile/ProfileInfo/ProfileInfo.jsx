@@ -1,12 +1,11 @@
 import React from 'react';
 import s from './ProfileInfo.module.css';
-import Preloader from "../../common/Preloader/Preloader";
+import Preloader from '../../common/Preloader/Preloader';
 
 function ProfileInfo(props) {
     if (!props.profile) {
         return <Preloader/>
-    }
-    ;
+    }    ;
 
     return (
         <div>
