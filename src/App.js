@@ -11,7 +11,7 @@ import Music from './components/Music/Music';
 import News from './components/News/News';
 import Settings from './components/Settings/Settings';
 import Friends from './components/Friends/Friends';
-import LoginPage from "./components/Login/Login";
+import LoginPage from './components/Login/Login';
 
 function App() {
     return (
