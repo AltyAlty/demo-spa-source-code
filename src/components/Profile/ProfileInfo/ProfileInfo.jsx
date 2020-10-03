@@ -15,9 +15,9 @@ function ProfileInfo(props) {
             </div>
 
             <div className={s.descriptionBlock}>
-                <img src={props.profile.photos.large}/>
+                <img src={props.profile.photos.large} alt=""/>
 
-                <ProfileStatus status={"Hello everybody!"}/>
+                <ProfileStatus status={props.status} updateUserStatus={props.updateUserStatus}/>
 
                 <div>
                     1. About Me: {props.profile.aboutMe}
