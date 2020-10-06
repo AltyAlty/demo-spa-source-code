@@ -1,76 +1,30 @@
 const ADD_MESSAGE = 'ADD-MESSAGE';
-const UPDATE_NEW_MESSAGE_TEXT = 'UPDATE-NEW-MESSAGE-TEXT';
+let avatarSource = 'https://b.thumbs.redditmedia.com/cyvZncBjYQXebbul-abNjTfVlSwkAvTXXH50do8ILSA.png';
 
 let initialState = {
     dialogs: [
-        {
-            id: 1,
-            name: 'Abba',
-            avatar: 'https://b.thumbs.redditmedia.com/cyvZncBjYQXebbul-abNjTfVlSwkAvTXXH50do8ILSA.png'
-        },
-        {
-            id: 2,
-            name: 'Bret',
-            avatar: 'https://b.thumbs.redditmedia.com/cyvZncBjYQXebbul-abNjTfVlSwkAvTXXH50do8ILSA.png'
-        },
-        {
-            id: 3,
-            name: 'Carry',
-            avatar: 'https://b.thumbs.redditmedia.com/cyvZncBjYQXebbul-abNjTfVlSwkAvTXXH50do8ILSA.png'
-        },
-        {
-            id: 4,
-            name: 'Daemon',
-            avatar: 'https://b.thumbs.redditmedia.com/cyvZncBjYQXebbul-abNjTfVlSwkAvTXXH50do8ILSA.png'
-        },
-        {
-            id: 5,
-            name: 'Eric',
-            avatar: 'https://b.thumbs.redditmedia.com/cyvZncBjYQXebbul-abNjTfVlSwkAvTXXH50do8ILSA.png'
-        },
-        {
-            id: 6,
-            name: 'Frye',
-            avatar: 'https://b.thumbs.redditmedia.com/cyvZncBjYQXebbul-abNjTfVlSwkAvTXXH50do8ILSA.png'
-        }
+        {id: 1, name: 'Abba', avatar: avatarSource},
+        {id: 2, name: 'Bret', avatar: avatarSource},
+        {id: 3, name: 'Carry', avatar: avatarSource},
+        {id: 4, name: 'Daemon', avatar: avatarSource},
+        {id: 5, name: 'Eric', avatar: avatarSource},
+        {id: 6, name: 'Frye', avatar: avatarSource}
     ],
 
     messagesData: [
-        {
-            id: 1,
-            message: 'Hi',
-            avatar: 'https://b.thumbs.redditmedia.com/cyvZncBjYQXebbul-abNjTfVlSwkAvTXXH50do8ILSA.png'
-        },
+        {id: 1, message: 'Hi', avatar: avatarSource},
         {id: 2, message: '..', avatar: ''},
-        {
-            id: 3,
-            message: 'Fine',
-            avatar: 'https://b.thumbs.redditmedia.com/cyvZncBjYQXebbul-abNjTfVlSwkAvTXXH50do8ILSA.png'
-        },
-        {
-            id: 4,
-            message: 'You?',
-            avatar: 'https://b.thumbs.redditmedia.com/cyvZncBjYQXebbul-abNjTfVlSwkAvTXXH50do8ILSA.png'
-        }
+        {id: 3, message: 'Fine', avatar: avatarSource},
+        {id: 4, message: 'You?', avatar: avatarSource}
     ],
 
     incomingMessagesData: [
         {id: 1, message: '..', avatar: ''},
-        {
-            id: 2,
-            message: 'How are you?',
-            avatar: 'https://b.thumbs.redditmedia.com/cyvZncBjYQXebbul-abNjTfVlSwkAvTXXH50do8ILSA.png'
-        },
+        {id: 2, message: 'How are you?', avatar: avatarSource},
         {id: 3, message: '..', avatar: ''},
         {id: 4, message: '..', avatar: ''},
-        {
-            id: 5,
-            message: 'OK',
-            avatar: 'https://b.thumbs.redditmedia.com/cyvZncBjYQXebbul-abNjTfVlSwkAvTXXH50do8ILSA.png'
-        }
-    ],
-
-    newMessageText: 'kamasutra'
+        {id: 5, message: 'OK', avatar: avatarSource}
+    ]
 };
 
 const dialogsReducer = (state = initialState, action) => {
@@ -78,19 +32,12 @@ const dialogsReducer = (state = initialState, action) => {
         case ADD_MESSAGE:
             let newMessage = {
                 id: 6,
-                message: state.newMessageText,
-                avatar: 'https://b.thumbs.redditmedia.com/cyvZncBjYQXebbul-abNjTfVlSwkAvTXXH50do8ILSA.png'
+                message: action.newMessageText,
+                avatar: avatarSource
             };
             return {
                 ...state,
-                newMessageText: '',
                 messagesData: [...state.messagesData, newMessage]
-            };
-
-        case UPDATE_NEW_MESSAGE_TEXT:
-            return {
-                ...state,
-                newMessageText: action.newMessage
             };
 
         default:
@@ -98,13 +45,9 @@ const dialogsReducer = (state = initialState, action) => {
     }
 }
 
-export const addMessageActionCreator = () => ({
-    type: ADD_MESSAGE
-});
-
-export const updateNewMessageTextActionCreator = (message) => ({
-    type: UPDATE_NEW_MESSAGE_TEXT,
-    newMessage: message
+export const addMessageActionCreator = (newMessageText) => ({
+    type: ADD_MESSAGE,
+    newMessageText: newMessageText
 });
 
 export default dialogsReducer;
