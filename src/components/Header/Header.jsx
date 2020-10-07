@@ -8,7 +8,9 @@ function Header(props) {
             <img src='https://seeklogo.com/images/Y/youtube-square-logo-3F9D037665-seeklogo.com.png' alt=""/>
 
             <div className={s.loginBlock}>
-                {props.isAuth ? props.login : <NavLink to={'/login'}>Log in</NavLink>}
+                {props.isAuth ?
+                    <div>{props.login} - <button onClick={props.logout}>Log out</button></div>
+                    : <NavLink to={'/login'}>Log in</NavLink>}
             </div>
         </header>
     );

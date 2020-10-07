@@ -1,7 +1,6 @@
 import {authAPI} from '../api/api';
 
 const SET_USER_DATA = 'SET-USER-DATA';
-/*const FORBID_AUTH = 'FORBID-AUTH';*/
 
 let initialState = {
     id: null,
@@ -15,39 +14,23 @@ const authReducer = (state = initialState, action) => {
         case SET_USER_DATA:
             return {
                 ...state,
-                ...action.data,
-                isAuth: true
+                ...action.payload
             };
-
-        /*case FORBID_AUTH:
-            return {
-                ...state,
-                ...action.data,
-                isAuth: false
-            };*/
 
         default:
             return state;
     }
 };
 
-export const setAuthUserData = (id, email, login) => ({
+export const setAuthUserData = (id, email, login, isAuth) => ({
     type: SET_USER_DATA,
-    data: {
+    payload: {
         id,
         email,
-        login
+        login,
+        isAuth
     }
 });
-
-/*export const ForbidAuth = (id, email, login) => ({
-    type: FORBID_AUTH,
-    data: {
-        id,
-        email,
-        login
-    }
-});*/
 
 
 export const getAuthUserData = () => {
@@ -56,11 +39,30 @@ export const getAuthUserData = () => {
             .then(data => {
                 if (data.data.resultCode === 0) {
                     let {id, email, login} = data.data.data;
-                    dispatch(setAuthUserData(id, email, login));
-                } /*else if (data.data.resultCode != 0) {
-                    let {id, email, login} = data.data.data;
-                    dispatch(ForbidAuth(id, email, login));
-                }*/
+                    dispatch(setAuthUserData(id, email, login, true));
+                }
+            });
+    }
+};
+
+export const login = (email, password, rememberMe) => {
+    return (dispatch) => {
+        authAPI.login(email, password, rememberMe)
+            .then(data => {
+                if (data.data.resultCode === 0) {
+                    dispatch(getAuthUserData())
+                }
+            });
+    }
+};
+
+export const logout = () => {
+    return (dispatch) => {
+        authAPI.logout()
+            .then(data => {
+                if (data.data.resultCode === 0) {
+                    dispatch(setAuthUserData(null, null, null, false));
+                }
             });
     }
 };
