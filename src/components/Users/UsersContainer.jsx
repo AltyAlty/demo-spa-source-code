@@ -17,7 +17,7 @@ class UsersContainer extends React.Component {
     };
 
     onPageChange = (pageNumber) => {
-        this.props.setCurrentPage(pageNumber);
+        //this.props.setCurrentPage(pageNumber);
         this.props.getUsers(pageNumber, this.props.pageSize);
     };
 
@@ -55,5 +55,5 @@ export default compose(
         follow,
         unfollow
     }),
-    withAuthRedirect
+    //withAuthRedirect
 )(UsersContainer);

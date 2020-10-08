@@ -34,16 +34,14 @@ export const setAuthUserData = (id, email, login, isAuth) => ({
 });
 
 
-export const getAuthUserData = () => {
-    return (dispatch) => {
-        authAPI.me()
-            .then(data => {
-                if (data.data.resultCode === 0) {
-                    let {id, email, login} = data.data.data;
+export const getAuthUserData = () => (dispatch) => {
+    return authAPI.me()
+            .then(response => {
+                if (response.data.resultCode === 0) {
+                    let {id, email, login} = response.data.data;
                     dispatch(setAuthUserData(id, email, login, true));
                 }
             });
-    }
 };
 
 export const login = (email, password, rememberMe) => {
