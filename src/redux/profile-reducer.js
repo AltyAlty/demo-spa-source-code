@@ -1,10 +1,12 @@
 import {profileAPI, usersAPI} from '../api/api';
 
-const ADD_POST = 'ADD-POST';
-const SET_USER_PROFILE = 'SET-USER-PROFILE';
-const SET_USER_STATUS = 'SET-USER-STATUS';
-const DELETE_POST = 'DELETE-POST';
+// constants for types of actions
+const ADD_POST = 'react-samurai-01/profile-reducer/ADD-POST';
+const SET_USER_PROFILE = 'react-samurai-01/profile-reducer/SET-USER-PROFILE';
+const SET_USER_STATUS = 'react-samurai-01/profile-reducer/SET-USER-STATUS';
+const DELETE_POST = 'react-samurai-01/profile-reducer/DELETE-POST';
 
+// state
 let initialState = {
     postsData: [
         {id: 1, message: 'Hi, how are you?', likesCount: 2},
@@ -16,6 +18,7 @@ let initialState = {
     status: ''
 };
 
+// reducer
 const profileReducer = (state = initialState, action) => {
     switch (action.type) {
         case ADD_POST:
@@ -52,9 +55,10 @@ const profileReducer = (state = initialState, action) => {
     }
 };
 
+// action creators
 export const addPostActionCreator = (newPostText) => ({
     type: ADD_POST,
-    newPostText: newPostText
+    newPostText
 });
 
 export const setUserProfile = (profile) => ({
@@ -64,39 +68,34 @@ export const setUserProfile = (profile) => ({
 
 export const setUserStatus = (status) => ({
     type: SET_USER_STATUS,
-    status: status
+    status
 });
 
 export const deletePostActionCreator = (postID) => ({
     type: DELETE_POST,
-    postID: postID
+    postID
 });
 
+// thunk creators
+export const getUserProfile = (userID) => async (dispatch) => {
+    const response = await usersAPI.getUserProfile(userID);
 
-export const getUserProfile = (userID) => {
-    return (dispatch) => {
-        usersAPI.getUserProfile(userID).then(data => {
-            dispatch(setUserProfile(data.data));
-        });
+    dispatch(setUserProfile(response.data));
+};
+
+export const getUserStatus = (userID) => async (dispatch) => {
+    const response = await profileAPI.getUserStatus(userID);
+
+    dispatch(setUserStatus(response.data));
+};
+
+export const updateUserStatus = (status) => async (dispatch) => {
+    const response = await profileAPI.updateUserStatus(status);
+
+    if (response.data.resultCode === 0) {
+        dispatch(setUserStatus(status));
     }
 };
 
-export const getUserStatus = (userID) => {
-    return (dispatch) => {
-        profileAPI.getUserStatus(userID).then(data => {
-            dispatch(setUserStatus(data.data));
-        });
-    }
-};
-
-export const updateUserStatus = (status) => {
-    return (dispatch) => {
-        profileAPI.updateUserStatus(status).then(data => {
-            if (data.data.resultCode === 0) {
-                dispatch(setUserStatus(status));
-            }
-        });
-    }
-};
-
+// export
 export default profileReducer;

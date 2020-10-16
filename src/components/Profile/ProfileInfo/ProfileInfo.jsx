@@ -3,8 +3,8 @@ import s from './ProfileInfo.module.css';
 import Preloader from '../../common/Preloader/Preloader';
 import ProfileStatusWithHooks from './ProfileStatusWithHooks';
 
-function ProfileInfo(props) {
-    if (!props.profile) {
+function ProfileInfo({profile, status, updateUserStatus}) {
+    if (!profile) {
         return <Preloader/>
     };
 
@@ -15,12 +15,12 @@ function ProfileInfo(props) {
             </div>
 
             <div className={s.descriptionBlock}>
-                <img src={props.profile.photos.large} alt=""/>
+                <img src={profile.photos.large} alt=""/>
 
-                <ProfileStatusWithHooks status={props.status} updateUserStatus={props.updateUserStatus}/>
+                <ProfileStatusWithHooks status={status} updateUserStatus={updateUserStatus}/>
 
                 <div>
-                    1. About Me: {props.profile.aboutMe}
+                    1. About Me: {profile.aboutMe}
                 </div>
 
                 <div>
@@ -28,41 +28,41 @@ function ProfileInfo(props) {
                         2. Contacts:
                     </div>
                     <div>
-                        2.1 Facebook: {props.profile.contacts.facebook}
+                        2.1 Facebook: {profile.contacts.facebook}
                     </div>
                     <div>
-                        2.2 Website: {props.profile.contacts.website}
+                        2.2 Website: {profile.contacts.website}
                     </div>
                     <div>
-                        2.3 VK: {props.profile.contacts.vk}
+                        2.3 VK: {profile.contacts.vk}
                     </div>
                     <div>
-                        2.4 Twitter: {props.profile.contacts.twitter}
+                        2.4 Twitter: {profile.contacts.twitter}
                     </div>
                     <div>
-                        2.5 Instagram: {props.profile.contacts.instagram}
+                        2.5 Instagram: {profile.contacts.instagram}
                     </div>
                     <div>
-                        2.6 YouTube: {props.profile.contacts.youtube}
+                        2.6 YouTube: {profile.contacts.youtube}
                     </div>
                     <div>
-                        2.7 GitHub: {props.profile.contacts.github}
+                        2.7 GitHub: {profile.contacts.github}
                     </div>
                     <div>
-                        2.8 mainLink: {props.profile.contacts.mainLink}
+                        2.8 mainLink: {profile.contacts.mainLink}
                     </div>
                 </div>
 
                 <div>
-                    3. Is looking for a job? {props.profile.lookingForAJob === true ? <span>Yes</span> : <span>No</span>}
+                    3. Is looking for a job? {profile.lookingForAJob === true ? <span>Yes</span> : <span>No</span>}
                 </div>
 
                 <div>
-                    4. Which one? {props.profile.lookingForAJobDescription}
+                    4. Which one? {profile.lookingForAJobDescription}
                 </div>
 
                 <div>
-                    5. Full Name: {props.profile.fullName}
+                    5. Full Name: {profile.fullName}
                 </div>
             </div>
         </div>

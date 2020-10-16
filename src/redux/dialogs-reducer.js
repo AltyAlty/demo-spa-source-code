@@ -1,6 +1,9 @@
-const ADD_MESSAGE = 'ADD-MESSAGE';
-let avatarSource = 'https://b.thumbs.redditmedia.com/cyvZncBjYQXebbul-abNjTfVlSwkAvTXXH50do8ILSA.png';
+import avatarSource from '../assets/images/user.png';
 
+// constants for types of actions
+const ADD_MESSAGE = 'react-samurai-01/dialogs-reducer/ADD-MESSAGE';
+
+// state
 let initialState = {
     dialogs: [
         {id: 1, name: 'Abba', avatar: avatarSource},
@@ -27,6 +30,7 @@ let initialState = {
     ]
 };
 
+// reducer
 const dialogsReducer = (state = initialState, action) => {
     switch (action.type) {
         case ADD_MESSAGE:
@@ -45,9 +49,11 @@ const dialogsReducer = (state = initialState, action) => {
     }
 }
 
+// action creators
 export const addMessageActionCreator = (newMessageText) => ({
     type: ADD_MESSAGE,
-    newMessageText: newMessageText
+    newMessageText
 });
 
+// export
 export default dialogsReducer;

@@ -1,5 +1,6 @@
 import {createSelector} from 'reselect';
 
+// selectors for Users Component
 const getUsersPrimitive = (state) => {
     return state.usersPage.users
 };

@@ -8,6 +8,7 @@ import thunkMiddleWare from 'redux-thunk';
 import {reducer as formReducer} from 'redux-form';
 import appReducer from './app-reducer';
 
+// list of reducers
 let reducers = combineReducers({
     profilePage: profileReducer,
     dialogsPage: dialogsReducer,
@@ -18,8 +19,10 @@ let reducers = combineReducers({
     app: appReducer
 });
 
+// store creating
 let store = createStore(reducers, applyMiddleware(thunkMiddleWare));
 
 window.store = store;
 
+// export
 export default store;
