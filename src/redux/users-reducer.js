@@ -13,11 +13,12 @@ const TOGGLE_IS_FOLLOWING_IN_PROGRESS = 'react-samurai-01/users-reducer/TOGGLE-I
 // state
 let initialState = {
     users: [],
-    pageSize: 10,
+    pageSize: 20,
     totalUsersCount: 0,
     currentPage: 1,
     isFetching: false,
-    isFollowingInProgress: []
+    isFollowingInProgress: [],
+    portionSize: 20
 };
 
 // reducer
@@ -27,24 +28,12 @@ const usersReducer = (state = initialState, action) => {
             return {
                 ...state,
                 users: updateObjectInArray(state.users, action.userID, "id", {followed: true})
-                /*users: state.users.map(u => {
-                    if (u.id === action.userID) {
-                        return {...u, followed: true}
-                    }
-                    return u;
-                })*/
             };
 
         case UNFOLLOW:
             return {
                 ...state,
                 users: updateObjectInArray(state.users, action.userID, "id", {followed: false})
-                /*users: state.users.map(u => {
-                    if (u.id === action.userID) {
-                        return {...u, followed: false}
-                    }
-                    return u;
-                })*/
             };
 
         case SET_USERS:

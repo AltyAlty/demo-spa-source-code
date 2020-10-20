@@ -5,10 +5,11 @@ import User from './User';
 function Users({users, ...props}) {
     return (
         <div>
-            <Paginator totalUsersCount={props.totalUsersCount}
+            <Paginator totalItemsCount={props.totalUsersCount}
                        pageSize={props.pageSize}
                        currentPage={props.currentPage}
                        onPageChange={props.onPageChange}
+                       portionSize={props.portionSize}
             />
 
             <div>
