@@ -1,7 +1,7 @@
 import React, {Suspense} from 'react';
 import logo from './logo.svg';
 import './App.css';
-import {withRouter, Route, BrowserRouter} from 'react-router-dom';
+import {withRouter, Route, HashRouter} from 'react-router-dom';
 import HeaderContainer from './components/Header/HeaderContainer';
 import NavbarContainer from './components/Navbar/NavbarContainer';
 /*import DialogsContainer from './components/Dialogs/DialogsContainer';*/
@@ -80,11 +80,11 @@ let AppContainer = compose(
 // "true" App, called in index.js
 const AppMain = (props) => {
     return (
-        <BrowserRouter>
+        <HashRouter>
             <Provider store={store}>
                 <AppContainer/>
             </Provider>
-        </BrowserRouter>
+        </HashRouter>
     )
 };
 
