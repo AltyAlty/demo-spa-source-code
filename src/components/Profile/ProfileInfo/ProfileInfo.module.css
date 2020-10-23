@@ -9,3 +9,7 @@
     margin-right: auto;
     display: block;
 }
+
+.userPhoto {
+    max-width: 200px;
+}
