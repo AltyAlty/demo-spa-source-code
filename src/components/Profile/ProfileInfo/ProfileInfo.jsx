@@ -1,10 +1,17 @@
-import React from 'react';
+import React, {useState} from 'react';
 import s from './ProfileInfo.module.css';
 import Preloader from '../../common/Preloader/Preloader';
 import ProfileStatusWithHooks from './ProfileStatusWithHooks';
 import userPhoto from '../../../assets/images/user.png';
+import ProfileDataFormReduxForm from './ProfileDataForm';
 
-function ProfileInfo({isOwner, profile, status, updateUserStatus, saveUserPhoto}) {
+function ProfileInfo({isOwner, profile, status, updateUserStatus, saveUserPhoto, saveProfile}) {
+    let [editMode, setEditMode] = useState(false);
+
+    const activateEditMode = () => {
+        setEditMode(true);
+    };
+
     if (!profile) {
         return <Preloader/>
     }
@@ -13,6 +20,14 @@ function ProfileInfo({isOwner, profile, status, updateUserStatus, saveUserPhoto}
         if (e.target.files.length) {
             saveUserPhoto(e.target.files[0]);
         }
+    };
+
+    const onSubmit = (formData) => {
+        saveProfile(formData).then(
+            () => {
+                setEditMode(false);
+            }
+        );
     };
 
     return (
@@ -28,30 +43,45 @@ function ProfileInfo({isOwner, profile, status, updateUserStatus, saveUserPhoto}
 
                 <ProfileStatusWithHooks status={status} updateUserStatus={updateUserStatus}/>
 
-                <div>1. About Me: {profile.aboutMe}</div>
-
-                <div>
-                    <div>2. Contacts:</div>
-                    <div>2.1 Facebook: {profile.contacts.facebook}</div>
-                    <div>2.2 Website: {profile.contacts.website}</div>
-                    <div>2.3 VK: {profile.contacts.vk}</div>
-                    <div>2.4 Twitter: {profile.contacts.twitter}</div>
-                    <div>2.5 Instagram: {profile.contacts.instagram}</div>
-                    <div>2.6 YouTube: {profile.contacts.youtube}</div>
-                    <div>2.7 GitHub: {profile.contacts.github}</div>
-                    <div>2.8 mainLink: {profile.contacts.mainLink}</div>
-                </div>
-
-                <div>
-                    3. Is looking for a job? {profile.lookingForAJob === true ? <span>Yes</span> : <span>No</span>}
-                </div>
-
-                <div>4. Which one? {profile.lookingForAJobDescription}</div>
-
-                <div>5. Full Name: {profile.fullName}</div>
+                {editMode
+                    ? <ProfileDataFormReduxForm initialValues={profile} onSubmit={onSubmit} profile={profile}/>
+                    : <ProfileData profile={profile} isOwner={isOwner} activateEditMode={activateEditMode}/>
+                }
             </div>
         </div>
     );
 };
+
+function ProfileData({profile, isOwner, activateEditMode}) {
+    return (
+        <div>
+            {isOwner && <div>
+                <button onClick={activateEditMode}>edit</button>
+            </div>}
+
+            <div><b>1. Full Name</b>: {profile.fullName}</div>
+
+            <div><b>2. About Me</b>: {profile.aboutMe}</div>
+
+            <div>
+                <b>3. Contacts</b>: {Object.keys(profile.contacts).map(key => {
+                return <Contact key={key}
+                                contactTitle={key}
+                                contactValue={profile.contacts[key]}
+                />
+            })}
+            </div>
+
+            <div><b>4. Is looking for a job?</b> {profile.lookingForAJob ? <span>Yes</span> : <span>No</span>}</div>
+
+            {profile.lookingForAJob && <div><b>Which one?</b> {profile.lookingForAJobDescription}</div>}
+        </div>
+    )
+};
+
+function Contact({contactTitle, contactValue}) {
+    return <div className={s.contact}><b>{contactTitle}</b>: {contactValue}</div>
+};
+
 
 export default ProfileInfo;

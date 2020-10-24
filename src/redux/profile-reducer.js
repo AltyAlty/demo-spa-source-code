@@ -1,4 +1,5 @@
 import {profileAPI, usersAPI} from '../api/api';
+import {stopSubmit} from 'redux-form';
 
 // constants for types of actions
 const ADD_POST = 'react-samurai-01/profile-reducer/ADD-POST';
@@ -114,6 +115,18 @@ export const saveUserPhoto = (photoFile) => async (dispatch) => {
 
     if (response.data.resultCode === 0) {
         dispatch(isSavingUserPhotoSuccessfulAC(response.data.data.photos));
+    }
+};
+
+export const saveProfile = (profile) => async (dispatch, getState) => {
+    const userID = getState().auth.id;
+    const response = await profileAPI.saveProfile(profile);
+
+    if (response.data.resultCode === 0) {
+        dispatch(getUserProfile(userID));
+    } else {
+        dispatch(stopSubmit("editProfile", {_error: response.data.messages[0]}));
+        return Promise.reject(response.data.messages[0]);
     }
 };
 
