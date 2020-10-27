@@ -10,12 +10,15 @@ import {Redirect} from 'react-router-dom';
 
 const maxLength30 = maxLengthCreator(30);
 
-function LoginForm({handleSubmit, error}) {
+function LoginForm({handleSubmit, error, captchaURL}) {
     return (
         <form onSubmit={handleSubmit}>
             {createField("Email", "email", Input, [required, maxLength30])}
             {createField("Password", "password", Input, [required, maxLength30], {type: "password"})}
             {createField(null, "rememberMe", Input, null, {type: "checkbox"}, "Remember me?")}
+
+            {captchaURL && <img src={captchaURL} alt=""/>}
+            {captchaURL && createField("Enter the captcha", "captcha", Input, [required])}
 
             {error && <div className={style.formSummaryError}>{error}</div>}
 
@@ -32,7 +35,7 @@ const LoginReduxForm = reduxForm({
 
 function Login(props) {
     const onSubmit = (formData) => {
-        props.login(formData.email, formData.password, formData.rememberMe);
+        props.login(formData.email, formData.password, formData.rememberMe, formData.captcha);
     };
 
     if (props.isAuth) {
@@ -42,13 +45,14 @@ function Login(props) {
     return (
         <div>
             <h1>Log in</h1>
-            <LoginReduxForm onSubmit={onSubmit}/>
+            <LoginReduxForm onSubmit={onSubmit} captchaURL={props.captchaURL}/>
         </div>
     );
 };
 
 const mapStateToProps = (state) => ({
-    isAuth: state.auth.isAuth
+    isAuth: state.auth.isAuth,
+    captchaURL: state.auth.captchaURL
 });
 
 export default connect(mapStateToProps, {login})(Login);
