@@ -101,12 +101,24 @@ export const getUserStatus = (userID) => async (dispatch) => {
 
     dispatch(setUserStatus(response.data));
 };
-
-export const updateUserStatus = (status) => async (dispatch) => {
+/*old updateUserStatus TC without try catch*/
+/*export const updateUserStatus = (status) => async (dispatch) => {
     const response = await profileAPI.updateUserStatus(status);
 
     if (response.data.resultCode === 0) {
         dispatch(setUserStatus(status));
+    }
+};*/
+
+export const updateUserStatus = (status) => async (dispatch) => {
+    try {
+        const response = await profileAPI.updateUserStatus(status);
+
+        if (response.data.resultCode === 0) {
+            dispatch(setUserStatus(status));
+        }
+    } catch (error) {
+        alert(error);
     }
 };
 
