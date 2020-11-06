@@ -3,13 +3,18 @@ import {getAuthUserData} from './auth-reducer';
 // constants for types of actions
 const INITIALIZATION_SUCCESSFUL = 'react-samurai-01/app-reducer/INITIALIZATION-SUCCESSFUL';
 
+// type of state
+type InitialStateType = {
+    initialized: boolean
+};
+
 // state
-let initialState = {
+let initialState: InitialStateType = {
     initialized: false
 };
 
 // reducer
-const appReducer = (state = initialState, action) => {
+const appReducer = (state = initialState, action: any): InitialStateType => {
     switch (action.type) {
         case INITIALIZATION_SUCCESSFUL:
             return {
@@ -22,11 +27,18 @@ const appReducer = (state = initialState, action) => {
     }
 };
 
+// types of action objects
+type InitializingAppActionType = {
+    type: typeof INITIALIZATION_SUCCESSFUL
+};
+
 // action creators
-export const initializingApp = () => ({type: INITIALIZATION_SUCCESSFUL});
+export const initializingApp = (): InitializingAppActionType => ({
+    type: INITIALIZATION_SUCCESSFUL
+});
 
 // thunk creators
-export const initializeApp = () => (dispatch) => {
+export const initializeApp = () => (dispatch: any) => {
     let promise = dispatch(getAuthUserData());
 
     Promise.all([promise])
