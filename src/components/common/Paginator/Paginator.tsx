@@ -2,11 +2,27 @@ import React, {useState} from 'react';
 import styles from './Paginator.module.css';
 import cn from 'classnames';
 
-function Paginator({totalItemsCount, pageSize, currentPage, onPageChange, portionSize}) {
+// types for props
+type PropsType = {
+    totalItemsCount: number
+    pageSize: number
+    currentPage: number
+    onPageChange: (p: number) => void
+    portionSize?: number
+};
+
+// component
+const Paginator: React.FC<PropsType> = ({
+                                        totalItemsCount,
+                                        pageSize,
+                                        currentPage,
+                                        onPageChange,
+                                        portionSize = 10
+                                    }) => {
 
     let pagesCount = Math.ceil(totalItemsCount / pageSize);
 
-    let pages = [];
+    let pages: Array<number> = [];
 
     for (let i = 1; i <= pagesCount; i++) {
         pages.push(i);
@@ -29,7 +45,9 @@ function Paginator({totalItemsCount, pageSize, currentPage, onPageChange, portio
         <div className={styles.paginator}>
 
             {currentPortionNumber > 1 &&
-            <button onClick={() => {setCurrentPortionNumber(currentPortionNumber - 1)}}>
+            <button onClick={() => {
+                setCurrentPortionNumber(currentPortionNumber - 1)
+            }}>
                 PREV
             </button>}
 
@@ -37,9 +55,11 @@ function Paginator({totalItemsCount, pageSize, currentPage, onPageChange, portio
                 .filter(p => p >= lowerBoundOfCurrentPortion && p <= upperBoundOfCurrentPortion)
                 .map(p => {
                     return (
-                        <span className={cn({[styles.selectedPage] : currentPage === p}, styles.pageNumber)}
+                        <span className={cn({[styles.selectedPage]: currentPage === p}, styles.pageNumber)}
                               key={p}
-                              onClick={(e) => {onPageChange(p)}}>
+                              onClick={(e) => {
+                                  onPageChange(p)
+                              }}>
                             {p}
                         </span>
                     )
@@ -47,7 +67,9 @@ function Paginator({totalItemsCount, pageSize, currentPage, onPageChange, portio
             }
 
             {portionCount > currentPortionNumber &&
-            <button onClick={() => {setCurrentPortionNumber(currentPortionNumber + 1)}}>
+            <button onClick={() => {
+                setCurrentPortionNumber(currentPortionNumber + 1)
+            }}>
                 NEXT
             </button>}
         </div>
