@@ -1,4 +1,4 @@
-import {authAPI, securityAPI} from '../api/api';
+import {authAPI, ResultCodeEnum, ResultCodeForCaptchaEnum, securityAPI} from '../api/api';
 import {stopSubmit} from 'redux-form';
 
 // constants for types of actions
@@ -78,24 +78,24 @@ const setCaptchaURL = (captchaURL: string): SetCaptchaURLActionType => ({
 
 // thunk creators
 export const getAuthUserData = () => async (dispatch: any) => {
-    const response = await authAPI.me();
+    const data = await authAPI.me();
 
-    if (response.data.resultCode === 0) {
-        let {id, email, login} = response.data.data;
+    if (data.resultCode === ResultCodeEnum.Success) {
+        let {id, email, login} = data.data;
         dispatch(setAuthUserData(id, email, login, true));
     }
 };
 
 export const login = (email: string, password: string, rememberMe: boolean, captcha: string) => async (dispatch: any) => {
-    const response = await authAPI.login(email, password, rememberMe, captcha);
+    const data = await authAPI.login(email, password, rememberMe, captcha);
 
-    if (response.data.resultCode === 0) {
+    if (data.resultCode === ResultCodeEnum.Success) {
         dispatch(getAuthUserData())
     } else {
-        if (response.data.resultCode === 10) {
+        if (data.resultCode === ResultCodeForCaptchaEnum.CaptchaIsRequired) {
             dispatch(getCaptchaURL());
         }
-        let message = response.data.messages.length > 0 ? response.data.messages[0] : 'unknown error'
+        let message = data.messages.length > 0 ? data.messages[0] : 'unknown error'
         dispatch(stopSubmit('login', {_error: message}));
     }
 };
