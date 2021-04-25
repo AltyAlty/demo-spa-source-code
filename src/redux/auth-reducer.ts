@@ -1,119 +1,288 @@
-import {authAPI, ResultCodeEnum, ResultCodeForCaptchaEnum, securityAPI} from '../api/api';
-import {stopSubmit} from 'redux-form';
+/*
+Это файл "reducer", отвечающего за аутентификацию и связанные с ней процессы. Каждый "reducer" состоит из:
+- констант, содержащих значения для свойства "type" объекта "action"
+- "initialState" - своей части "state"
+- самой функции "reducer"
+- "Action Creators" или "AC"
+- "Thunk Creators" или "TC".
+*/
 
-// constants for types of actions
-const SET_USER_DATA = 'react-samurai-01/auth-reducer/SET-USER-DATA';
-const SET_CAPTCHA_URL = 'react-samurai-01/auth-reducer/SET-CAPTCHA-URL';
+import {authAPI, ResultCodeEnum, ResultCodeForCaptchaEnum, securityAPI} from '../api/api'; /*Импортируем блоки запросов,
+связанных с аутентификацией и связанных с капчей из "api.ts". Так же оттуда импортируем списки кодов ответов от
+сервера.*/
+import {stopSubmit} from 'redux-form'; /*Импортируем специальный AC "stopSubmit" из библиотеки "redux-form", который
+сообщает UI, что что-то пошло не так, и останавливает "submit" данных в форме.*/
 
-// type of state
-/*export type InitialStateType2 = {
-    id: number | null,
-    email: string | null,
-    login: string | null,
-    isAuth: boolean,
-    captchaURL: string | null
+import {AppStateType} from './redux-store'; /*Импортируем типы.*/
+import {Dispatch} from 'redux'; /*Импортировали из библиотеки "redux", чтобы создать тип для "dispatch", который
+передается в "thunks" и TC.*/
+import {ThunkAction} from 'redux-thunk'; /*Импортировали из библиотеки "redux-thunk", чтобы создать тип для "thunks".*/
+
+
+/*
+Это константы для указания значения свойства "type" в объекте "action".
+Это сделано специально, что не использовать захардкоденные значения в "AC" и "reducers".
+Согласно модульному паттерну "Redux Ducks" чтобы избежать случаев одиноковых значений
+из-за чего один и тот же объект "action" может сработать в нескольких "reducers", в значениях констант для
+свойств "type" в объекте "action" "указываются имя-проекта/имя-файла/имя-объекта-action".
+*/
+const SET_USER_DATA = 'react-samurai-01/auth-reducer/SET-USER-DATA'; /*Объект "action" для установки данных
+залогиненного пользователя.*/
+const SET_CAPTCHA_URL = 'react-samurai-01/auth-reducer/SET-CAPTCHA-URL'; /*Объект "action" для установки URL
+изображения с капчей.*/
+
+/*Сначала создали тип "state", но не используем его здесь. "state" обязательно должен был содержать следующие поля
+указанного типа.*/
+/*type InitialStateType2 = {
+    id: number | null, //"ID" пользователя может быть или числом, или "null", то есть быть пустым.
+    email: string | null, //"email" пользователя может быть или строкой, или "null", то есть быть пустым.
+    login: string | null, //"login" пользователя может быть или строкой, или "null", то есть быть пустым.
+    isAuth: boolean, //Информация залогинен ли пользователь должна быть булева типа.
+    captchaURL: string | null //Информация с путем к капче может быть или строкой, или "null", то есть быть пустым.
 };*/
 
+/*Создаем тип "state" из самого "state" при помощи "typeof".*/
 type InitialStateType = typeof initialState;
 
-// state
+/*Создаем сам "state".*/
 let initialState = {
-    id: null as number | null,
-    email: null as string | null,
-    login: null as string | null,
-    isAuth: false,
-    captchaURL: null as string | null
+    id: null as number | null, /*Свойство, которое хранит "ID" залогиненного пользователя. Указываем, что изначально
+    это свойство может иметь тип "null", то есть быть пустым, или быть числом.*/
+    email: null as string | null, /*Свойство, которое хранит "email" залогиненного пользователя. Указываем, что
+    изначально это свойство может иметь тип "null", то есть быть пустым, или быть строкой.*/
+    login: null as string | null, /*Свойство, которое хранит "login" залогиненного пользователя. Указываем, что
+    изначально это свойство может иметь тип "null", то есть быть пустым, или быть строкой.*/
+    isAuth: false, /*Свойство, которое указывает залогинен ли пользователь.*/
+    captchaURL: null as string | null /*Свойство, которое хранит URL изображения с капчей. Указываем, что изначально
+    это свойство может иметь тип "null", то есть быть пустым, или быть строкой.*/
 };
 
-// reducer
-const authReducer = (state = initialState, action: any): InitialStateType => {
+/*
+Это "reducer" - чистая функция, которая принимает объект "action" и копию части "state".
+Потом "reducer" изменяет (или не изменяет, если объект "action" не подошел) определенную часть "state" и возвращает ее.
+После этого все возвращенные части "state" всех "reducers" собираются в новый "state".
+*/
+const authReducer = (state = initialState, action: ActionsType): InitialStateType => { /*Указываем, что тип "state"
+на выходе имеет тот же тип "InitialStateType", что и "state" на входе. На входе объекты "action" имеют тип
+"ActionsType", созданный нами ниже.*/
     switch (action.type) {
         case SET_USER_DATA:
-        case SET_CAPTCHA_URL:
-            return {
-                ...state,
-                ...action.payload,
+        case SET_CAPTCHA_URL: /*Здесь для обоих случаев один и тот же код потому, что в обоих соотвествующих AC
+        используется "payload". Благодаря деструктуризации мы сможет передать нужные значение свойств из "payload" в
+        нужные свойства "state" при совпадении имен свойств.*/
+            return { /*Устанавливаем данные по залогиненному пользователю в "state".*/
+                ...state, /*Делаем поверхностную копию "state".*/
+                ...action.payload, /*Объект "action" будет иметь объект "payload", который содержит "id", "email",
+                "login" и "isAuth". Аналогично может прийти такой же объект "payload", но он может содержать только
+                "captchaURL" - URL изображения с капчей. Делаем глубокую копию, чтобы установить эти данные в "state",
+                деструктурируя этот объект "payload".*/
             };
 
-        default:
+        default: /*Если объект "action" никуда не подошел, то по default возвращается тот же "state", чтобы не вызвать
+        перерисовку.*/
             return state;
     }
 };
 
-// types of action objects
-type SetAuthUserDataActionType = {
+
+/*Создаем типы для объектов "action".*/
+type ActionsType = SetAuthUserDataActionType | SetCaptchaURLActionType; /*Здесь мы
+все созданные раннее типы для объектов "action" объеденили в один тип.*/
+
+type SetAuthUserDataActionType = { /*Создали тип для объекта "action" "SET_USER_DATA" на основе самого "SET_USER_DATA"
+при помощи "typeof". А свойство "payload" в этом объекте "action" имеет тип "SetAuthUserDataActionPayloadType",
+созданный нами ниже.*/
     type: typeof SET_USER_DATA
     payload: SetAuthUserDataActionPayloadType
 };
 
-type SetAuthUserDataActionPayloadType = {
-    id: number | null
-    email: string | null
-    login: string | null
-    isAuth: boolean
+type SetAuthUserDataActionPayloadType = { /*Создали тип для свойства "payload" в объекте "action" "SET_USER_DATA".*/
+    id: number | null /*"ID" пользователя может быть числом или "null", то есть быть пустым.*/
+    email: string | null /*"email" пользователя может быть строкой или "null", то есть быть пустым.*/
+    login: string | null /*"login" пользователя может быть строкой или "null", то есть быть пустым.*/
+    isAuth: boolean /*Информация залогинен ли пользователь должна быть булева типа.*/
 };
 
-type SetCaptchaURLActionType = {
+type SetCaptchaURLActionType = { /*Создали тип для объекта "action" "SET_CAPTCHA_URL" на основе самого "SET_CAPTCHA_URL"
+при помощи "typeof". А свойство "payload" в этом объекте "action" имеет тип объекта, который внутри содержит свойство
+"captchaURL" с типом строки.*/
     type: typeof SET_CAPTCHA_URL,
     payload: { captchaURL: string }
 };
 
-// action creators
-const setAuthUserData = (id: number | null, email: string | null, login: string | null, isAuth: boolean): SetAuthUserDataActionType => ({
-    type: SET_USER_DATA,
-    payload: {
-        id,
-        email,
-        login,
-        isAuth
+
+/*
+Action Creators.
+AC создает объект, который передается в reducer.
+Этот объект как минимум должен иметь свойство "type", которое определяет, что необходимо выполнить в reducer.
+*/
+const setAuthUserData = (id: number | null, /*На входе получает "ID" пользователя, который должен быть числом или
+                         "null", то есть быть пустым.*/
+                         email: string | null, /*На входе получает "email" пользователя, который должен быть строкой или
+                         "null", то есть быть пустым.*/
+                         login: string | null, /*На входе получает "login" пользователя, который должен быть строкой или
+                         "null", то есть быть пустым.*/
+                         isAuth: boolean /*На входе получает информацию залогинен ли пользователь, которая должна быть
+                         булева типа.*/
+): SetAuthUserDataActionType => ({
+/*AC для установки данных залогиненного пользователя в "state". Объект "action" на выходе имеет
+тип "SetAuthUserDataActionType".*/
+    type: SET_USER_DATA, /*Обязательно свойство "type" для AC.*/
+    payload: { /*Объект с данными по залогиненному пользователю. Далее мы его деструктурируем в "authReducer".*/
+        id, /*Свойство, которое хранит "ID" залогиненного пользователя.*/
+        email, /*Свойство, которое хранит "email" залогиненного пользователя.*/
+        login, /*Свойство, которое хранит "login" залогиненного пользователя.*/
+        isAuth /*Свойство, которое указывает залогинен ли пользователь.*/
     }
 });
 
-const setCaptchaURL = (captchaURL: string): SetCaptchaURLActionType => ({
-    type: SET_CAPTCHA_URL,
-    payload: {
-        captchaURL
+const setCaptchaURL = (captchaURL: string): SetCaptchaURLActionType => ({ /*AC для установки URL изображения с капчей
+в "state". Объект "action" на выходе имеет тип "SetCaptchaURLActionType". На входе получает "captchaURL", которое
+дожно быть строкой.*/
+    type: SET_CAPTCHA_URL, /*Обязательно свойство "type" для AC.*/
+    payload: { /*Объект с URL изображения с капчей. Далее мы его деструктурируем в "authReducer".*/
+        captchaURL /*Свойство, которое хранит URL изображения с капчей.*/
     }
 });
 
-// thunk creators
-export const getAuthUserData = () => async (dispatch: any) => {
-    const data = await authAPI.me();
 
-    if (data.resultCode === ResultCodeEnum.Success) {
-        let {id, email, login} = data.data;
-        dispatch(setAuthUserData(id, email, login, true));
+/*Создаем типы для "Thunk Creators".*/
+type GetStateType = () => AppStateType; /*Создали тип для "getState()", который получает "thunks" и TC. "getState()"
+должен быть функцией, которая не получает ничего на входе и возвращает объект с типом "AppStateType", созданным нами и
+импортированным сюда. Мы это здесь не используем, так как типизация "thunks" перекрывает эту типизацию, поскольку
+типизируя то, что возвращает TC, то есть "thunk", мы также типизировали, что в "thunk" будет передаваться дальше,
+то есть те самые "dispatch", "getState()" и дополнительные аргументы.*/
+
+type DispatchType = Dispatch<ActionsType>; /*Создали тип для "dispatch", передается в "thunks" и TC. "dispatch" должен
+быть "Dispatch" из библиотеки "redux", работающий с объектами "action" тип "ActionsType", который мы создали выше.*/
+
+type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsType> /*Создали тип для "thunks". "thunks"
+должны быть объектами "action" для "thunks" из библиотеки "redux-thunk", работающими с:
+1) промисами, которые ничего не возвращают (промисы потому, что у нас асинхронные "thunks" из-за использования
+"async/await", хотя обычно "thunks" ничего не возвращают);
+2) "state" с типом "AppStateType", созданным нами и импортированным сюда;
+3) какими-то неизвестными дополнительными аргументами;
+4) объектами "action" тип "ActionsType", который мы создали выше.
+Эти уточнения мы нашли в файле декларации "ThunkAction", "Ctrl+click" в "WebStorm".
+*/
+
+
+/*
+Thunk creators.
+"Thunk" это функция, которая может выполнять AJAX-запросы и "dispatch".
+Поскольку "reducers" нужны объекты "action" и "reducers" работают синхронно (AJAX-запросы несинхронные, поэтому будут
+замедлять этот процесс),
+а также "reducers" являются чистыми функциями, то мы не можем напрямую диспатчить "thunk".
+В таком случае, "thunk" должен сначала сам запуститься, внутри него задиспатчаться объекты "action" и
+в дальнейшем будут раскиданы по "reducers".
+В параметрах "thunk" всегда приходит функция "dispatch".
+"store" из "Redux" запускает "thunk" и закидывает в него функцию "dispatch" потому, что она у него есть.
+Но, например, для добавления сообщения нам нужен текст этого сообщения. Чтобы передать этот текст в "thunk" нам нужно
+использовать замыкание из нативного JS. Полезное замыкание нужно, когда нам необходимо передать функции какие-то
+дополнительные данные. Замыкание появляется там, где одна функция возвращает другую функцию, и эта 2-я функция имеет
+доступ к данным 1-й функции. Этой 1-й родительской функцией является "Thunk creator" (по аналогии с "Action creator").
+В TC передается текст сообщения, а сам "thunk" возьмет это сообщения из замыкания. В итоге мы диспатчм "TC",
+а не сам "thunk". Также для этого нам нужен некий промежуточный слой "thunk middleware" между "store.dispatch" и
+"reducers". Если в "store" придет объект "action", то "thunk middleware" передаст его в "reducers". Если же в "store"
+придет "thunk", то "thunk middleware" запустить этот "thunk", закинет в него функцию "dispatch" и на выходе будет
+объект "action", который затем будет передан в "reducers". Если в "thunk" будет несколько AC, то сначала отправится
+первый AC в "thunk middleware", потом второй AC и так далее до тех пор, пока не переберутся все AC. Это и есть
+замыкание. Для установки "thunk middleware" нам нужна библиотека "redux-thunk". Установка происходит в файле со "store"
+из "redux". В TC мы диспатчим не сам AC, а их вызовы.
+*/
+export const getAuthUserData = (): ThunkType => async (dispatch) => {
+/*Это TC для запроса и установки данных залогиненного пользователя в "state". Здесь вместо использования ".then" мы
+используем "async/await". Промис будет ожидаться в "await". "async" делает TC асинхронным. Этот TC на выходе возвращает
+"thunk", который имеет тип "ThunkType", созданный нами выше. Мы могли здесь также указать тип "dispatch", "getState()"
+и дополнительных аргументов, но типизируя то, что возвращает TC, то есть "thunk", мы также типизировали, что в "thunk"
+будет передаваться дальше, то есть те самые "dispatch", "getState()" и дополнительные аргументы.*/
+    const data = await authAPI.me(); /*Делаем запрос на сервер для получения данных залогиненного пользователя. Здесь
+    будет ожидаться промис. Когда он зарезольвиться, он сохраниться в "data". Здесь "return" не нужен, так как
+    асинхронная функция автоматически вернет промис, то есть можно сразу писать логику по работе с ответом от сервера.*/
+
+    if (data.resultCode === ResultCodeEnum.Success) { /*Если свойство "resultCode", которое пришло в ответе от сервера,
+    содержит код "0", то есть ошибки при залогинивании не было, то*/
+        let {id, email, login} = data.data; /*деструктурируем объект "data", который пришел в ответе от сервера,
+        и получаем "ID", "email" и "login" залогиненного пользователя*/
+        dispatch(setAuthUserData(id, email, login, true)); /*и устанавливаем эти данные в "state" при помощи
+        AC "setAuthUserData", четвертый параметр это "isAuth", чтобы сообщить, что пользователь залогинился.*/
     }
 };
 
-export const login = (email: string, password: string, rememberMe: boolean, captcha: string) => async (dispatch: any) => {
-    const data = await authAPI.login(email, password, rememberMe, captcha);
+export const login = (email: string, /*На входе получает "email" пользователя, который должен быть строкой.*/
+                      password: string, /*На входе получает пароль пользователя, который должен быть строкой.*/
+                      rememberMe: boolean, /*На входе получает информацию запомнить ли пользователя, которая должна быть
+                      булева типа.*/
+                      captcha: string /*На входе получает путь к капче, который должен быть строкой.*/
+) => async (dispatch: any) => {
+/*Это TC для осуществления логинизации через наше приложение. Здесь вместо использования ".then" мы используем
+"async/await". Промис будет ожидаться в "await". "async" делает TC асинхронным. На входе принимает "dispatch" типа
+"any", так как пока мы конкретно не знаем какого он будет типа.*/
+    const data = await authAPI.login(email, password, rememberMe, captcha); /*Делаем запрос на сервер для залогинивания
+    пользователя. Здесь будет ожидаться промис. Когда он зарезольвиться, он сохраниться в "data". Здесь "return"
+    не нужен, так как асинхронная функция автоматически вернет промис, то есть можно сразу писать логику по работе
+    с ответом от сервера.*/
 
-    if (data.resultCode === ResultCodeEnum.Success) {
-        dispatch(getAuthUserData())
+    if (data.resultCode === ResultCodeEnum.Success) { /*Если свойство "resultCode", которое пришло в ответе от сервера,
+    содержит код "0", то есть ошибки при залогинивании не было, то*/
+        dispatch(getAuthUserData()) /*вызываем TC "getAuthUserData" для запроса и установки данных залогиненного
+        пользователя в "state".*/
     } else {
-        if (data.resultCode === ResultCodeForCaptchaEnum.CaptchaIsRequired) {
-            dispatch(getCaptchaURL());
-        }
+        if (data.resultCode === ResultCodeForCaptchaEnum.CaptchaIsRequired) { /*Иначе если свойство "resultCode",
+        которое пришло в ответе от сервера, содержит код "10", то есть нужно ввести капчу, то*/
+            dispatch(getCaptchaURL()); /*вызываем TC "getCaptchaURL" для получения URL изображения с капчей с сервера
+            и установки его в "state".*/
+        } /*Также иначе если пришло какое-то информационное сообщение об ошибке при логинизации от сервера в
+        массиве "messages", то мы положим первый элемент этого массива в переменную "message", если длина этого массива
+        больше нуля, или же положим в переменную "message" текст "unknown error".*/
         let message = data.messages.length > 0 ? data.messages[0] : 'unknown error'
-        dispatch(stopSubmit('login', {_error: message}));
+        dispatch(stopSubmit('login', {_error: message})); /*Затем задиспатчим специальный AC "stopSubmit()"
+        из библиотеки "redux-form", который сообщит UI, что что-то пошло не так, и остановит "submit" данных. Первым
+        параметром указывается какую форму необходимо остановить, а вторым параметром указывается объект, в котором
+        должно быть свойство "_error" (из библиотеки "redux-form", означает ошибку для всей формы, но здесь можно
+        использовать и имена других полей, которые мы создали), которому присваивается значение с текстом ошибки.
+
+        Но сейчас со "stopSubmit" проблемы. При его использовании возникает проблема асинхроности, так как
+        библиотека "redux-form" вызывает "setSubmitSuccessed()" сразу после "stopSubmit()", не успев вернуть ошибку.
+        Как итог сообщение об ошибке исчезает мгновенно и его можно увидеть только при дебаге. Можно использовать
+        такой костыль:
+        setTimeout(async () => await dispatch(stopSubmit('login', {_error: message})))
+
+        Но у меня все работает, возможно потому, что у меня не самая последняя версия библиотеки "redux-form" (8.3.6).*/
     }
 };
 
-const getCaptchaURL = () => async (dispatch: any) => {
-    const response = await securityAPI.getCaptchaURL();
-    const captchaURL = response.data.url;
+const getCaptchaURL = (): ThunkType => async (dispatch) => {
+/*Это TC для получения URL изображения с капчей с сервера и установки его в "state". Здесь вместо использования ".then"
+мы используем "async/await". Промис будет ожидаться в "await". "async" делает TC асинхронным. Этот TC на выходе возвращает
+"thunk", который имеет тип "ThunkType", созданный нами выше. Мы могли здесь также указать тип "dispatch", "getState()"
+и дополнительных аргументов, но типизируя то, что возвращает TC, то есть "thunk", мы также типизировали, что в "thunk"
+будет передаваться дальше, то есть те самые "dispatch", "getState()" и дополнительные аргументы.*/
+    const response = await securityAPI.getCaptchaURL(); /*Делаем запрос на сервер для получения капчи. Здесь будет
+    ожидаться промис. Когда он зарезольвиться, он сохраниться в "data". Здесь "return" не нужен, так как асинхронная
+    функция автоматически вернет промис, то есть можно сразу писать логику по работе с ответом от сервера.*/
+    const captchaURL = response.data.url; /*Получив ответ от сервера, сохраняем из ответа сервера URL капчи.*/
 
-    dispatch(setCaptchaURL(captchaURL));
+    dispatch(setCaptchaURL(captchaURL)); /*Затем устанавливаем этот URL капчи в "state" при помощи AC "setCaptchaURL".*/
 };
 
-export const logout = () => async (dispatch: any) => {
-    const response = await authAPI.logout();
+export const logout = (): ThunkType => async (dispatch) => {
+/*Это TC для осуществления логаута. Здесь вместо использования ".then" мы используем "async/await". Промис будет
+ожидаться в "await". "async" делает TC асинхронным. Этот TC на выходе возвращает "thunk", который имеет тип "ThunkType",
+созданный нами выше. Мы могли здесь также указать тип "dispatch", "getState()" и дополнительных аргументов, но типизируя
+то, что возвращает TC, то есть "thunk", мы также типизировали, что в "thunk" будет передаваться дальше, то есть те самые
+ "dispatch", "getState()" и дополнительные аргументы.*/
+    const response = await authAPI.logout(); /*Делаем запрос на сервер для разлогинивания пользователя. Здесь будет
+    ожидаться промис. Когда он зарезольвиться, он сохраниться в "response". Здесь "return" не нужен, так как асинхронная
+    функция автоматически вернет промис, то есть можно сразу писать логику по работе с ответом от сервера.*/
 
-    if (response.data.resultCode === 0) {
-        dispatch(setAuthUserData(null, null, null, false));
+    if (response.data.resultCode === 0) { /*Если свойство "resultCode", которое пришло в ответе от сервера, содержит
+    код "0", то есть ошибки при разлогинивании не было, то*/
+        dispatch(setAuthUserData(null, null, null, false)); /*обнуляем данные пользователя
+        в "state" при помощи AC "setAuthUserData", четвертый параметр это "isAuth", чтобы сообщить, что пользователь
+        разлогинился.*/
     }
 };
 
-// export
-export default authReducer;
+
+export default authReducer; /*Экспортируем "authReducer" по default, экспорт необходим для импорта.*/

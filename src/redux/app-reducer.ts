@@ -1,51 +1,148 @@
-import {getAuthUserData} from './auth-reducer';
+/*
+Нам нужен этот "reducer", чтобы избежать моргания страницы (кроме страницы профиля) после "F5", так как после каждого
+обновления страницы отправляется запрос на логинизацию, и пока осуществляется этот запрос мы будем считаться
+незалогиненными, соотвественно будем видеть страницу логинизации, а когда запрос на логинизацию завершится мы увидим
+страницу профиля вместо нужной нам страницы. И чтобы этого не допустить мы не будем ничего показывать, пока не убедимся
+что мы залогинены.
+*/
 
-// constants for types of actions
-const INITIALIZATION_SUCCESSFUL = 'react-samurai-01/app-reducer/INITIALIZATION-SUCCESSFUL';
+import {getAuthUserData} from './auth-reducer'; /*Подключаем TC "getAuthUserData"  для запроса и установки данных
+залогиненного пользователя в "state" из "auth-reducer.ts".*/
 
-// type of state
+import {AppStateType} from './redux-store'; /*Импортируем типы.*/
+import {Dispatch} from 'redux'; /*Импортировали из библиотеки "redux", чтобы создать тип для "dispatch", который
+передается в "thunks" и TC.*/
+import {ThunkAction} from 'redux-thunk'; /*Импортировали из библиотеки "redux-thunk", чтобы создать тип для "thunks".*/
+
+
+/*
+Это константы для указания значения свойства "type" в объекте "action".
+Это сделано специально, что не использовать захардкоденные значения в "AC" и "reducers", а также для того,
+чтобы избежать случаев одиноковых значений из-за чего один и тот же объект "action" может сработать в нескольких
+"reducers".
+*/
+const INITIALIZATION_SUCCESSFUL = 'react-samurai-01/app-reducer/INITIALIZATION-SUCCESSFUL'; /*Объект "action" для
+инициализации приложения.*/
+
+/*Создаем тип "state". "state" обязательно должен содержать следующие поля указанного типа.*/
 type InitialStateType = {
-    initialized: boolean
+    initialized: boolean /*Информация о том инициализировано ли наше приложение должна быть булева типа.*/
 };
 
-// state
-let initialState: InitialStateType = {
-    initialized: false
+/*Создаем сам "state".*/
+let initialState: InitialStateType = { /*Указываем, что "initialState" имеет тип "InitialStateType", созданный нами
+выше.*/
+    initialized: false /*Свойство, которое показывает инициализировано ли приложение.*/
 };
 
-// reducer
-const appReducer = (state = initialState, action: any): InitialStateType => {
+/*
+Это "reducer" - чистая функция, которая принимает объект "action" и копию части "state".
+Потом "reducer" изменяет (или не изменяет, если объект "action" не подошел) определенную часть "state" и возвращает ее.
+После этого все возвращенные части "state" всех "reducers" собираются в новый "state".
+*/
+const appReducer = (state = initialState, action: ActionsType): InitialStateType => { /*Указываем, что тип
+"state" на выходе имеет тот же тип "InitialStateType", что и "state" на входе. На входе объекты "action" имеют тип
+"ActionsType", созданный нами ниже.*/
     switch (action.type) {
         case INITIALIZATION_SUCCESSFUL:
-            return {
-                ...state,
-                initialized: true
+            return { /*Указываем, что приложение успешно инициализировано.*/
+                ...state, /*Делаем поверхностную копию "state". На данный момент этого не требуется, так как далее
+                мы меняем примитив.*/
+                initialized: true /*Меняем свойство, показывающее инициализировано ли приложение.*/
             };
 
-        default:
+        default: /*Если объект "action" никуда не подошел, то по default возвращается тот же "state", чтобы не вызвать
+        перерисовку.*/
             return state;
     }
 };
 
-// types of action objects
-type InitializingAppActionType = {
+
+/*Создаем типы для объектов "action".*/
+type ActionsType = InitializingAppActionType; /*Здесь мы все созданные раннее типы для объектов "action" объеденили в
+    один тип.*/
+
+type InitializingAppActionType = { /*Создали тип для объекта "action" "INITIALIZATION_SUCCESSFUL" на основе самого
+"INITIALIZATION_SUCCESSFUL" при помощи "typeof".*/
     type: typeof INITIALIZATION_SUCCESSFUL
 };
 
-// action creators
-export const initializingApp = (): InitializingAppActionType => ({
-    type: INITIALIZATION_SUCCESSFUL
+
+/*
+Action Creators.
+AC создает объект, который передается в reducer.
+Этот объект как минимум должен иметь свойство "type", которое определяет, что необходимо выполнить в reducer.
+*/
+export const initializingApp = (): InitializingAppActionType => ({ /*AC для инициализации приложения.
+Объект "action" на выходе имеет тип "InitializingAppActionType".*/
+    type: INITIALIZATION_SUCCESSFUL /*Обязательно свойство "type" для AC.*/
 });
 
-// thunk creators
-export const initializeApp = () => (dispatch: any) => {
-    let promise = dispatch(getAuthUserData());
 
-    Promise.all([promise])
+/*Создаем типы для "Thunk Creators".*/
+type GetStateType = () => AppStateType; /*Создали тип для "getState()", который получает "thunks" и TC. "getState()"
+должен быть функцией, которая не получает ничего на входе и возвращает объект с типом "AppStateType", созданным нами и
+импортированным сюда. Мы это здесь не используем, так как типизация "thunks" перекрывает эту типизацию, поскольку
+типизируя то, что возвращает TC, то есть "thunk", мы также типизировали, что в "thunk" будет передаваться дальше,
+то есть те самые "dispatch", "getState()" и дополнительные аргументы.*/
+
+type DispatchType = Dispatch<ActionsType>; /*Создали тип для "dispatch", передается в "thunks" и TC. "dispatch" должен
+быть "Dispatch" из библиотеки "redux", работающий с объектами "action" тип "ActionsType", который мы создали выше.*/
+
+type ThunkType = ThunkAction<void, AppStateType, unknown, ActionsType> /*Создали тип для "thunks". "thunks"
+должны быть объектами "action" для "thunks" из библиотеки "redux-thunk", работающими с:
+1) здесь указан "void", так как в данном случае (TC "initializeApp") "thunks" ничего не возвращают;
+2) "state" с типом "AppStateType", созданным нами и импортированным сюда;
+3) какими-то неизвестными дополнительными аргументами;
+4) объектами "action" тип "ActionsType", который мы создали выше.
+Эти уточнения мы нашли в файле декларации "ThunkAction", "Ctrl+click" в "WebStorm".
+*/
+
+
+/*
+Thunk creators.
+"Thunk" это функция, которая может выполнять AJAX-запросы и "dispatch".
+Поскольку "reducers" нужны объекты "action" и "reducers" работают синхронно (AJAX-запросы несинхронные, поэтому будут
+замедлять этот процесс),
+а также "reducers" являются чистыми функциями, то мы не можем напрямую диспатчить "thunk".
+В таком случае, "thunk" должен сначала сам запуститься, внутри него задиспатчаться объекты "action" и
+в дальнейшем будут раскиданы по "reducers".
+В параметрах "thunk" всегда приходит функция "dispatch".
+"store" из "Redux" запускает "thunk" и закидывает в него функцию "dispatch" потому, что она у него есть.
+Но, например, для добавления сообщения нам нужен текст этого сообщения. Чтобы передать этот текст в "thunk" нам нужно
+использовать замыкание из нативного JS. Полезное замыкание нужно, когда нам необходимо передать функции какие-то
+дополнительные данные. Замыкание появляется там, где одна функция возвращает другую функцию, и эта 2-я функция имеет
+доступ к данным 1-й функции. Этой 1-й родительской функцией является "Thunk creator" (по аналогии с "Action creator").
+В TC передается текст сообщения, а сам "thunk" возьмет это сообщения из замыкания. В итоге мы диспатчм "TC",
+а не сам "thunk". Также для этого нам нужен некий промежуточный слой "thunk middleware" между "store.dispatch" и
+"reducers". Если в "store" придет объект "action", то "thunk middleware" передаст его в "reducers". Если же в "store"
+придет "thunk", то "thunk middleware" запустить этот "thunk", закинет в него функцию "dispatch" и на выходе будет
+объект "action", который затем будет передан в "reducers". Если в "thunk" будет несколько AC, то сначала отправится
+первый AC в "thunk middleware", потом второй AC и так далее до тех пор, пока не переберутся все AC. Это и есть
+замыкание. Для установки "thunk middleware" нам нужна библиотека "redux-thunk". Установка происходит в файле со "store"
+из "redux". В TC мы диспатчим не сам AC, а их вызовы.
+*/
+export const initializeApp = (): ThunkType => (dispatch) => {
+/*TC для инициализации приложения. Этот TC на выходе возвращает "thunk", который имеет тип "ThunkType", созданный нами
+выше. Мы могли здесь также указать тип "dispatch", "getState()" и дополнительных аргументов, но типизируя то, что
+возвращает TC, то есть "thunk", мы также типизировали, что в "thunk" будет передаваться дальше, то есть те самые
+"dispatch", "getState()" и дополнительные аргументы.*/
+    let promise = dispatch(getAuthUserData()); /*Здесь "dispatch" возвращает то, что вернет "getAuthUserData" (TC
+    отвечающий за запрос и установку данных залогиненного пользователя в "state"), и поместит это в массив "promise"
+    (потому, что вернется массив). В этом массиве будет разная информация, в том числе и разные "promise".*/
+
+    Promise.all([promise]) /*Здесь мы будем ждать выполнения всех "promise" в массиве "[promise]" (причем не
+    важно успешно они завершатся или нет). После этого сработает блок "then".*/
         .then(() => {
-            dispatch(initializingApp());
+            dispatch(initializingApp()); /*вызываем TC "initializingApp" для указания, что инициализации приложения
+            завершена.*/
         });
 };
+/*
+Этот TC работает примерно так:
+- сначала срабатывает TC "getAuthUserData".
+- ожидаем выполнения 1-го шага.
+- после завершения 1-го шага указываем, что приложение инициализировано.
+*/
 
-// export
-export default appReducer;
+export default appReducer; /*Экспортируем "appReducer" по default, экспорт необходим для импорта.*/

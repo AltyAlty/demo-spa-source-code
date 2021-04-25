@@ -1,20 +1,21 @@
-.sidebar {
-    display: inline-block;
-    padding: 5px;
-    text-align: center;
+.sidebar { /*Стили для элементов с классом "sidebar".*/
+    display: inline-block; /*Это встроенный "inline" элемент, а его внутренняя часть блочная "block".*/
+    padding: 5px; /*Задаем paddings.*/
+    text-align: center; /*Задаем выравнивание текста по центру.*/
 }
 
-.sidebar img {
-    width: 30px;
-    height: 30px;
-    border-radius: 30px;
+.sidebar img { /*Стили для элементов "img" внутри элементов с классом "sidebar".*/
+    width: 30px; /*Задаем width.*/
+    height: 30px; /*Задаем height.*/
+    border-radius: 30px; /*Задаем радиус скругления уголков рамки.*/
 }
 
-.sidebar .active{
-    color: gold;
+.sidebar .active{ /*Стили для элементов с классом "active" внутри элементов с классом "sidebar".*/
+    color: gold; /*Задаем цвет текста внутри элемента.*/
 }
 
-.sidebar a {
-    text-decoration: none;
-    color: firebrick;
+.sidebar a { /*Стили для элементов "a" внутри элементов с классом "sidebar".*/
+    text-decoration: none; /*Отключаем оформление текста внутри элемента, чтобы не было подчеркивания при
+    нажатии на ссылку.*/
+    color: firebrick; /*Задаем цвет текста внутри элемента.*/
 }

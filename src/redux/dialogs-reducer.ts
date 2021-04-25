@@ -1,86 +1,137 @@
-import avatarSource from '../assets/images/user.png';
+/*
+Это файл "reducer", отвечающего за страницу диалогов. Каждый "reducer" состоит из:
+- констант, содержащих значения для свойства "type" объекта "action"
+- "initialState" - своей части "state"
+- самой функции "reducer"
+- "Action Creators" или "AC"
+- "Thunk Creators" или "TC".
+*/
 
-// constants for types of actions
-const ADD_MESSAGE = 'react-samurai-01/dialogs-reducer/ADD-MESSAGE';
+import avatarSource from '../assets/images/user.png'; /*Импортируем из ассетов проекта аватар пользователя.*/
 
-// type of state
+
+/*
+Это константы для указания значения свойства "type" в объекте "action".
+Это сделано специально, что не использовать захардкоденные значения в "AC" и "reducers".
+Согласно модульному паттерну "Redux Ducks" чтобы избежать случаев одиноковых значений
+из-за чего один и тот же объект "action" может сработать в нескольких "reducers", в значениях констант для
+свойств "type" в объекте "action" "указываются имя-проекта/имя-файла/имя-объекта-action".
+*/
+const ADD_MESSAGE = 'react-samurai-01/dialogs-reducer/ADD-MESSAGE'; /*Объект "action" для добавления исходящего
+сообщения на странице диалогов.*/
+
+/*Создаем тип "state" из самого "state" при помощи "typeof".*/
 type InitialStateType = typeof initialState;
 
+/*Создаем тип для объектов с данными для диалога. Объект, содержащий информацию с данными для диалога должен обязательно
+содержать следующие поля с указанными типами.*/
 type DialogType = {
-    id: number
-    name: string
-    avatar: typeof avatarSource
+    id: number /*"ID" диалога должно быть числом.*/
+    name: string /*Имя, с кем ведется диалог, должно быть строкой.*/
+    avatar: typeof avatarSource /*Аватар того, с кем ведется диалог, получаем на основе самого изображения аватара при
+    помощи "typeof".*/
 };
 
+/*Создаем тип для объектов с данными для исходящих сообщений в диалогах. Объект, содержащий информацию с данными для
+исходящих сообщений в диалогах должен обязательно содержать следующие поля с указанными типами.*/
 type MessageType = {
-    id: number
-    message: string
-    avatar: typeof avatarSource
+    id: number /*"ID" исходящего сообщения должно быть числом.*/
+    message: string /*Текст исходящего сообщения должно быть строкой.*/
+    avatar: typeof avatarSource /*Аватар того, от кого отправлено исходящее сообщение, получаем на основе самого
+    изображения аватара при помощи "typeof".*/
 };
 
+/*Создаем тип для объектов с данными для входящих сообщений в диалогах. Объект, содержащий информацию с данными для
+входящих сообщений в диалогах должен обязательно содержать следующие поля с указанными типами.*/
 type IncomingMessageType = {
-    id: number
-    message: string
-    avatar: typeof avatarSource
+    id: number /*"ID" входящего сообщения должно быть числом.*/
+    message: string /*Текст входящего сообщения должно быть строкой.*/
+    avatar: typeof avatarSource /*Аватар того, от кого отправлено входящее сообщение, получаем на основе самого
+    изображения аватара при помощи "typeof".*/
 };
 
-// state
+/*Создаем сам "state".*/
 let initialState = {
-    dialogs: [
+    dialogs: [ /*Создаем массив объектов, которые хранят информацию о диалогах на странице диалогов.*/
         {id: 1, name: 'Abba', avatar: avatarSource},
         {id: 2, name: 'Bret', avatar: avatarSource},
         {id: 3, name: 'Carry', avatar: avatarSource},
         {id: 4, name: 'Daemon', avatar: avatarSource},
         {id: 5, name: 'Eric', avatar: avatarSource},
         {id: 6, name: 'Frye', avatar: avatarSource}
-    ] as Array<DialogType>,
+    ] as Array<DialogType>, /*Указываем, что этот массив объектов имеет тип массива элементов с типом "DialogType".*/
 
-    messagesData: [
+    messagesData: [ /*Создаем массив объектов, которые хранят информацию о исходящих сообщениях в диалогах на странице
+    диалогов.*/
         {id: 1, message: 'Hi', avatar: avatarSource},
         {id: 2, message: '..', avatar: ''},
         {id: 3, message: 'Fine', avatar: avatarSource},
         {id: 4, message: 'You?', avatar: avatarSource}
-    ] as Array<MessageType>,
+    ] as Array<MessageType>, /*Указываем, что этот массив объектов имеет тип массива элементов с типом "MessageType".*/
 
-    incomingMessagesData: [
+    incomingMessagesData: [ /*Создаем массив объектов, которые хранят информацию о входящих сообщениях в диалогах на
+    странице диалогов.*/
         {id: 1, message: '..', avatar: ''},
         {id: 2, message: 'How are you?', avatar: avatarSource},
         {id: 3, message: '..', avatar: ''},
         {id: 4, message: '..', avatar: ''},
         {id: 5, message: 'OK', avatar: avatarSource}
-    ] as Array<IncomingMessageType>
+    ] as Array<IncomingMessageType> /*Указываем, что этот массив объектов имеет тип массива элементов с
+    типом "IncomingMessageType".*/
 };
 
-// reducer
-const dialogsReducer = (state = initialState, action: any): InitialStateType => {
+/*
+Это "reducer" - чистая функция, которая принимает объект "action" и копию части "state".
+Потом "reducer" изменяет (или не изменяет, если объект "action" не подошел) определенную часть "state" и возвращает ее.
+После этого все возвращенные части "state" всех "reducers" собираются в новый "state".
+*/
+const dialogsReducer = (state = initialState, action: ActionsType): InitialStateType => { /*Указываем, что тип
+"state" на выходе имеет тот же тип "InitialStateType", что и "state" на входе. На входе объекты "action" имеют тип
+"ActionsType", созданный нами ниже.*/
     switch (action.type) {
         case ADD_MESSAGE:
-            let newMessage = {
-                id: 6,
-                message: action.newMessageText,
-                avatar: avatarSource
+            let newMessage = { /*Создаем новое исходящее сообщение в виде объекта.*/
+                id: 6, /*Указываем "ID" исходящего сообщения.*/
+                message: action.newMessageText, /*Указываем текст исходящего сообщения.*/
+                avatar: avatarSource /*Указываем аватар пользователя, которые будет отрисовываться рядом с исходящим
+                сообщением.*/
             };
-            return {
-                ...state,
-                messagesData: [...state.messagesData, newMessage]
+            return { /*Добавляем это новое исходящее сообщение в "state".*/
+                ...state, /*Делаем поверхностную копию "state".*/
+                messagesData: [...state.messagesData, newMessage] /*Делаем глубокую копию "state". Добавляем данные для
+                нового исходящего сообщения в диалогах в "state".*/
             };
 
-        default:
+        default: /*Если объект "action" никуда не подошел, то по default возвращается тот же "state", чтобы не вызвать
+        перерисовку.*/
             return state;
     }
 };
 
-// types of action objects
-type AddMessageActionCreatorActionType = {
+
+/*Создаем типы для объектов "action".*/
+type ActionsType = AddMessageActionCreatorActionType; /*Здесь мы все созданные раннее типы для объектов "action"
+объеденили в один тип.*/
+
+type AddMessageActionCreatorActionType = { /*Создали тип для объекта "action" "ADD_MESSAGE" на основе
+самого "ADD_MESSAGE" при помощи "typeof". А свойство "newMessageText" в этом объекте "action" должно быть строкой.*/
     type: typeof ADD_MESSAGE
     newMessageText: string
 };
 
-// action creators
-export const addMessageActionCreator = (newMessageText: string): AddMessageActionCreatorActionType => ({
-    type: ADD_MESSAGE,
-    newMessageText
+
+/*
+Action Creators.
+AC создает объект, который передается в reducer.
+Этот объект как минимум должен иметь свойство "type", которое определяет, что необходимо выполнить в reducer.
+*/
+export const addMessageActionCreator = (newMessageText: string): AddMessageActionCreatorActionType => ({ /*AC для
+добавления нового исходящего сообщения. Объект "action" на выходе имеет тип "AddMessageActionCreatorActionType". На
+входе получает "newMessageText", которое дожно быть строкой.*/
+    type: ADD_MESSAGE, /*Обязательно свойство "type" для AC.*/
+    newMessageText /*Это равносильно "newMessageText: newMessageText". Создаем свойство, которое содержит текст
+    исходящего сообщения.*/
 });
 
-// export
-export default dialogsReducer;
+
+export default dialogsReducer; /*Экспортируем "dialogsReducer" по default, экспорт необходим для импорта.*/

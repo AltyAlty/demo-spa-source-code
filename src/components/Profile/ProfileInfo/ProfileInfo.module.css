@@ -1,19 +1,19 @@
-.descriptionBlock {
-    padding: 10px;
+.descriptionBlock { /*Стили для элементов с классом "descriptionBlock".*/
+    padding: 10px; /*Задаем paddings.*/
 }
 
-.profileImage img {
-    width: 65%;
-    height: 65%;
-    margin-left: auto;
-    margin-right: auto;
-    display: block;
+.profileImage img { /*Стили для элементов "img" внутри элементов с классом "profileImage".*/
+    width: 65%; /*Задаем width. Будет занимать 65% от ширины родительского элемента.*/
+    height: 65%; /*Задаем height. Будет занимать 65% от высоты родительского элемента.*/
+    margin-left: auto; /*Задаем margins от левого края.*/
+    margin-right: auto; /*Задаем margins от правого края.*/
+    display: block; /*Это блочный элемент.*/
 }
 
-.userPhoto {
-    max-width: 200px;
+.userPhoto { /*Стили для элементов с классом "userPhoto".*/
+    max-width: 200px; /*Задаем максимальную ширину элемента.*/
 }
 
-.contact {
-    padding-left: 10px;
+.contact { /*Стили для элементов с классом "contact".*/
+    padding-left: 10px; /*Задаем paddings от левого края.*/
 }

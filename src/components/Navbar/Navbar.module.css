@@ -1,19 +1,20 @@
-.nav {
-    grid-area: n;
-    background-color: burlywood;
-    padding: 20px;
+.nav { /*Стили для элементов с классом "nav".*/
+    grid-area: n; /*Задаем псевдоним для "Navbar" в grid.*/
+    background-color: burlywood; /*Задаем цвет заднего фона.*/
+    padding: 20px; /*Задаем paddings.*/
 }
 
-.item a {
-    color: white;
-    text-decoration: none;
+.item a { /*Стили для элементов "a" внутри элементов с классом "item".*/
+    color: white; /*Задаем цвет текста внутри элемента.*/
+    text-decoration: none; /*Отключаем оформление текста внутри элемента, чтобы не было подчеркивания при
+    нажатии на ссылку.*/
 }
 
-a.activeLink {
-    color: gold
+.item a.activeLink { /*Стили для элементов "a" с классом "activeLink" внутри элементов с классом "item".*/
+    color: gold /*Задаем цвет текста внутри элемента.*/
 }
 
-.sidebarText {
-    padding-top: 5px;
-    color: darkblue;
+.sidebarText { /*Стили для элементов с классом "sidebarText".*/
+    padding-top: 5px; /*Задаем paddings от верхнего края.*/
+    color: darkblue; /*Задаем цвет текста внутри элемента.*/
 }

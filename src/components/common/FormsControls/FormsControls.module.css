@@ -1,14 +1,17 @@
-.formControl.error input,
-.formControl.error textarea {
-    border: 2px solid red;
+.formControl.error input, /*Стили для элементов "input" внутри элементов одновременно с классом "formControl" и
+с классом "error".*/
+.formControl.error textarea { /*И стили для элементов "textarea" внутри элементов одновременно с классом "formControl"
+и с классом "error".*/
+    border: 2px solid red; /*Задаем толщину, стиль и цвет границы.*/
 }
 
-.formControl.error span {
-    color: yellow;
+.formControl.error span { /*Стили для элементов "span" внутри элементов одновременно с классом "formControl"
+и с классом "error".*/
+    color: yellow; /*Задаем цвет текста внутри элемента.*/
 }
 
-.formSummaryError {
-    border: 2px solid red;
-    padding: 5px;
-    color: red;
+.formSummaryError { /*Стили для элементов с классом "formSummaryError".*/
+    border: 2px solid red; /*Задаем толщину, стиль и цвет границы.*/
+    padding: 5px; /*Задаем paddings.*/
+    color: red; /*Задаем цвет текста внутри элемента.*/
 }

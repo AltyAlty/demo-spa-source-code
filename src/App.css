@@ -1,13 +1,20 @@
-.app-wrapper {
-    display: grid;
-    width: 1200px;
-    margin: auto;
+.app-wrapper { /*Стили для элементов с классом "app-wrapper".*/
+    display: grid; /*Это grid-элементы.*/
+    width: 1200px; /*Задаем width в grid.*/
+    margin: auto; /*Задаем margins в grid.*/
+    /*
+    Grid состоит из 2-х столбцов и 2-х строк.
+    Верхняя строка занята "Header", а вторая строка занята "Navbar" и остальным контентом.
+    Псевдоним для "Header" это "h", псевдоним для "Navbar" это "n", Псевдоним для остального контента это "c".
+    Псевдоним для остального контента задается в этом файле, а для других частей в других файлах:
+    "Header.module.css" для "h" и "Navbar.module.css" для "n".
+    */
     grid-template-areas: "h h" "n c";
-    grid-template-columns: 2fr 10fr;
-    grid-template-rows: 60px 1fr;
+    grid-template-columns: 2fr 10fr; /*Первый столбец занимает 2/12 от ширины, а второй столбец 10/12 от ширины.*/
+    grid-template-rows: 60px 1fr; /*Первая строка занимает 60px, а вторая строка сколько ей будет необходимо.*/
 }
 
-.app-wrapper-content {
-    grid-area: c;
-    background-color: cornflowerblue;
+.app-wrapper-content { /*Стили для элементов с классом "app-app-wrapper-content".*/
+    grid-area: c; /*Задаем псевдоним для области остального контента в grid.*/
+    background-color: cornflowerblue; /*Задаем цвет заднего фона.*/
 }

@@ -1,18 +1,17 @@
-.header {
-    grid-area: h;
-    background-color: green;
+.header { /*Стили для элементов с классом "header".*/
+    grid-area: h; /*Задаем псевдоним для "Header" в grid.*/
+    background-color: green; /*Задаем цвет заднего фона.*/
 }
 
-.header img {
-    width: 60px;
-    height: 100%;
-    color: #e4e5e2;
+.header img { /*Стили для элементов "img" внутри элементов с классом "header".*/
+    width: 60px; /*Задаем width.*/
+    height: 100%; /*Задаем height.*/
 }
 
-.loginBlock {
-    float: right;
+.loginBlock { /*Стили для элементов с классом "loginBlock".*/
+    float: right; /*Сдвигаем элемент максимально вправо.*/
 }
 
-.loginBlock a {
-    color: white;
+.loginBlock a { /*Стили для элементов "a" внутри элементов с классом "loginBlock".*/
+    color: white; /*Задаем цвет текста внутри элемента.*/
 }

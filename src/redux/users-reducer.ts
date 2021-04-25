@@ -1,203 +1,425 @@
-import {usersAPI} from '../api/api';
-import {updateObjectInArray} from '../utils/helpers/object-helpers';
-import {PhotosType, ProfileType, UserType} from '../types/types';
-import {Dispatch} from 'redux';
-import {AppStateType} from './redux-store';
-import {ThunkAction} from "redux-thunk";
+/*
+Это файл "reducer", отвечающего за страницу постраничного вывода пользователей. Каждый "reducer" состоит из:
+- констант, содержащих значения для свойства "type" объекта "action"
+- "initialState" - своей части "state"
+- самой функции "reducer"
+- "Action Creators" или "AC"
+- "Thunk Creators" или "TC".
+*/
 
-// constants for types of actions
-const FOLLOW = 'react-samurai-01/users-reducer/FOLLOW';
-const UNFOLLOW = 'react-samurai-01/users-reducer/UNFOLLOW';
-const SET_USERS = 'react-samurai-01/users-reducer/SET-USERS';
-const SET_CURRENT_PAGE = 'react-samurai-01/users-reducer/SET-CURRENT-PAGE';
-const SET_TOTAL_USERS_COUNT = 'react-samurai-01/users-reducer/SET-TOTAL-USERS-COUNT';
-const TOGGLE_IS_FETCHING = 'react-samurai-01/users-reducer/TOGGLE-IS-FETCHING';
-const TOGGLE_IS_FOLLOWING_IN_PROGRESS = 'react-samurai-01/users-reducer/TOGGLE-IS-FOLLOWING-IN-PROGRESS';
+import {usersAPI} from '../api/api'; /*Импортируем блок запросов, связанных со страницей с постраничным выводом
+пользователей из "api.ts".*/
 
-// type of state
+import {updateObjectInArray} from '../utils/helpers/object-helpers'; /*Импортируем вспомогательную функцию, которая
+содержит общую логику для "FOLLOW" и "UNFOLLOW" в "reducer".*/
+
+import {UserType} from '../types/types'; /*Импортируем типы.*/
+import {AppStateType} from './redux-store'; /*Импортируем типы.*/
+import {Dispatch} from 'redux'; /*Импортировали из библиотеки "redux", чтобы создать тип для "dispatch", который
+передается в "thunks" и TC.*/
+import {ThunkAction} from 'redux-thunk'; /*Импортировали из библиотеки "redux-thunk", чтобы создать тип для "thunks".*/
+
+
+/*
+Это константы для указания значения свойства "type" в объекте "action".
+Это сделано специально, что не использовать захардкоденные значения в "AC" и "reducers".
+Согласно модульному паттерну "Redux Ducks" чтобы избежать случаев одиноковых значений
+из-за чего один и тот же объект "action" может сработать в нескольких "reducers", в значениях констант для
+свойств "type" в объекте "action" "указываются имя-проекта/имя-файла/имя-объекта-action".
+*/
+const FOLLOW = 'react-samurai-01/users-reducer/FOLLOW'; /*Объект "action" для фолловинга пользователей.*/
+const UNFOLLOW = 'react-samurai-01/users-reducer/UNFOLLOW'; /*Объект "action" для анфолловинга пользователей.*/
+const SET_USERS = 'react-samurai-01/users-reducer/SET-USERS'; /*Объект "action" для установки данных пользователей для
+постраничного вывода.*/
+const SET_CURRENT_PAGE = 'react-samurai-01/users-reducer/SET-CURRENT-PAGE'; /*Объект "action" для установки значения
+текущего номера выбранной страницы в постраничном выводе пользователей.*/
+const SET_TOTAL_USERS_COUNT = 'react-samurai-01/users-reducer/SET-TOTAL-USERS-COUNT'; /*Объект "action" для установки
+значения общего количества пользователей. Используется, чтобы рассчитать сколько страниц нужно будет при постраничном
+выводе пользователей.*/
+const TOGGLE_IS_FETCHING = 'react-samurai-01/users-reducer/TOGGLE-IS-FETCHING'; /*Объект "action" для указания находится
+ли в процессе запрос на сервер на получение данных по пользователям для постраничного вывода. Если в процессе, то будет
+отрисовываться компонент-заглушка "Preloader".*/
+const TOGGLE_IS_FOLLOWING_IN_PROGRESS = 'react-samurai-01/users-reducer/TOGGLE-IS-FOLLOWING-IN-PROGRESS'; /*Объект
+"action" для указания находится ли в процессе анфолловинга/фолловинга какой-либо пользователь. Если в процессе, то
+кнопка для анфолловинга/фолловинга будет отключена.*/
+
+/*Создаем тип "state" из самого "state" при помощи "typeof".*/
 type InitialStateType = typeof initialState;
 
-// state
+/*Создаем сам "state".*/
 let initialState = {
-    users: [] as Array<UserType>,
-    pageSize: 20,
-    totalUsersCount: 0,
-    currentPage: 1,
-    isFetching: false,
-    isFollowingInProgress: [] as Array<number>, // array of users IDs
-    portionSize: 20
+    users: [] as Array<UserType>, /*Свойство, которое будет хранить объекты с информацией о пользователях для
+    постраничного вывода, полученные с сервера. Указываем, что этот массив объектов имеет тип массива элементов с
+    типом "UserType". Тип "UserType" был создан нами и импортирован сюда.*/
+    pageSize: 30, /*Свойство, которое хранит значение, обозначающее сколько пользователей может максимально выводится
+    на одной странице в постраниченом выводе пользователей.*/
+    totalUsersCount: 0, /*Свойство, которое хранит значение, обозначающее общее количество пользователей.
+    Получается с сервера.*/
+    currentPage: 1, /*Свойство, которое хранит значение, обозначающее номер текущей выбранной страницы в постраничном
+    выводе пользователей.*/
+    isFetching: false, /*Специальное свойство, которое обозначает находится ли в процессе запрос на сервер на получение
+    данных по пользователям для постраничного вывода. Если в процессе, то будет отрисовываться
+    компонент-заглушка "Preloader".*/
+    WhoIsInFollowingProgress: [] as Array<number>, /*Специальное свойство, которое содержит массив, который будет
+    хранить "ID" пользователей, которые в какой-то определенный момент находятся в процессе анфолловинга/фолловинга,
+    то есть по ним отправляются AJAX-запросы для анфолловинга/фолловинга от пользователя. Указываем, что это свойство
+    имеет тип массива элементов с типом "number" (число).*/
+    portionSize: 20 /*Свойство, которое указывает какое максимальное количество номеров страниц в постраничном выводе
+    может отображаться в одной порции таких страниц. Это сделано, чтобы не выводились все номера страниц, коих огромное
+    количество, а имелась возможность выбирать страницы из порций (например, от 1 до 20, от 21 до 40) и переключаться
+    между этими порциями страниц.*/
 };
 
-// reducer
-const usersReducer = (state = initialState, action: ActionsType): InitialStateType => {
+/*
+Это "reducer" - чистая функция, которая принимает объект "action" и копию части "state".
+Потом "reducer" изменяет (или не изменяет, если объект "action" не подошел) определенную часть "state" и возвращает ее.
+После этого все возвращенные части "state" всех "reducers" собираются в новый "state".
+*/
+const usersReducer = (state = initialState, action: ActionsType): InitialStateType => { /*Указываем, что тип
+"state" на выходе имеет тот же тип "InitialStateType", что и "state" на входе. На входе объекты "action" имеют тип
+"ActionsType", созданный нами ниже.*/
     switch (action.type) {
         case FOLLOW:
-            return {
-                ...state,
+            return { /*Меняем флаг у пользователя, что мы его теперь фоллловим.*/
+                ...state, /*Делаем поверхностную копию "state".*/
                 users: updateObjectInArray(state.users, action.userID, 'id', {followed: true})
+                /*
+                Вызываем вспомогательную функцию "updateObjectInArray" и передаем ей:
+                "state.users" - информацию о пользователях для постраничного вывода из "state".
+                "action.userID" - "ID" пользователя для фолловинга из объекта "action".
+                "'id'" - имя свойство в объектах, по которому идет проверка сравнением в "updateObjectInArray".
+                "{followed: true}" - объект со свойствами и их значениями, который нужно подменить на место старого
+                в найденном объекте.
+                В результате получим новый измененным массив объектов с информацией о пользователях для постраничного
+                вывода, в котором у одного из пользователей свойство "followed" станет "true", что будет означать, что
+                мы его зафолловили.
+                */
             };
 
         case UNFOLLOW:
-            return {
-                ...state,
+            return { /*Меняем флаг у пользователя, что мы больше его не фоллловим.*/
+                ...state, /*Делаем поверхностную копию "state".*/
                 users: updateObjectInArray(state.users, action.userID, 'id', {followed: false})
+                /*
+                Вызываем вспомогательную функцию "updateObjectInArray" и передаем ей:
+                "state.users" - информацию о пользователях для постраничного вывода из "state".
+                "action.userID" - "ID" пользователя для анфолловинга из объекта "action".
+                "'id'" - имя свойство в объектах, по которому идет проверка сравнением в "updateObjectInArray".
+                "{followed: false}" - объект со свойствами и их значениями, который нужно подменить на место старого
+                в найденном объекте.
+                В результате получим новый измененным массив объектов с информацией о пользователях для постраничного
+                вывода, в котором у одного из пользователей свойство "followed" станет "false", что будет означать, что
+                мы его больше не фолловим.
+                */
             };
 
         case SET_USERS:
-            return {
-                ...state,
-                users: action.users
+            return { /*Добавляем данные о пользователях "users" в "state", полученные с сервера.*/
+                ...state, /*Делаем поверхностную копию "state".*/
+                users: action.users /*Добавляем данные о пользователях "users" в "state". Здесь мы не добавляем к
+                существующим данным новые. Мы затираем старые данные, добавляя новые. Здесь мы не делаем глубокую копию,
+                так как работаем с примитивом.*/
             };
 
         case SET_CURRENT_PAGE:
-            return {
-                ...state,
-                currentPage: action.currentPage
+            return { /*Устанавливаем значение текущей выбранной страницы в постраничном выводе пользователей в"state".*/
+                ...state, /*Делаем поверхностную копию "state".*/
+                currentPage: action.currentPage /*Устанавливаем значение текущей выбранной страницы в постраничном
+                выводе пользователей. Здесь мы не делаем глубокую копию, так как работаем с примитивом.*/
             };
 
         case SET_TOTAL_USERS_COUNT:
-            return {
-                ...state,
-                totalUsersCount: action.count
+            return { /*Устанавливаем общее количество пользователей в"state".*/
+                ...state, /*Делаем поверхностную копию "state".*/
+                totalUsersCount: action.count /*Устанавливаем общее количество пользователей. Здесь мы не делаем
+                глубокую копию, так как работаем с примитивом.*/
             };
 
         case TOGGLE_IS_FETCHING:
-            return {
-                ...state,
-                isFetching: action.isFetching
+            return { /*Указываем находится ли в процессе запрос на сервер на получение данных по пользователям для
+            постраничного вывода. Если в процессе, то будет отрисовываться компонент-заглушка "Preloader".*/
+                ...state, /*Делаем поверхностную копию "state".*/
+                isFetching: action.isFetching /*Указываем находится ли в процессе запрос на сервер на получение данных
+                по пользователям для постраничного вывода. Здесь мы не делаем глубокую копию, так как работаем
+                с примитивом.*/
             };
 
         case TOGGLE_IS_FOLLOWING_IN_PROGRESS:
-            return {
-                ...state,
-                isFollowingInProgress: action.isFollowingInProgress
-                    ? [...state.isFollowingInProgress, action.userID]
-                    : state.isFollowingInProgress.filter(id => id !== action.userID)
+            return { /*Оперируем массивом "WhoIsInFollowingProgress" для указания находятся ли или нет какие-либо
+            пользователи в процессе анфолловинга/фолловинга.*/
+                ...state, /*Делаем поверхностную копию "state".*/
+                WhoIsInFollowingProgress: action.isFollowingInProgress /*Если свойство "isFollowingInProgress" (нужен
+                только для того, чтобы попасть в первую или вторую строку)*/
+                    ? [...state.WhoIsInFollowingProgress, action.userID] /*является "TRUE", то делаем глубокую копию и
+                    помещаем "ID" пользователя, который находится в процессе анфолловинга/фолловинга
+                    в массив "WhoIsInFollowingProgress",*/
+                    : state.WhoIsInFollowingProgress.filter(id => id !== action.userID) /*иначе если является "FALSE",
+                    то делаем глубокую копию и удаляем "ID" этого пользователя из массива "WhoIsInFollowingProgress"
+                    при помощи метода "filter()", который создает новый массив (тем самым мы делаем копию), в который
+                    войдут только те элементы, которые не равны "ID" указанного пользователя.*/
             };
 
-        default:
+        default: /*Если объект "action" никуда не подошел, то по default возвращается тот же "state", чтобы не вызвать
+        перерисовку.*/
             return state;
     }
 };
 
-// types of action objects
+
+/*Создаем типы для объектов "action".*/
 type ActionsType = FollowSuccessActionType | UnfollowSuccessActionType | SetUsersActionType |
     SetCurrentPageActionType | SetTotalUsersCountActionType | ToggleIsFetchingActionType |
-    ToggleIsFollowingInProgressActionType;
+    ToggleIsFollowingInProgressActionType; /*Здесь мы все созданные раннее типы для объектов "action" объеденили в
+    один тип.*/
 
-type FollowSuccessActionType = {
+type FollowSuccessActionType = { /*Создали тип для объекта "action" "FOLLOW" на основе самого "FOLLOW" при
+помощи "typeof". А свойство "userID" в этом объекте "action" должно быть числом.*/
     type: typeof FOLLOW
     userID: number
 };
 
-type UnfollowSuccessActionType = {
+type UnfollowSuccessActionType = { /*Создали тип для объекта "action" "UNFOLLOW" на основе самого "UNFOLLOW" при
+помощи "typeof". А свойство "userID" в этом объекте "action" должно быть числом.*/
     type: typeof UNFOLLOW
     userID: number
 };
 
-type SetUsersActionType = {
+type SetUsersActionType = { /*Создали тип для объекта "action" "SET_USERS" на основе самого
+"SET_USERS" при помощи "typeof". А свойство "users" в этом объекте "action" должно быть типа массива объектов с
+типом "UserType", созданного нами и импортированного сюда.*/
     type: typeof SET_USERS
     users: Array<UserType>
 };
 
-type SetCurrentPageActionType = {
+type SetCurrentPageActionType = { /*Создали тип для объекта "action" "SET_CURRENT_PAGE" на основе самого
+"SET_CURRENT_PAGE" при помощи "typeof". А свойство "currentPage" в этом объекте "action" должно быть числом.*/
     type: typeof SET_CURRENT_PAGE
     currentPage: number
 };
 
-type SetTotalUsersCountActionType = {
+type SetTotalUsersCountActionType = { /*Создали тип для объекта "action" "SET_TOTAL_USERS_COUNT" на основе самого
+"SET_TOTAL_USERS_COUNT" при помощи "typeof". А свойство "count" в этом объекте "action" должно быть числом.*/
     type: typeof SET_TOTAL_USERS_COUNT
     count: number
 };
 
-type ToggleIsFetchingActionType = {
+type ToggleIsFetchingActionType = { /*Создали тип для объекта "action" "TOGGLE_IS_FETCHING" на основе самого
+"TOGGLE_IS_FETCHING" при помощи "typeof". А свойство "isFetching" в этом объекте "action" должно быть булева типа.*/
     type: typeof TOGGLE_IS_FETCHING
     isFetching: boolean
 };
 
-type ToggleIsFollowingInProgressActionType = {
+type ToggleIsFollowingInProgressActionType = { /*Создали тип для объекта "action" "TOGGLE_IS_FOLLOWING_IN_PROGRESS" на
+основе самого "TOGGLE_IS_FOLLOWING_IN_PROGRESS" при помощи "typeof". А свойство "isFollowingInProgress" в этом объекте
+"action" должно быть булева типа, а свойство "userID" должно быть числом.*/
     type: typeof TOGGLE_IS_FOLLOWING_IN_PROGRESS
     isFollowingInProgress: boolean
     userID: number
 };
 
-// action creators
-export const followSuccess = (userID: number): FollowSuccessActionType => ({
-    type: FOLLOW,
-    userID
+
+/*
+Action Creators.
+AC создает объект, который передается в reducer.
+Этот объект как минимум должен иметь свойство "type", которое определяет, что необходимо выполнить в reducer.
+*/
+const followSuccess = (userID: number): FollowSuccessActionType => ({ /*AC для указания того, что мы зафолловили
+пользователя. Объект "action" на выходе имеет тип "FollowSuccessActionType". На входе получает "userID", которое дожно
+быть числом.*/
+    type: FOLLOW, /*Обязательно свойство "type" для AC.*/
+    userID /*Это равносильно "userID: userID". "ID" пользователя, которого мы фолловим.*/
 });
 
-export const unfollowSuccess = (userID: number): UnfollowSuccessActionType => ({
-    type: UNFOLLOW,
-    userID
+const unfollowSuccess = (userID: number): UnfollowSuccessActionType => ({ /*AC для указания того, что мы анфолловили
+пользователя. Объект "action" на выходе имеет тип "UnfollowSuccessActionType". На входе получает "userID", которое дожно
+быть числом.*/
+    type: UNFOLLOW, /*Обязательно свойство "type" для AC.*/
+    userID /*Это равносильно "userID: userID". "ID" пользователя, которого мы анфолловим.*/
 });
 
-export const setUsers = (users: Array<UserType>): SetUsersActionType => ({
-    type: SET_USERS,
-    users
+const setUsers = (users: Array<UserType>): SetUsersActionType => ({ /*AC для установки данных пользователей "users"
+в "state", которые получены с сервера. Объект "action" на выходе имеет тип "SetUsersActionType". На входе получает
+"users", которое дожно быть массивом с объектами типа "UserType", созданного нами и импортированного сюда.*/
+    type: SET_USERS, /*Обязательно свойство "type" для AC.*/
+    users /*Это равносильно "users: users". Данные по пользователям для постраничного вывода пользователей,
+    полученные с сервера.*/
 });
 
-export const setCurrentPage = (currentPage: number): SetCurrentPageActionType => ({
-    type: SET_CURRENT_PAGE,
-    currentPage
+export const setCurrentPage = (currentPage: number): SetCurrentPageActionType => ({ /*AC для установки значения текущей
+выбранной страницы в постраничном выводе пользователей в "state". Объект "action" на выходе имеет
+тип "SetCurrentPageActionType". На входе получает "currentPage", которое дожно быть числом.*/
+    type: SET_CURRENT_PAGE, /*Обязательно свойство "type" для AC.*/
+    currentPage /*Это равносильно "currentPage: currentPage". Номер выбранной текущей страницы в постраничном выводе
+    пользователей.*/
 });
 
-export const setTotalUsersCount = (totalUsersCount: number): SetTotalUsersCountActionType => ({
-    type: SET_TOTAL_USERS_COUNT,
-    count: totalUsersCount
+const setTotalUsersCount = (totalUsersCount: number): SetTotalUsersCountActionType => ({ /*AC для установки
+общего количество пользователей в "state". Объект "action" на выходе имеет тип "SetTotalUsersCountActionType". На входе
+получает "totalUsersCount", которое дожно быть числом.*/
+    type: SET_TOTAL_USERS_COUNT, /*Обязательно свойство "type" для AC.*/
+    count: totalUsersCount /*Значение обозначающее общее количество пользователей.*/
 });
 
-export const toggleIsFetching = (isFetching: boolean): ToggleIsFetchingActionType => ({
-    type: TOGGLE_IS_FETCHING,
-    isFetching
+const toggleIsFetching = (isFetching: boolean): ToggleIsFetchingActionType => ({ /*AC для указания
+находится ли в процессе запрос на сервер на получение данных по пользователям для постраничного вывода. Если в процессе,
+то будет отрисовываться компонент-заглушка "Preloader". Объект "action" на выходе имеет
+тип "ToggleIsFetchingActionType". На входе получает "isFetching", которое дожно быть булева типа.*/
+    type: TOGGLE_IS_FETCHING, /*Обязательно свойство "type" для AC.*/
+    isFetching /*Это равносильно "isFetching: isFetching". Специальное свойство, которое обозначает находится ли
+    в процессе запрос на сервер на получение данных по пользователям для постраничного вывода.*/
 });
 
-export const toggleIsFollowingInProgress = (isFollowingInProgress: boolean, userID: number): ToggleIsFollowingInProgressActionType => ({
-    type: TOGGLE_IS_FOLLOWING_IN_PROGRESS,
-    isFollowingInProgress,
-    userID
+const toggleIsFollowingInProgress = (isFollowingInProgress: boolean, /*На входе получает "isFollowingInProgress",
+                                     которое дожно быть булева типа.*/
+                                     userID: number /*На входе получает "userID", которое дожно быть числом.*/
+): ToggleIsFollowingInProgressActionType => ({
+/*AC для указания находится ли в процессе анфолловинга/фолловинга какой-либо пользователь. Если в процессе, то кнопка
+для анфолловинга/фолловинга будет отключена. Объект "action" на выходе имеет
+тип "ToggleIsFollowingInProgressActionType".*/
+    type: TOGGLE_IS_FOLLOWING_IN_PROGRESS, /*Обязательно свойство "type" для AC.*/
+    isFollowingInProgress, /*Это равносильно "isFollowingInProgress: isFollowingInProgress". Специальное свойство,
+    которое указывает находится ли какой-либо пользователь в процессе анфолловинга/фолловинга.*/
+    userID /*Это равносильно "userID: userID". Специальное свойство, которое указывает "ID" пользователя по которому
+    идет проверка находится ли он в процессе анфолловинга/фолловинга.*/
 });
 
 
-// types for thunks
-type GetStateType = () => AppStateType;
-type DispatchType = Dispatch<ActionsType>;
-type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsType>
+/*Создаем типы для "Thunk Creators".*/
+type GetStateType = () => AppStateType; /*Создали тип для "getState()", который получает "thunks" и TC. "getState()"
+должен быть функцией, которая не получает ничего на входе и возвращает объект с типом "AppStateType", созданным нами и
+импортированным сюда. Мы это здесь не используем, так как типизация "thunks" перекрывает эту типизацию, поскольку
+типизируя то, что возвращает TC, то есть "thunk", мы также типизировали, что в "thunk" будет передаваться дальше,
+то есть те самые "dispatch", "getState()" и дополнительные аргументы.*/
 
-// thunk creators
-export const requestUsers = (currentPage: number, pageSize: number): ThunkType => async (dispatch) => {
+type DispatchType = Dispatch<ActionsType>; /*Создали тип для "dispatch", передается в "thunks" и TC. "dispatch" должен
+быть "Dispatch" из библиотеки "redux", работающий с объектами "action" тип "ActionsType", который мы создали выше.*/
 
-    dispatch(toggleIsFetching(true));
+type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsType> /*Создали тип для "thunks". "thunks"
+должны быть объектами "action" для "thunks" из библиотеки "redux-thunk", работающими с:
+1) промисами, которые ничего не возвращают (промисы потому, что у нас асинхронные "thunks" из-за использования
+"async/await", хотя обычно "thunks" ничего не возвращают);
+2) "state" с типом "AppStateType", созданным нами и импортированным сюда;
+3) какими-то неизвестными дополнительными аргументами;
+4) объектами "action" тип "ActionsType", который мы создали выше.
+Эти уточнения мы нашли в файле декларации "ThunkAction", "Ctrl+click" в "WebStorm".
+*/
 
-    const response = await usersAPI.getUsers(currentPage, pageSize);
 
-    dispatch(toggleIsFetching(false));
-    dispatch(setUsers(response.items));
-    dispatch(setTotalUsersCount(response.totalCount));
+/*
+Thunk creators.
+"Thunk" это функция, которая может выполнять AJAX-запросы и "dispatch".
+Поскольку "reducers" нужны объекты "action" и "reducers" работают синхронно (AJAX-запросы несинхронные, поэтому будут
+замедлять этот процесс),
+а также "reducers" являются чистыми функциями, то мы не можем напрямую диспатчить "thunk".
+В таком случае, "thunk" должен сначала сам запуститься, внутри него задиспатчаться объекты "action" и
+в дальнейшем будут раскиданы по "reducers".
+В параметрах "thunk" всегда приходит функция "dispatch".
+"store" из "Redux" запускает "thunk" и закидывает в него функцию "dispatch" потому, что она у него есть.
+Но, например, для добавления сообщения нам нужен текст этого сообщения. Чтобы передать этот текст в "thunk" нам нужно
+использовать замыкание из нативного JS. Полезное замыкание нужно, когда нам необходимо передать функции какие-то
+дополнительные данные. Замыкание появляется там, где одна функция возвращает другую функцию, и эта 2-я функция имеет
+доступ к данным 1-й функции. Этой 1-й родительской функцией является "Thunk creator" (по аналогии с "Action creator").
+В TC передается текст сообщения, а сам "thunk" возьмет это сообщения из замыкания. В итоге мы диспатчм "TC",
+а не сам "thunk". Также для этого нам нужен некий промежуточный слой "thunk middleware" между "store.dispatch" и
+"reducers". Если в "store" придет объект "action", то "thunk middleware" передаст его в "reducers". Если же в "store"
+придет "thunk", то "thunk middleware" запустить этот "thunk", закинет в него функцию "dispatch" и на выходе будет
+объект "action", который затем будет передан в "reducers". Если в "thunk" будет несколько AC, то сначала отправится
+первый AC в "thunk middleware", потом второй AC и так далее до тех пор, пока не переберутся все AC. Это и есть
+замыкание. Для установки "thunk middleware" нам нужна библиотека "redux-thunk". Установка происходит в файле со "store"
+из "redux". В TC мы диспатчим не сам AC, а их вызовы.
+*/
+export const requestUsers = (currentPage: number, /*На входе принимает номер текущей выбранной страницы в постраничном
+                             выводе пользователей, который должен быть числом.*/
+                             pageSize: number /*На входе принимает свойство, которое хранит значение, обозначающее
+                             сколько пользователей может максимально выводится на одной странице в постраниченом выводе
+                             пользователей, которое должно быть числом.*/
+): ThunkType => async (dispatch) => {
+/*Это TC для запроса и установки данных по пользователям в постраничном выводе. Здесь вместо использования ".then"
+мы используем "async/await". Промис будет ожидаться в "await". "async" делает TC асинхронным. Этот TC на выходе
+возвращает "thunk", который имеет тип "ThunkType", созданный нами выше. Мы могли здесь также указать тип "dispatch",
+"getState()" и дополнительных аргументов, но типизируя то, что возвращает TC, то есть "thunk", мы также типизировали,
+что в "thunk" будет передаваться дальше, то есть те самые "dispatch", "getState()" и дополнительные аргументы.*/
+
+    dispatch(toggleIsFetching(true)); /*Включаем компонент-заглушку "Preloader" перед началом запроса
+    на сервер.*/
+
+    const response = await usersAPI.getUsers(currentPage, pageSize); /*Делаем запрос на сервер для получения данных по
+    пользователям для постраничного вывода и ждем ответа от сервера. Здесь будет ожидаться промис. Когда он
+    зарезольвиться, он сохраниться в "response". Здесь "return" не нужен, так как асинхронная функция автоматически
+    вернет промис, то есть можно сразу писать логику по работе с ответом от сервера.*/
+
+    dispatch(toggleIsFetching(false)); /*После получения ответа от сервера, отключаем компонент-заглушку
+    "Preloader".*/
+    dispatch(setUsers(response.items)); /*При помощи AC "setUsers" устанавливаем данные по пользователям для
+    постраничного вывода в "state".*/
+    dispatch(setTotalUsersCount(response.totalCount)); /*Устанавливаем общее количество пользователей в "state".*/
 };
 
-const _followUnfollowFlow = async (dispatch: DispatchType,
-                                   id: number,
-                                   apiMethod: any,
-                                   actionCreator: (id: number) => FollowSuccessActionType | UnfollowSuccessActionType) => {
-    dispatch(toggleIsFollowingInProgress(true, id));
+/*Это вспомогательный TC для осуществления анфолловинга/фоллофинга пользователей "_followUnfollowFlow". Он вызывается
+внутри TC "unfollow" или "follow". Для своей работы он принимает следующие параметры: метод "dispatch" (обязателен для
+"thunk", "store" из "redux" его сам закинет), "ID" пользователя для анфолловинга/фолловинга, запрос на сервер для
+анфолловинга/фолловинга, AC для анфолловинга/фолловинга. Эти параметры он получает от TC "unfollow" или "follow".
+Здесь вместо использования ".then" мы используем "async/await". Промис будет ожидаться в "await". "async" делает TC
+асинхронным.*/
+const _followUnfollowFlow = async (dispatch: DispatchType, /*На входе принимает "dispatch", который должен быть типа
+                                   "DispatchType", который мы создали выше.*/
+                                   id: number, /*На входе принимает "ID" пользователя, которого мы фолловим/анфолловим,
+                                   которое должно быть числом.*/
+                                   apiMethod: any, /*На входе принимает метод API, которое типа "any", так как пока
+                                   мы не знаем какого типо он будет.*/
+                                   actionCreator: (id: number) => FollowSuccessActionType | UnfollowSuccessActionType
+                                   /*На входе принимает AC, который должен быть функцией, которая на входе принимает
+                                   числовой параметр, а на выходе возвращает объекты "action" либо с типом
+                                   "FollowSuccessActionType", либо с типом "UnfollowSuccessActionType", оба эти типа
+                                   были созданы нами выше.*/
+) => {
 
-    const response = await apiMethod(id);
+    dispatch(toggleIsFollowingInProgress(true, id)); /*Указываем, что анфолловим/фолловим какого-то
+    пользователя.*/
 
-    if (response.resultCode === 0) {
+    const response = await apiMethod(id); /*Делаем запрос на сервер на анфолловинг/фолловинг и ждем ответа от сервера.
+    Здесь будет ожидаться промис. Когда он зарезольвиться, он сохраниться в "response". Здесь "return" не нужен, так как
+    асинхронная функция автоматически вернет промис, то есть можно сразу писать логику по работе с ответом от сервера.*/
+
+    if (response.resultCode === 0) { /*Если в ответе от сервера в свойстве "resultCode" указано "0" (т.е. операция
+    прошла успешно), то диспатчим AC на анфолловинг/фолловинг, передав в этот AC "ID" пользователя, которого
+    анфолловим/фолловим.*/
         dispatch(actionCreator(id))
     }
 
-    dispatch(toggleIsFollowingInProgress(false, id));
+    dispatch(toggleIsFollowingInProgress(false, id)); /*Указываем, что больше не анфолловим/фолловим
+    какого-то пользователя.*/
 }
 
+/*Далее идут два основных TC для осуществления анфолловинга/фоллофинга пользователей "unfollow" и "follow". Все, что они
+делают это вызывают вспомогательный TC для осуществления анфолловинга/фоллофинга пользователей "_followUnfollowFlow" и
+передают ему ряд параметров для его работы: метод "dispatch" (обязателен для "thunk", "store" из "redux" его сам
+закинет), "ID" пользователя для анфолловинга/фолловинга, запрос на сервер для анфолловинга/фолловинга, AC для
+анфолловинга/фолловинга. Здесь вместо использования ".then" мы используем "async/await". Промис будет ожидаться
+в "await". "async" делает TC асинхронным.*/
 export const unfollow = (id: number): ThunkType => async (dispatch) => {
-    _followUnfollowFlow(dispatch, id, usersAPI.unfollow.bind(usersAPI), unfollowSuccess);
+/*Это TC для осуществления анфолловинга какого-либо пользователя. На входе принимает "ID" пользователя, которого мы
+анфолловим, которое должно быть числом. Этот TC на выходе возвращает "thunk", который имеет тип "ThunkType", созданный
+нами выше. Мы могли здесь также указать тип "dispatch", "getState()" и дополнительных аргументов, но типизируя то, что
+возвращает TC, то есть "thunk", мы также типизировали, что в "thunk" будет передаваться дальше, то есть те самые
+"dispatch", "getState()" и дополнительные аргументы.*/
+    _followUnfollowFlow(dispatch, id, usersAPI.unfollow.bind(usersAPI), unfollowSuccess); /*Так как мы берем метод у
+    объекта и вызываем этот метод оторванно от этого объекта, то мы не знаем использует ли этот метод какие-нибудь
+    свойства с "this" и т.д., поэтому мы используем здесь "bind()", чтобы не потерять контекст "this". Но вроде и без
+    этого должно работать.*/
 };
 
 export const follow = (id: number): ThunkType => async (dispatch) => {
-    _followUnfollowFlow(dispatch, id, usersAPI.follow.bind(usersAPI), followSuccess);
+/*Это TC для осуществления фолловинга какого-либо пользователя. На входе принимает "ID" пользователя, которого мы
+фолловим, которое должно быть числом. Этот TC на выходе возвращает "thunk", который имеет тип "ThunkType", созданный
+нами выше. Мы могли здесь также указать тип "dispatch", "getState()" и дополнительных аргументов, но типизируя то, что
+возвращает TC, то есть "thunk", мы также типизировали, что в "thunk" будет передаваться дальше, то есть те самые
+"dispatch", "getState()" и дополнительные аргументы.*/
+    _followUnfollowFlow(dispatch, id, usersAPI.follow.bind(usersAPI), followSuccess); /*Так как мы берем метод у
+    объекта и вызываем этот метод оторванно от этого объекта, то мы не знаем использует ли этот метод какие-нибудь
+    свойства с "this" и т.д., поэтому мы используем здесь "bind()", чтобы не потерять контекст "this". Но вроде и без
+    этого должно работать.*/
 };
 
-// export
-export default usersReducer;
+
+export default usersReducer; /*Экспортируем "usersReducer" по default, экспорт необходим для импорта.*/

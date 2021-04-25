@@ -1,35 +1,78 @@
-import {createSelector} from 'reselect';
-import {AppStateType} from './redux-store';
+/*
+Селектор - это функция, которая принимает "state", достает из него то, что ей нужно и возвращает это в BLL.
+Селекторы осуществляют определенную выборку данных из "state".
+Здесь содержаться селекторы для компонента "UsersContainer".
+*/
 
-// selectors for Users Component
-const getUsersPrimitive = (state: AppStateType) => {
+import {createSelector} from 'reselect';
+/*
+"mapStateToProps" в методе "connect" срабатывает каждый раз, когда что-то меняется в "state". Если мы будем использовать
+сложные селекторы с дополнительной внутренней логикой, то такие селекторы будут вызывать большую нагрузку и заставлять
+часто перерисовывать приложение. Также такие селекторы сложно дебажить. Чтобы избежать этих проблем мы используем
+библиотеку "reselect". Эта библиотека помогает нам не перезапускать наши сложные селекторы, если в этом нет
+необходимости. Наш селектор после запуска не только должен отправить что-то в "mapStateToProps", но и сохранить это
+что-то в отдельном месте, чтобы в следующий вызов этого селектора он не срабатывал снова, а просто возвращалось это
+сохраненное что-то, если оно не было изменено, то есть мы должны указывать от чего зависит наш селектор.
+Импортируем "createSelector" из библиотеки "reselect", чтобы создавать наши селекторы. "createSelector" - это
+специальная функция, которая возвращает селектор, а внутри она получает функцию, описывающую логику селектора. Для того,
+чтобы передать "state" в "createSelector" нам нужно создать примитивный селектор, получающий "state". Можно создавать
+сложные селекторы на основе нескольких примитивных селекторов или на основе нескольких примитивных и сложных селекторов.
+*/
+
+import {AppStateType} from './redux-store'; /*Импортируем типы.*/
+
+
+/*Селекторы для компонента "UsersContainer".*/
+const getUsersPrimitive = (state: AppStateType) => { /*Создали примитивный селектор, получающий "users" из "state".
+На входе этот селектор принимает "state" с типом "AppStateType", который мы создали и импортировали сюда.*/
     return state.usersPage.users
 };
 
-export const getUsers = createSelector (getUsersPrimitive, (users) => {
+export const getUsers = createSelector (getUsersPrimitive, (users) => { /*Создали сложный селектор
+на основе примитивного селектора "getUsersPrimitive". Можно указать несколько таких селекторов через запятую. Этот
+примитивный селектор будет создавать "(users)" - данные по пользователям. Внутри этого сложного логика просто передается
+весь "users" как есть. Если бы мы указали, например два селектора вместо одного, то и помимо "users" нужно было бы
+указать еще что-то. Этот селектор возвращает данные по пользователям для постраничного вывода.*/
     return users.filter(u => true)
 });
 
-export const getPageSize = (state: AppStateType) => {
+
+export const getPageSize = (state: AppStateType) => { /*Это созданный нами без библиотеки "reselect" селектор.
+Он возвращает максимальное количество пользователей, которое выводится в постраничном выводе пользователей. На входе
+этот селектор принимает "state" с типом "AppStateType", который мы создали и имопртировали сюда.*/
     return state.usersPage.pageSize
 };
 
-export const getPortionSize = (state: AppStateType) => {
+export const getPortionSize = (state: AppStateType) => { /*Это созданный нами без библиотеки "reselect" селектор.
+Он возвращает свойство, которое указывает какое количество номеров страниц в постраничном выводе может отображаться
+в одной порции таких страниц. На входе этот селектор принимает "state" с типом "AppStateType", который мы создали и
+импортировали сюда.*/
     return state.usersPage.portionSize
 };
 
-export const getTotalUsersCount = (state: AppStateType) => {
+export const getTotalUsersCount = (state: AppStateType) => { /*Это созданный нами без библиотеки "reselect" селектор.
+Он возвращает общее количество пользователей. На входе этот селектор принимает "state" с типом "AppStateType", который
+мы создали и импортировали сюда.*/
     return state.usersPage.totalUsersCount
 };
 
-export const getCurrentPage = (state: AppStateType) => {
+export const getCurrentPage = (state: AppStateType) => { /*Это созданный нами без библиотеки "reselect" селектор.
+Он возвращает текущий номер выбранной страницы в постраничном выводе пользователей. На входе этот селектор принимает
+"state" с типом "AppStateType", который мы создали и импортировали сюда.*/
     return state.usersPage.currentPage
 };
 
-export const getIsFetching = (state: AppStateType) => {
+export const getIsFetching = (state: AppStateType) => { /*Это созданный нами без библиотеки "reselect" селектор.
+Он возвращает специальное свойство, которое обозначает находится ли в процессе запрос на сервер на получение данных по
+пользователям для постраничного вывода. На входе этот селектор принимает "state" с типом "AppStateType", который мы
+создали и имопртировали сюда.*/
     return state.usersPage.isFetching
 };
 
-export const isFollowingInProgress = (state: AppStateType) => {
-    return state.usersPage.isFollowingInProgress
+export const getWhoIsInFollowingProgress = (state: AppStateType) => { /*Это созданный нами без библиотеки "reselect"
+селектор. Он возвращает специальное свойство, которое содержит массив, который будет хранить "ID" пользователей, которые
+в какой-то определенный момент находятся в процессе анфолловинга/фолловинга, то есть по ним отправляются AJAX-запросы
+для анфолловинга/фолловинга от пользователя. На входе этот селектор принимает "state" с типом "AppStateType", который
+мы создали и импортировали сюда.*/
+    return state.usersPage.WhoIsInFollowingProgress
 };
