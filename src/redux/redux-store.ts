@@ -6,7 +6,7 @@
 которые диспатчатся в "state".
 */
 
-import {applyMiddleware, combineReducers, compose, createStore} from 'redux';
+import {Action, applyMiddleware, combineReducers, compose, createStore, Dispatch} from 'redux';
 /*
 Библиотека "redux" помогает организовать FLUX-круговорот и "state management".
 В "redux" есть свои аналоги "getState", "subscribe", "callSubscriber", "dispatch".
@@ -22,12 +22,16 @@ import {applyMiddleware, combineReducers, compose, createStore} from 'redux';
 несколько обверток вокруг компонента и ХОКи.
 Обвертки и ХОКи указываются снизу вверх. Функция "compose" вызывается дважды и работает схожим образом, как и метод
 "connect" из библиотеки "react-redux".
+Импортировали "Dispatch" из библиотеки "redux", чтобы создать тип для "dispatch", который передается в "thunks" и TC.
+Импортировали "Action" из библиотеки "redux", чтобы создать тип для объектов "action", который передается в "thunks" и
+TC.
 */
-import thunkMiddleWare from 'redux-thunk';
+import thunkMiddleWare, {ThunkAction} from 'redux-thunk';
 /*
 Для установки "thunk middleware" нам нужна библиотека "redux-thunk".
 "thunk middleware" это промежуточный слой между "store.dispatch" и "reducers" для работы с "thunks".
 Для добавления в наш проект этого слоя мы импортируем "thunkMiddleWare".
+Импортировали "ThunkAction" из библиотеки "redux-thunk", чтобы создать тип для "thunks".
 */
 import {reducer as formReducer} from 'redux-form';
 /*
@@ -60,10 +64,12 @@ import appReducer from './app-reducer'; /*Импортируем "reducer", от
 функции "(globalState: AppStateType) => AppStateType", то есть получает на входе "state" типа "AppStateType" (имя
 выдумано нами) и на выходе возвращает "state" того же типа. То есть мы получили тип для нашего "rootReducer".*/
 type RootReducerType = typeof rootReducer;
+
 /*Сохраняем тип нашего "state" в переменную "AppStateType", чтобы можно было указывать тип "state" в компонентах, при
 помощи "ReturnType" (скорее всего получает тип того, что возвращается, а "reducer" возвращает "state") из типа
 "rootReducer".*/
 export type AppStateType = ReturnType<RootReducerType>;
+
 
 type PropertiesTypes<T> = T extends {[key: string]: infer U} ? U : never; /*В данном случае наш тип "PropertiesTypes"
 является "generic", который принимает подтип "T", подразумевается, что будет уточняться тип объекта в этом "T" при
@@ -82,6 +88,36 @@ export type InferActionsTypes<T extends {[key: string]: (...args: any[]) => any}
 передаваемого "T", указав, что это обязательно должен быть объект, у которого в качестве значений свойств обязательно
 должны быть функции, принимающие что-нибудь и возвращающие что-нибудь, коими являются AC. Мы экспортируем этот тип,
 чтобы компактно определять типы объектов "action" в "reducers".*/
+
+
+/*Создаем типы для всех "Thunk Creators".*/
+export type BaseGetStateType = () => AppStateType; /*Создали тип для "getState()", который получают "thunks" и TC.
+"getState()" должен быть функцией, которая ничего не получает на входе и возвращает объект с типом "AppStateType",
+который был создан нами. Мы это пока не используем в проекте, так как типизация "thunks" при помощи типа
+"BaseThunkType", который создан ниже, перекрывает эту типизацию, поскольку типизируя то, что возвращает TC, то есть
+"thunk", мы также типизировали, что в "thunk" будет передаваться дальше, то есть те самые "dispatch", "getState()" и
+дополнительные аргументы.*/
+
+export type BaseDispatchType<ActionsType extends Action> = Dispatch<ActionsType>; /*Создали тип для "dispatch", который
+передается в "thunks" и TC. "dispatch" должен быть "Dispatch" из библиотеки "redux", работающий с объектами "action"
+типа "ActionsType", который мы должны указывать первым параметром и который в свою очередь должен совпадать с "Action"
+из библиотеки "redux".*/
+
+export type BaseThunkType<ActionsType extends Action, R = Promise<void>> = ThunkAction<R, AppStateType, unknown, ActionsType>;
+/*Создали тип для "thunks". "thunks" должны быть объектами "action" для "thunks" с типом "ThunkAction" из библиотеки
+"redux-thunk", работающими с:
+1. промисами, которые ничего не возвращают (промисы потому, что у нас асинхронные "thunks" из-за использования
+"async/await", хотя обычно "thunks" ничего не возвращают), указываем вторым параметром "R", так как "thunks" обычно
+ничего не возвращают;
+2. "state" с типом "AppStateType", который был создан нами;
+3. какими-то неизвестными дополнительными аргументами;
+4. объектами "action" типа "ActionsType", который мы должны указывать первым параметром "ActionsType" и который должен
+совпадать с "Action" из библиотеки "redux".
+Эти уточнения мы нашли в файле декларации "ThunkAction", "Ctrl+click" в "WebStorm".
+В уроке (1:19) также было указано, что по умолчанию первый параметр "ActionsType" может быть "Action" из библиотеки
+"redux" ("= Action"), но я пока этого не стал указывать.
+*/
+
 
 /*Это список наших "reducers" в нашем "store".*/
 let rootReducer = combineReducers({ /*При помощи метода "combineReducers" объеденяем все наши "reducers"

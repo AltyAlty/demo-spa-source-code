@@ -49,8 +49,8 @@ import Dialogs from './Dialogs'; /*Подключаем компонент "Dial
 import {withAuthRedirect} from '../../hoc/WithAuthRedirect'; /*Подключаем созданый нами HOC "withAuthRedirect" для
 добавления редиректа.*/
 
-import {addMessageActionCreator} from '../../redux/dialogs-reducer'; /*Подключаем AC "addMessageActionCreator"
-из "dialogs-reducer".*/
+import {dialogsAC} from '../../redux/dialogs-reducer'; /*Подключаем объект "dialogsAC", что использовать оттуда AC
+"addMessageActionCreator" из "dialogs-reducer".*/
 
 
 /*
@@ -95,7 +95,7 @@ const mapDispatchToProps = (dispatch) => { /*Здесь указываются �
 6) Этот объект "action" диспатчится в "dialogsReducer" в "dialogs-reducer.js".*/
     return {
         addMessage: (newMessageText) => {
-            dispatch(addMessageActionCreator(newMessageText));
+            dispatch(dialogsAC.addMessageActionCreator(newMessageText));
         }
     }
 };

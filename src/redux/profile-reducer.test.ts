@@ -16,26 +16,38 @@ import React from 'react';
 "WebPack" уже встроен в "ReactJS".
 */
 
-import profileReducer, {addPostActionCreator, deletePostActionCreator} from './profile-reducer';
-/*Импортировали из "profile-reducer" два AC "addPostActionCreator" и "deletePostActionCreator", которые добавляют пост и
-удаляют соотвественно. "deletePostActionCreator" создали специально для целей тестирования, данный функционал в нашем
-приложении пока еще не реализован. Также импортировали весь "profile-reducer.ts".*/
+import profileReducer, {profileAC} from './profile-reducer';/*Импортировали из "profile-reducer" объект "profileAC"
+откуда будем брать два AC "addPostActionCreator" и "deletePostActionCreator", которые добавляют пост и удаляют
+соотвественно. "deletePostActionCreator" создали специально для целей тестирования, данный функционал в нашем
+приложении пока еще не реализован. Также импортировали весь "reducer" из "profile-reducer.ts".*/
+
+import {PostType, ProfileType} from '../types/types'; /*Импортируем типы*/
+
+import avatarSource from '../assets/images/user.png'; /*Импортируем из ассетов проекта аватар пользователя.*/
 
 
 /*Создали общие входные данные для тестов. Эти данные представляют из себя часть "state", которая содержит массив с
 информацией о двух постах со страницы профиля.*/
 let state = {
-    postsData: [
-        {id: 1, message: 'Hi, how are you?', likesCount: 2},
-        {id: 2, message: 'It\'s my first post', likesCount: 3}
-    ]
+    postsData: [ /*Создаем массив объектов, которые хранят информацию о постах на странице профиля.*/
+        {id: 1, message: 'Hi, how are you?', likesCount: 2, avatar: avatarSource},
+        {id: 2, message: 'It\'s my first post', likesCount: 3, avatar: avatarSource}
+    ] as Array<PostType>, /*Указываем, что этот массив объектов имеет тип массива элементов с типом "PostType". Тип
+    "PostType" был создан нами и импортирован сюда.*/
+
+    profile: null as ProfileType | null, /*Создаем свойство, которое будет хранить информацию о профиле пользователя,
+    полученную с сервера. Имеет тип "ProfileType". Тип "ProfileType" был создан нами и импортирован сюда.*/
+
+    status: null as string | null /*Создаем свойство, которое будет хранить информацию о статусе пользователя,
+    полученную с сервера. Указываем, что изначально это свойство может иметь тип "null", то есть быть пустым, или
+    быть строкой. Можно вместо этого просто было указать ''.*/
 };
 
 /*Тест №1. После добавления нового поста, количество постов должно быть увеличено на 1.*/
 test('after adding a post, the number of the posts should be incremented', () => { /*"test" позволит
 определить IDE, что это тест.*/
     /*Указываем входные данные конкретно для этого теста.*/
-    let action = addPostActionCreator('some post text'); /*Получаем объект "action" при помощи
+    let action = profileAC.addPostActionCreator('some post text'); /*Получаем объект "action" при помощи
     AC "addPostActionCreator", передав ему текст сообщения для добавления нового поста.*/
 
     /*Шаги теста.*/
@@ -52,7 +64,7 @@ test('after adding a post, the number of the posts should be incremented', () =>
 /*Тест №2. Добавленный пост должен содержать корректный текст.*/
 test('an added post should have correct text', () => { /*"test" позволит определить IDE, что это тест.*/
     /*Указываем входные данные конкретно для этого теста.*/
-    let action = addPostActionCreator('some post text'); /*Получаем объект "action" при помощи
+    let action = profileAC.addPostActionCreator('some post text'); /*Получаем объект "action" при помощи
     AC "addPostActionCreator", передав ему текст сообщения для добавления нового поста.*/
 
     /*Шаги теста.*/
@@ -70,8 +82,8 @@ test('an added post should have correct text', () => { /*"test" позволит
 test('after deleting a post, the number of the posts should be decremented', () => { /*"test" позволит
 определить IDE, что это тест.*/
     /*Указываем входные данные конкретно для этого теста.*/
-    let action = deletePostActionCreator(1); /*Получаем объект "action" при помощи AC "deletePostActionCreator",
-    передав ему "1" как "ID" поста для удаления.*/
+    let action = profileAC.deletePostActionCreator(1); /*Получаем объект "action" при помощи AC
+    "deletePostActionCreator", передав ему "1" как "ID" поста для удаления.*/
 
     /*Шаги теста.*/
     let newState = profileReducer(state, action); /*Получаем новый "state" при помощи "profileReducer", передав в него
@@ -87,8 +99,8 @@ test('after deleting a post, the number of the posts should be decremented', () 
 test('after trying to delete a post with an incorrect ID, the number of the posts should not be decremented', () => {
 /*"test" позволит определить IDE, что это тест.*/
     /*Указываем входные данные конкретно для этого теста.*/
-    let action = deletePostActionCreator(3); /*Получаем объект "action" при помощи AC "deletePostActionCreator",
-    передав ему "3" как некорректный "ID" поста для удаления.*/
+    let action = profileAC.deletePostActionCreator(3); /*Получаем объект "action" при помощи AC
+    "deletePostActionCreator", передав ему "3" как некорректный "ID" поста для удаления.*/
 
     /*Шаги теста.*/
     let newState = profileReducer(state, action); /*Получаем новый "state" при помощи "profileReducer", передав в него

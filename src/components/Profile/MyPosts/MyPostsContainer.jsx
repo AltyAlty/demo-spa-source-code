@@ -38,8 +38,8 @@ BLL и DAL.
 
 import MyPosts from './MyPosts'; /*Подключаем компонент "MyPosts".*/
 
-import {addPostActionCreator} from '../../../redux/profile-reducer'; /*Подключаем АC "addPostActionCreator"
-из "profile-reducer".*/
+import {profileAC} from '../../../redux/profile-reducer'; /*Подключаем объект "profileAC", что использовать оттуда АC
+"addPostActionCreator" из "profile-reducer".*/
 
 
 /*
@@ -84,7 +84,7 @@ const mapDispatchToProps = (dispatch) => { /*Здесь указываются �
 6) Этот объект "action" диспатчится в "dialogsReducer" в "profile-reducer.js".*/
     return {
         addPost: (newPostText) => {
-            dispatch(addPostActionCreator(newPostText));
+            dispatch(profileAC.addPostActionCreator(newPostText));
         }
     }
 };

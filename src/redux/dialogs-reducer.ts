@@ -7,18 +7,10 @@
 - "Thunk Creators" или "TC".
 */
 
+import {InferActionsTypes} from './redux-store'; /*Импортируем типы.*/
+
 import avatarSource from '../assets/images/user.png'; /*Импортируем из ассетов проекта аватар пользователя.*/
 
-
-/*
-Это константы для указания значения свойства "type" в объекте "action".
-Это сделано специально, что не использовать захардкоденные значения в "AC" и "reducers".
-Согласно модульному паттерну "Redux Ducks" чтобы избежать случаев одиноковых значений
-из-за чего один и тот же объект "action" может сработать в нескольких "reducers", в значениях констант для
-свойств "type" в объекте "action" "указываются имя-проекта/имя-файла/имя-объекта-action".
-*/
-const ADD_MESSAGE = 'react-samurai-01/dialogs-reducer/ADD-MESSAGE'; /*Объект "action" для добавления исходящего
-сообщения на странице диалогов.*/
 
 /*Создаем тип "state" из самого "state" при помощи "typeof".*/
 type InitialStateType = typeof initialState;
@@ -80,6 +72,7 @@ let initialState = {
     типом "IncomingMessageType".*/
 };
 
+
 /*
 Это "reducer" - чистая функция, которая принимает объект "action" и копию части "state".
 Потом "reducer" изменяет (или не изменяет, если объект "action" не подошел) определенную часть "state" и возвращает ее.
@@ -89,7 +82,7 @@ const dialogsReducer = (state = initialState, action: ActionsType): InitialState
 "state" на выходе имеет тот же тип "InitialStateType", что и "state" на входе. На входе объекты "action" имеют тип
 "ActionsType", созданный нами ниже.*/
     switch (action.type) {
-        case ADD_MESSAGE:
+        case 'react-samurai-01/dialogs-reducer/ADD-MESSAGE':
             let newMessage = { /*Создаем новое исходящее сообщение в виде объекта.*/
                 id: 6, /*Указываем "ID" исходящего сообщения.*/
                 message: action.newMessageText, /*Указываем текст исходящего сообщения.*/
@@ -110,14 +103,9 @@ const dialogsReducer = (state = initialState, action: ActionsType): InitialState
 
 
 /*Создаем типы для объектов "action".*/
-type ActionsType = AddMessageActionCreatorActionType; /*Здесь мы все созданные раннее типы для объектов "action"
-объеденили в один тип.*/
-
-type AddMessageActionCreatorActionType = { /*Создали тип для объекта "action" "ADD_MESSAGE" на основе
-самого "ADD_MESSAGE" при помощи "typeof". А свойство "newMessageText" в этом объекте "action" должно быть строкой.*/
-    type: typeof ADD_MESSAGE
-    newMessageText: string
-};
+type ActionsType = InferActionsTypes<typeof dialogsAC>; /*Здесь мы все созданные раннее типы для объектов "action"
+объеденили в один тип. Мы его получили следующим образом: используем экспортированный сюда тип "InferActionsTypes" для
+определения типов всех объектов "action" у упакованных в единый объект "dialogsAC" AC.*/
 
 
 /*
@@ -125,13 +113,21 @@ Action Creators.
 AC создает объект, который передается в reducer.
 Этот объект как минимум должен иметь свойство "type", которое определяет, что необходимо выполнить в reducer.
 */
-export const addMessageActionCreator = (newMessageText: string): AddMessageActionCreatorActionType => ({ /*AC для
-добавления нового исходящего сообщения. Объект "action" на выходе имеет тип "AddMessageActionCreatorActionType". На
-входе получает "newMessageText", которое дожно быть строкой.*/
-    type: ADD_MESSAGE, /*Обязательно свойство "type" для AC.*/
-    newMessageText /*Это равносильно "newMessageText: newMessageText". Создаем свойство, которое содержит текст
-    исходящего сообщения.*/
-});
+export const dialogsAC = { /*Создали специальный объект, содержащий все наши AC. Также удалили все типы, созданные
+раннее на основе каждого AC. Также вверху удалили все константы со значениями для "type" и указывываем их сразу в AC,
+так как "TypeScript" не даст нам допустить ошибку при указании этих "types" в "reducer". Согласно модульному паттерну
+"Redux Ducks", чтобы избежать случаев одиноковых значений свойств "type" из-за чего один и тот же объект "action" может
+сработать в нескольких "reducers", в значениях свойств "type" в объекте "action" указываются
+"имя-проекта/имя-файла/имя-объекта-action". Также в конце везде добавили "as const", чтобы "reducer" адекватно
+воспринимал объекты "action". Все AC мы поместили в единый объект с целью избавиться от большого количества отдельных
+типов для каждого AC в обмен на один общий для них тип, который мы создали выше.*/
+    addMessageActionCreator: (newMessageText: string) => ({ /*AC для добавления нового исходящего сообщения. На входе
+    получает "newMessageText", которое дожно быть строкой.*/
+        type: 'react-samurai-01/dialogs-reducer/ADD-MESSAGE', /*Обязательно свойство "type" для AC.*/
+        newMessageText /*Это равносильно "newMessageText: newMessageText". Создаем свойство, которое содержит текст
+        исходящего сообщения.*/
+    } as const)
+};
 
 
 export default dialogsReducer; /*Экспортируем "dialogsReducer" по default, экспорт необходим для импорта.*/
