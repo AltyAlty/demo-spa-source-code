@@ -22,6 +22,16 @@ import styles from './Navbar.module.css'; /*Подключаем стили из
 
 import SideBar from './Sidebar/Sidebar'; /*Подключаем компонент "Sidebar".*/
 
+import {InitialSidebarStateType} from '../../redux/sidebar-reducer'; /*Подключаем типы.*/
+
+
+/*Создаем тип для "props". "Props" в этом компоненте должны обязательно содержать следующие поля с указанными типами.
+Все это нужно для указания типа "props" в функциональном компоненте.*/
+type PropsType = {
+    sidebar: InitialSidebarStateType /*Поскольку передаем в этот компонент весь "state" из "sidebar-reducer.ts",
+    то указываем тип "InitialSidebarStateType" - это тип всего этого "state".*/
+};
+
 
 /*
 "Navbar" это функциональный компонент, который создан в виде стрелочной функции.
@@ -43,7 +53,10 @@ JSX совмещает в себе JS и HTML.
 "Navbar" является компонентом, который отрисовывает меню навигации нашего сайта.
 Этот компонент подключается в компоненте "NavbarContainer".
 */
-const Navbar = (props) => {
+const Navbar: React.FC<PropsType> = ({sidebar}) => { /*При помощии деструктуризации "props" указываем
+какие именно "props" мы получаем, чтобы не писать далее "props.sidebar". Такое мы делаем только в функциональных
+компонентах. Указали при помощи "React.FC<>", что "props" в этом функциональном компоненте имеют тип "PropsType".*/
+
     /*
     В JSX в массив можно вкладывать компоненты.
     В React, если мы передаем какой-либо массив, то JSX отобразит каждый элемент этого массива в виде строки.
@@ -63,7 +76,7 @@ const Navbar = (props) => {
     Массив "sidebarElements" содержит список друзей в онлайне.
     При использовании метода "map" нужно указывать атрибут "key" для избежания ошибок.
     */
-    let sidebarElements = props.sidebar.friendsData.map(f => <SideBar name={f.name}
+    let sidebarElements = sidebar.friendsData.map(f => <SideBar name={f.name}
                                                                       id={f.id}
                                                                       avatar={f.avatar}
                                                                       key={f.id}/>);
@@ -119,4 +132,6 @@ const Navbar = (props) => {
     );
 };
 
-export default Navbar; /*Экспортируем компонент "Navbar" по default, экспорт необходим для импорта.*/
+
+export default Navbar; /*Экспортируем компонент "Navbar" по default и будем его использовать в нашем проекте под именем
+"Navbar", экспорт необходим для импорта.*/

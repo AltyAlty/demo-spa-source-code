@@ -57,7 +57,8 @@ const usersReducer = (state = initialState, action: ActionsType): InitialStateTy
         case 'react-samurai-01/users-reducer/FOLLOW':
             return { /*Меняем флаг у пользователя, что мы его теперь фоллловим.*/
                 ...state, /*Делаем поверхностную копию "state".*/
-                users: updateObjectInArray(state.users, action.userID, 'id', {followed: true})
+                users: updateObjectInArray<UserType, keyof UserType, Partial<UserType>>
+                (state.users, action.userID, 'id', {followed: true})
                 /*
                 Вызываем вспомогательную функцию "updateObjectInArray" и передаем ей:
                 "state.users" - информацию о пользователях для постраничного вывода из "state".
@@ -74,7 +75,8 @@ const usersReducer = (state = initialState, action: ActionsType): InitialStateTy
         case 'react-samurai-01/users-reducer/UNFOLLOW':
             return { /*Меняем флаг у пользователя, что мы больше его не фоллловим.*/
                 ...state, /*Делаем поверхностную копию "state".*/
-                users: updateObjectInArray(state.users, action.userID, 'id', {followed: false})
+                users: updateObjectInArray<UserType, keyof UserType, Partial<UserType>>
+                (state.users, action.userID, 'id', {followed: false})
                 /*
                 Вызываем вспомогательную функцию "updateObjectInArray" и передаем ей:
                 "state.users" - информацию о пользователях для постраничного вывода из "state".
@@ -142,36 +144,16 @@ const usersReducer = (state = initialState, action: ActionsType): InitialStateTy
 
 
 /*Создаем типы для объектов "action".*/
-type ActionsType = InferActionsTypes<typeof usersAC> | setCurrentPageActionType; /*Здесь мы все созданные раннее типы
-для объектов "action" объеденили в один тип. Мы его получили следующим образом: используем экспортированный сюда тип
-"InferActionsTypes" для определения типов всех объектов "action" у упакованных в единый объект "usersAC" AC, совместно
-с типом "setCurrentPageActionType", так как пока не можем от него избавиться (объяснение этого есть в самом типе).*/
-
-type setCurrentPageActionType = { /*Создали тип для объекта "react-samurai-01/users-reducer/SET-CURRENT-PAGE" на основе
-самой строки "react-samurai-01/users-reducer/SET-CURRENT-PAGE" при помощи "typeof". А свойство "currentPage" в этом
-объекте "action" имеет тип число. Этот тип мы оставили отдельно, так как AC "setCurrentPage" мы не внесли в общий объект
-со всеми AC, так как мы его отдельно экспортируем в "UsersContainer.tsx". В будущем его тоже перенесем в общий объект.*/
-    type: 'react-samurai-01/users-reducer/SET-CURRENT-PAGE'
-    currentPage: number
-};
-
+type ActionsType = InferActionsTypes<typeof usersAC>; /*Здесь мы все созданные раннее типы для объектов "action"
+объеденили в один тип. Мы его получили следующим образом: используем экспортированный сюда тип "InferActionsTypes" для
+определения типов всех объектов "action" у упакованных в единый объект "usersAC" AC.*/
 
 /*
 Action Creators.
 AC создает объект, который передается в reducer.
 Этот объект как минимум должен иметь свойство "type", которое определяет, что необходимо выполнить в reducer.
 */
-export const setCurrentPage = (currentPage: number): setCurrentPageActionType => ({ /*AC для установки значения текущей
-выбранной страницы в постраничном выводе пользователей в "state". Объект "action" на выходе имеет
-тип "SetCurrentPageActionType". На входе получает "currentPage", которое дожно быть числом. Этот AC мы не внесли в общий
-объект со всеми AC, так как мы его отдельно экспортируем в "UsersContainer.tsx". В будущем его тоже перенесем в общий
-объект.*/
-    type: 'react-samurai-01/users-reducer/SET-CURRENT-PAGE', /*Обязательно свойство "type" для AC.*/
-    currentPage /*Это равносильно "currentPage: currentPage". Номер выбранной текущей страницы в постраничном выводе
-    пользователей.*/
-});
-
-const usersAC = { /*Создали специальный объект, содержащий все наши AC. Также удалили все типы, созданные
+export const usersAC = { /*Создали специальный объект, содержащий все наши AC. Также удалили все типы, созданные
 раннее на основе каждого AC. Также вверху удалили все константы со значениями для "type" и указывываем их сразу в AC,
 так как "TypeScript" не даст нам допустить ошибку при указании этих "types" в "reducer". Согласно модульному паттерну
 "Redux Ducks", чтобы избежать случаев одиноковых значений свойств "type" из-за чего один и тот же объект "action" может
@@ -199,12 +181,12 @@ const usersAC = { /*Создали специальный объект, соде
         полученные с сервера.*/
     } as const),
 
-    /*setCurrentPage: (currentPage: number) => ({ /!*AC для установки значения текущей выбранной страницы в постраничном
-    выводе пользователей в "state". На входе получает "currentPage", которое дожно быть числом.*!/
-        type: 'react-samurai-01/users-reducer/SET-CURRENT-PAGE', /!*Обязательно свойство "type" для AC.*!/
-        currentPage /!*Это равносильно "currentPage: currentPage". Номер выбранной текущей страницы в постраничном
-        выводе пользователей.*!/
-    } as const),*/
+    setCurrentPage: (currentPage: number) => ({ /*AC для установки значения текущей выбранной страницы в постраничном
+    выводе пользователей в "state". На входе получает "currentPage", которое дожно быть числом.*/
+        type: 'react-samurai-01/users-reducer/SET-CURRENT-PAGE', /*Обязательно свойство "type" для AC.*/
+        currentPage /*Это равносильно "currentPage: currentPage". Номер выбранной текущей страницы в постраничном
+        выводе пользователей.*/
+    } as const),
 
     setTotalUsersCount: (totalUsersCount: number) => ({ /*AC для установки общего количество пользователей в "state". На
     входе получает "totalUsersCount", которое дожно быть числом.*/
@@ -360,4 +342,5 @@ export const follow = (id: number): ThunkType => async (dispatch) => {
 };
 
 
-export default usersReducer; /*Экспортируем "usersReducer" по default, экспорт необходим для импорта.*/
+export default usersReducer; /*Экспортируем "usersReducer" по default и будем его использовать в нашем проекте под
+именем "usersReducer", экспорт необходим для импорта.*/

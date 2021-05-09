@@ -9,7 +9,7 @@ import {connect} from 'react-redux';
 Это прослойка необходима потому, что UI нежелательно общаться с BLL напрямую.
 Библиотека "react-redux" предоставляет продвинутые инструкции по созданию контейнерных компонент и контекста.
 Метод "connect" это HOC. Точнее он возвращает HOC, а этот HOC получает компонент и обрабатывает его.
-HOC (ХОК) - high order component (компонента высшего порядка).
+HOC - high order component (компонента высшего порядка).
 HOC - это функция, которая принимает на входе один компонент, обворачивает его, чтобы передать какие-то данные, и
 на выходе возвращает другой компонент.
 HOC позволяет создавать однообразные контейнерные компоненты.
@@ -36,19 +36,27 @@ AC или TC, как это делается в функции "mapDispatchToPro
 BLL и DAL.
 */
 
-import MyPosts from './MyPosts'; /*Подключаем компонент "MyPosts".*/
+import Navbar from './Navbar'; /*Подключаем компонент "Navbar".*/
 
-import {profileAC} from '../../../redux/profile-reducer'; /*Подключаем объект "profileAC", что использовать оттуда АC
-"addPostActionCreator" из "profile-reducer".*/
+import {InitialSidebarStateType} from '../../redux/sidebar-reducer'; /*Подключаем типы.*/
+import {AppStateType} from '../../redux/redux-store'; /*Подключаем типы.*/
+
+
+/*Создаем тип для "MapStateToProps". "MapStateToProps" в этом компоненте должен обязательно содержать следующие поля с
+указанными типами.*/
+type MapStateToPropsType = {
+    sidebar: InitialSidebarStateType /*Поскольку передаем в этот компонент весь "state" из "sidebar-reducer.ts",
+    то указываем тип "InitialSidebarStateType" - это тип всего этого "state".*/
+};
 
 
 /*
-"MyPostsContainer" это не классовый компонент и не функциональный компонент.
-"MyPostsContainer" является только контейнерным компонентом для компонента "MyPosts".
+"NavbarContainer" это не классовый компонент и не функциональный компонент.
+"NavbarContainer" является только контейнерным компонентом для компонента "Navbar".
 В отличии от классового компонента, этот компонент не имеет методов жизненного цикла.
 Контейнерные компоненты обварачивают презентационные компоненты и передают им данные BLL и DAL.
 Эти данные в нашем приложении контейнерные компоненты получают из контекста,
-созданного при помощи "Provider" (указан в "App.js") из библиотеки "react-redux".
+созданного при помощи "Provider" (указан в "App.tsx") из библиотеки "react-redux".
 Компонент это функция, которая возвращает JSX.
 JSX совмещает в себе JS и HTML.
 В JSX для указания класса в стилях нужно использовать "className" вместо "class".
@@ -62,36 +70,25 @@ JSX совмещает в себе JS и HTML.
 Вызывая тег компонента и передавая ему атрибуты, мы отдаем ему параметры.
 Этот компонент подключается в компоненте "App".
 В этом компоненте мы просто создаем "mapStateToProps" и "mapDispatchToProps", тем самым формируя "props"
-для презентационной компоненты "MyPosts". Поэтому нам не нужно создавать классовый компонент для этого.
-Таким же образом созданы контейнерные компоненты "NavbarContainer", "DialogsContainer".
+для презентационной компоненты "Navbar". Поэтому нам не нужно создавать классовый компонент для этого.
+Таким же образом созданы контейнерные компоненты "MyPostsContainer", "DialogsContainer".
 */
 
-const mapStateToProps = (state) => { /*Здесь указываются данные из "state", которые необходимо передать
-в компонент "MyPosts". Эта функция возвращает указанные данные в виде объекта.*/
+
+const mapStateToProps = (state: AppStateType): MapStateToPropsType => { /*Здесь указываются данные из "state", которые
+необходимо передать в компонент "Navbar". Эта функция возвращает указанные данные в виде объекта. На входе
+"mapStateToProps" принимает "state" с типом "AppStateType", который мы создали и импортировали сюда, а на выходе выдает
+данные с типом "MapStateToPropsType".*/
     return {
-        postsData: state.profilePage.postsData /*Данные о постах на странице пользователя.*/
+        sidebar: state.sidebar /*Данные необходимые для работы сайдбара.*/
     }
 };
 
-const mapDispatchToProps = (dispatch) => { /*Здесь указываются данные (callbacks - "AC" или "TC") "dispatch",
-которые необходимо передать в компонент "MyPosts". Эта функция возвращает указанные данные в виде объекта.
-Функция "mapDispatchToProps" работает следующим образом:
-1) Компонент вызывает через callback функцию "addPost".
-2) Компонент передает этой функции параметр "newPostText".
-3) Далее этот параметр передается в AC "addPostActionCreator".
-4) Этот AC вызывается.
-5) Создается объект "action".
-6) Этот объект "action" диспатчится в "dialogsReducer" в "profile-reducer.js".*/
-    return {
-        addPost: (newPostText) => {
-            dispatch(profileAC.addPostActionCreator(newPostText));
-        }
-    }
-};
 
-export default connect(mapStateToProps, mapDispatchToProps)(MyPosts);
-/*
-При помощи метода "connect" создаем контейнерный компонент, и тем самым передаем нужные данные BLL и DAL
-компоненту "MyPosts". Экспортируем получившийся в итоге компонент, который будет использоваться под именем
-"MyPostsContainer", по default, экспорт необходим для импорта.
-*/
+export default connect<MapStateToPropsType, {}, {}, AppStateType>(mapStateToProps)(Navbar);
+/*При помощи метода "connect" создаем контейнерный компонент, и тем самым передаем нужные данные BLL и DAL компоненту
+"Navbar". Поскольку метод "connect" является "generic", то его можно уточнить: первым в "<>" указан тип для
+"MapStateToProps", вторым для "MapDispatchToProps", третьим для "собственных props" компонента, четвертым для "state".
+Эти параметры мы узнали перейдя в файл декларации метода "connect", "Ctrl+click" в "WebStorm".
+Экспортируем получившийся в итоге компонент, который будет использоваться в нашем проекте под именем "NavbarContainer",
+по default, экспорт необходим для импорта.*/

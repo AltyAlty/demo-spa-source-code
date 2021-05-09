@@ -9,7 +9,7 @@ import {connect} from 'react-redux';
 Это прослойка необходима потому, что UI нежелательно общаться с BLL напрямую.
 Библиотека "react-redux" предоставляет продвинутые инструкции по созданию контейнерных компонент и контекста.
 Метод "connect" это HOC. Точнее он возвращает HOC, а этот HOC получает компонент и обрабатывает его.
-HOC (ХОК) - high order component (компонента высшего порядка).
+HOC - high order component (компонента высшего порядка).
 HOC - это функция, которая принимает на входе один компонент, обворачивает его, чтобы передать какие-то данные, и
 на выходе возвращает другой компонент.
 HOC позволяет создавать однообразные контейнерные компоненты.
@@ -40,6 +40,28 @@ import Header from './Header'; /*Подключаем компонент "Header
 
 import {logout} from '../../redux/auth-reducer'; /*Подключаем TC "logout" из "auth-reducer".*/
 
+import {AppStateType} from "../../redux/redux-store"; /*Подключаем типы.*/
+
+
+/*Создаем тип для "MapStateToProps". "MapStateToProps" в этом компоненте должен обязательно содержать следующие поля с
+указанными типами.*/
+type MapStateToPropsType = {
+    isAuth: boolean, /*Свойство, которое указывает залогинен ли пользователь, должно быть булева типа.*/
+    login: string | null, /*"login" залогиненного пользователя должен быть строкой или иметь тип "null", то есть быть
+    пустым.*/
+};
+
+/*Создаем тип для "MapDispatchToProps". "MapDispatchToProps" в этом компоненте должен обязательно содержать следующие
+поля с указанными типами.*/
+type MapDispatchToPropsType = {
+    logout: () => void /*TC для осуществления логаута должен быть функцией, которая ничего не принимает и ничего не
+    возвращает.*/
+};
+
+/*Создаем общий тип для всех "props" путем комбинации трех созданных выше типов. Все это нужно для указания типа
+"props" в классовом компоненте.*/
+type PropsType = MapStateToPropsType & MapDispatchToPropsType;
+
 
 /*
 "HeaderContainer" это классовый компонент.
@@ -68,10 +90,11 @@ JSX совмещает в себе JS и HTML.
 "HeaderContainer" является контейнерным компонентом для компонента "Header".
 Контейнерные компоненты обварачивают презентационные компоненты и передают им данные BLL и DAL.
 Эти данные в нашем приложении контейнерные компоненты получают из контекста,
-созданного при помощи "Provider" (указан в "App.js") из библиотеки "react-redux".
+созданного при помощи "Provider" (указан в "App.tsx") из библиотеки "react-redux".
 Этот компонент подключается в компоненте "App".
 */
-class HeaderContainer extends React.Component {
+class HeaderContainer extends React.Component<PropsType/*, StateType*/> { /*Указали, что "props" в этом классовом
+компоненте имеют тип "PropsType". Еще здесь можно указать тип "state", но мы не указали.*/
     render() {
         /*
         Здесь после return в компоненте начинается HTML разметка.
@@ -86,17 +109,21 @@ class HeaderContainer extends React.Component {
     };
 };
 
-const mapStateToProps = (state) => ({ /*Здесь указываются данные из "state", которые необходимо передать
-в компонент "HeaderContainer". Эта функция возвращает указанные данные в виде объекта.*/
+
+const mapStateToProps = (state: AppStateType): MapStateToPropsType => ({ /*Здесь указываются данные из "state", которые
+необходимо передать в компонент "HeaderContainer". Эта функция возвращает указанные данные в виде объекта. На входе
+"mapStateToProps" принимает "state" с типом "AppStateType", который мы создали и импортировали сюда, а на выходе выдает
+данные с типом "MapStateToPropsType".*/
     isAuth: state.auth.isAuth, /*Свойство, которое указывает залогинен ли пользователь.*/
     login: state.auth.login, /*"login" залогиненного пользователя.*/
 });
 
-export default connect(mapStateToProps, {logout})(HeaderContainer); /*"logout" это TC для
-осуществления логаута.*/
-/*
-При помощи метода "connect" создаем контейнерный компонент, и тем самым передаем нужные данные BLL и DAL
-в другой контейнерный компонент "HeaderContainer" из этого файла.
-Получившийся в итоге компонент экспортируем, который будет использоваться под именем "HeaderContainer", по default,
-экспорт необходим для импорта.
-*/
+
+export default connect<MapStateToPropsType, MapDispatchToPropsType, {}, AppStateType>(mapStateToProps,
+    {logout})(HeaderContainer); /*"logout" это TC для осуществления логаута.*/
+/*При помощи метода "connect" создаем контейнерный компонент, и тем самым передаем нужные данные BLL и DAL компоненту
+"HeaderContainer" в этом файле. Поскольку метод "connect" является "generic", то его можно уточнить: первым в "<>"
+указан тип для "MapStateToProps", вторым для "MapDispatchToProps", третьим для "собственных props" компонента, четвертым
+для "state". Эти параметры мы узнали перейдя в файл декларации метода "connect", "Ctrl+click" в "WebStorm". Получившийся
+в итоге компонент экспортируем, который будет использоваться в наше проекте под именем "HeaderContainer", по default,
+экспорт необходим для импорта.*/

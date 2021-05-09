@@ -15,8 +15,7 @@ import {FormAction, stopSubmit} from 'redux-form'; /*Импортируем сп
 который сообщает UI, что что-то пошло не так, и останавливает "submit" данных в форме. Импортировали "FormAction", чтобы
 создать тип для объектов "action", который передается в "thunks" и TC.*/
 
-import {InferActionsTypes, BaseThunkType} from './redux-store';
-/*Импортируем типы.*/
+import {InferActionsTypes, BaseThunkType} from './redux-store'; /*Импортируем типы.*/
 
 
 /*Создаем тип "state" из самого "state" при помощи "typeof".*/
@@ -239,4 +238,5 @@ export const logout = (): ThunkType => async (dispatch) => {
 };
 
 
-export default authReducer; /*Экспортируем "authReducer" по default, экспорт необходим для импорта.*/
+export default authReducer; /*Экспортируем "authReducer" по default и будем его использовать в нашем проекте под
+именем "authReducer", экспорт необходим для импорта.*/

@@ -2,6 +2,7 @@ import React, {ChangeEvent} from 'react';
 /*
 Подключаем сам "ReactJS", необходим везде, где мы что-то из него используем (например, JSX).
 "WebPack" уже встроен в "ReactJS".
+"ChangeEvent" импортировали для типизации событий.
 */
 
 
@@ -20,6 +21,7 @@ type StateType = {
     должно быть булева типа.*/
     status: string /*Информация о статусе пользователя, установленная в локальном "state", должна быть строкой.*/
 };
+
 
 /*
 "ProfileStatus" это классовый компонент.
@@ -177,4 +179,6 @@ class ProfileStatus extends React.Component<PropsType, StateType> { /*Указа
     };
 };
 
-export default ProfileStatus; /*Экспортируем компонент "ProfileStatus" по default, экспорт необходим для импорта.*/
+
+export default ProfileStatus; /*Экспортируем компонент "ProfileStatus" по default и будем его использовать в нашем
+проекте под именем "ProfileStatus", экспорт необходим для импорта.*/

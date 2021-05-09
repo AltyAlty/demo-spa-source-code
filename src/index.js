@@ -1,5 +1,5 @@
 /*
-В "index.js" не должно быть обверток вокруг "App", поэтому мы их перенесли в "App.js".
+В "index.js" не должно быть обверток вокруг "App", поэтому мы их перенесли в "App.tsx".
 "index.js" - это точка входя для сборщика "WebPack".
 "index.html" - это точка входа нашего приложения.
 "index.css" содержит общие стили для всего приложения.
@@ -29,6 +29,7 @@ ReactDOM.render(
     document.getElementById('root') /*JS будет отрисовывать приложение
     в элементе "div" с "ID" "root" в "index.html".*/
 );
+
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

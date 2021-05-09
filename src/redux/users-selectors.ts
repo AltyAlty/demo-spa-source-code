@@ -39,7 +39,7 @@ export const getUsers = createSelector (getUsersPrimitive, (users) => { /*Соз
 
 export const getPageSize = (state: AppStateType) => { /*Это созданный нами без библиотеки "reselect" селектор.
 Он возвращает максимальное количество пользователей, которое выводится в постраничном выводе пользователей. На входе
-этот селектор принимает "state" с типом "AppStateType", который мы создали и имопртировали сюда.*/
+этот селектор принимает "state" с типом "AppStateType", который мы создали и импортировали сюда.*/
     return state.usersPage.pageSize
 };
 

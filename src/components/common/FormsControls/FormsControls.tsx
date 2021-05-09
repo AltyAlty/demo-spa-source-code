@@ -55,6 +55,15 @@ type FormControlPropsType = {
     ("Ctrl+click" в "WebStorm") и импортировали сюда.*/
 };
 
+/*Следующий тип мы создали специально, чтобы мы не могли допустить ошибку при указании свойства "name" в "createField".
+Это свойство важно для формирования имен свойств "formData", то есть данных формы. Для этого мы строим свой "generic",
+чтобы можно было уточнить "createField". Нужные нам имена свойств уже должны быть перечислены в каком-то другом типе,
+чтобы мы при помощи "keyof" получали ключи из этого типа. Далее при помощи "Extract" (из библиотеки "TypeScript") берем
+из этих ключей, только те, которые могут быть назначены как строка. И на основе этого создаем тип. Для больших деталей
+смотри реализацию "createField" в "FormsControls.tsx".*/
+export type GetValuesKeysType<T> = Extract<keyof T, string>;
+
+
 /*
 "FormControl" это функциональный компонент, который создан в виде стрелочной функции.
 При взаимодействии с функциональным компонентом React не хранит его постоянно в памяти.
@@ -79,7 +88,8 @@ JSX совмещает в себе JS и HTML.
 элемента "Field" этот компонент и будет получать эти данные при помощи замыкания), а также получает информацию
 о дочернем элементе.
 */
-const FormControl: React.FC<FormControlPropsType> = ({meta: {touched, error}, children}) => {
+const FormControl: React.FC<FormControlPropsType> =
+    ({meta: {touched, error}, children}) => {
     const hasError = touched && error; /*Создали специальную константу для удобства, которая содержит условие, что
     в мета-данных указано, что мы касались элемента (meta.touched) и что присутствует какая-то ошибка (meta.error).
     Этот объект "meta" с мета-данными придет к нам сверху из элемента "Field". Указали при помощи "React.FC<>", что
@@ -110,6 +120,7 @@ const FormControl: React.FC<FormControlPropsType> = ({meta: {touched, error}, ch
     )
 };
 
+
 /*Далее создаем два компонента на экспорт, которые будут использоваться для отрисовки элементов "textarea" и "input" в
 других местах, где в таких элементах требуется валидация.*/
 export const Textarea: React.FC<WrappedFieldProps> = (props) => { /*Указали при помощи
@@ -139,6 +150,7 @@ export const Textarea: React.FC<WrappedFieldProps> = (props) => { /*Указал
     доступ к "props" из элемента "Field", компонента "Textarea" и компонента "FormControl").*/
 };
 
+
 export const Input: React.FC<WrappedFieldProps> = (props) => { /*Указали при помощи
 "React.FC<>", что "props" в этом функциональном компоненте имеют тип "WrappedFieldProps". Этот тип мы нашли в файле
 декларации "Field" ("Ctrl+click" в "WebStorm") и импортировали сюда.*/
@@ -165,6 +177,7 @@ export const Input: React.FC<WrappedFieldProps> = (props) => { /*Указали 
     дочернему элементу необходимые для него "props", например "placeholder" (то есть при помощи замыкание будет доступ
     к "props" из элемента "Field", компонента "Input" и компонента "FormControl").*/
 };
+
 
 /*Создали функцию "createField", которая принимает параметры и создает элементы формы. Мы ее используем для создания
 формы в "Login.tsx".*/

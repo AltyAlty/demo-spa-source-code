@@ -43,11 +43,12 @@ let state = {
     быть строкой. Можно вместо этого просто было указать ''.*/
 };
 
+
 /*Тест №1. После добавления нового поста, количество постов должно быть увеличено на 1.*/
 test('after adding a post, the number of the posts should be incremented', () => { /*"test" позволит
 определить IDE, что это тест.*/
     /*Указываем входные данные конкретно для этого теста.*/
-    let action = profileAC.addPostActionCreator('some post text'); /*Получаем объект "action" при помощи
+    let action = profileAC.addPost('some post text'); /*Получаем объект "action" при помощи
     AC "addPostActionCreator", передав ему текст сообщения для добавления нового поста.*/
 
     /*Шаги теста.*/
@@ -64,7 +65,7 @@ test('after adding a post, the number of the posts should be incremented', () =>
 /*Тест №2. Добавленный пост должен содержать корректный текст.*/
 test('an added post should have correct text', () => { /*"test" позволит определить IDE, что это тест.*/
     /*Указываем входные данные конкретно для этого теста.*/
-    let action = profileAC.addPostActionCreator('some post text'); /*Получаем объект "action" при помощи
+    let action = profileAC.addPost('some post text'); /*Получаем объект "action" при помощи
     AC "addPostActionCreator", передав ему текст сообщения для добавления нового поста.*/
 
     /*Шаги теста.*/
@@ -96,7 +97,8 @@ test('after deleting a post, the number of the posts should be decremented', () 
 });
 
 /*Тест №4. После попытки удалить пост с неверным "ID", число постов не должно уменьшиться на 1.*/
-test('after trying to delete a post with an incorrect ID, the number of the posts should not be decremented', () => {
+test('after trying to delete a post with an incorrect ID, the number of the posts should not be decremented',
+    () => {
 /*"test" позволит определить IDE, что это тест.*/
     /*Указываем входные данные конкретно для этого теста.*/
     let action = profileAC.deletePostActionCreator(3); /*Получаем объект "action" при помощи AC

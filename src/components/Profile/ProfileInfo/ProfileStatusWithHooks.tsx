@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, ChangeEvent} from 'react';
 /*
 Подключаем сам "ReactJS", необходим везде, где мы что-то из него используем (например, JSX).
 "WebPack" уже встроен в "ReactJS".
@@ -24,6 +24,19 @@ import React, {useState, useEffect} from 'react';
 этот хук сработает только один раз. Этот хук используется для side effects.
 */
 
+
+/*Создаем тип для "props". "Props" в этом компоненте должны обязательно содержать следующие поля с указанными типами.
+Все это нужно для указания типа "props" в функциональном компоненте.*/
+type PropsType = {
+    status: string | null /*Данные статуса пользователя для страницы профиля должны быть строкой или иметь тип "null",
+    то есть быть пустыми.*/
+    isOwner: boolean /*Свойство, которое показывает является ли залогиненный пользователь владельцем профиля, который в
+    данный момент отображается на странице профиля, должно быть булева типа.*/
+    updateUserStatus: (status: string) => void /*TC для изменения данных по статусу пользователя на странице профиля
+    должен быть функцией, которая принимает строковой параметр и ничего не возвращает.*/
+};
+
+
 /*
 "ProfileStatusWithHooks" это функциональный компонент, который создан в виде стрелочной функции.
 При взаимодействии с функциональным компонентом React не хранит его постоянно в памяти.
@@ -46,7 +59,13 @@ JSX совмещает в себе JS и HTML.
 Статус пользователя представляет из себя поле статуса как в ВК, на который можно нажать и активировать поле для ввода
 статуса, а если убрать фокус с этого поля, то будет просто текст.
 */
-const ProfileStatusWithHooks = (props) => {
+const ProfileStatusWithHooks: React.FC<PropsType> = ({isOwner,updateUserStatus, ...props}) => {/*Указываем
+какие именно "props" мы получаем, чтобы не писать далее "props.isOwner", и так далее:
+- "isOwner" - свойство, которое показывает является ли залогиненный пользователь владельцем профиля;
+- "updateUserStatus" - TC для изменения данных по статусу пользователя на странице профиля.
+Такое мы делаем только в функциональных компонентах. Не указываем здесь свойства "status", а при помощи деструктуризации
+"...props" прокидываем это свойство в этот компонент, так как в самом компоненте уже используется своя переменная с
+именем "status".  Указали при помощи "React.FC<>", что "props" в этом функциональном компоненте имеют тип "PropsType".*/
     let [editMode, setEditMode] = useState(false); /*При помощи деструктуризирующего присваивания создали
     две переменные. Первая переменная будет хранить первый элемент из хука "useState", этот элемент будет означать
     включен или выключен режим редактирования статуса (изначально "false"). Вторая переменная будет хранить функцию
@@ -83,18 +102,24 @@ const ProfileStatusWithHooks = (props) => {
     и обновляет значение статуса в глобальном "state" при помощи TC "updateUserStatus" для изменения
     статуса пользователя на странице профиля.*/
         setEditMode(false);
-        props.updateUserStatus(status);
+        if (status) { /*Здесь делаем дополнительную проверку на наличие статуса для целей типизации типизации.*/
+            updateUserStatus(status)
+        } else { /*Если же статус отсутствует, то выводим ошибку в консоль.*/
+            console.error('Status should exist ')
+        };
     };
 
-    const onUserStatusChange = (event) => { /*Создали специальный метод "onUserStatusChange", который
-    будет вызываться при изменении поля "input", брать текущее значение содержимого этого поля и сохранять его
-    в локальный "state" при помощи хука "useState".*/
+    const onUserStatusChange = (event: ChangeEvent<HTMLInputElement>) => { /*Создали специальный метод
+    "onUserStatusChange", который будет вызываться при изменении поля "input", брать текущее значение содержимого этого
+    поля и сохранять его в локальный "state" при помощи хука "useState". Для события "event" указали тип
+    "ChangeEvent<HTMLInputElement>"*/
         setStatus(event.currentTarget.value)
     };
 
-    const handleFocus = (e) => { /*Создали специальный метод "handleFocus" для автоматического выделения текста
-    в поле статуса пользователя.*/
-        e.target.select();
+    const handleFocus = (event: ChangeEvent<HTMLInputElement>) => { /*Создали специальный метод "handleFocus" для
+    автоматического выделения текста в поле статуса пользователя. Для события "event" указали тип
+    "ChangeEvent<HTMLInputElement>"*/
+        event.target.select();
     };
 
     /*
@@ -115,7 +140,7 @@ const ProfileStatusWithHooks = (props) => {
             этого статуса. Одним из вариантов решений этой проблемы может быть добавление заглушки "Preloader" на время
             пока идет запрос.*/
             <div>
-                {props.isOwner
+                {isOwner
                     ? <div><b>Status</b>: <span onDoubleClick={activateEditMode}>{props.status || 'Enter your status'}</span></div>
                     : <span>{props.status || ''}</span>
                 }
@@ -139,12 +164,14 @@ const ProfileStatusWithHooks = (props) => {
                        onFocus={handleFocus}
                        autoFocus={true}
                        onBlur={deactivateEditMode}
-                       value={status}/>
+                       value={status as string}/> {/*Поскольку в нашей типизации указано, что статус может быть "null",
+                       то тут нам пришлось указать, что он всегда воспринимался как строка при помощи "as string".*/}
             </div>
             }
         </div>
     );
 };
 
-export default ProfileStatusWithHooks; /*Экспортируем компонент "ProfileStatusWithHooks" по default, экспорт необходим
-для импорта.*/
+
+export default ProfileStatusWithHooks; /*Экспортируем компонент "ProfileStatusWithHooks" по default и будем его
+использовать в нашем проекте под именем "ProfileStatusWithHooks", экспорт необходим для импорта.*/

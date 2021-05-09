@@ -158,7 +158,7 @@ let store = {
     в общий "state". А после этого метод "dispatch" уведомляет подписчика, который является рендером нашего приложения,
     чтобы перерисовать наше приложения (UI) в соотвествии с изменениями в "state" (BLL).
 
-    Там, где мы перекидывали метод "dispatch" в "App.js", мы при помощи "bind" связывали его с контекстом "store".*/
+    Там, где мы перекидывали метод "dispatch" в "App.tsx", мы при помощи "bind" связывали его с контекстом "store".*/
         this._state.profilePage = profileReducer(this._state.profilePage, action);
         this._state.dialogsPage = dialogsReducer(this._state.dialogsPage, action);
         this._state.sidebar = sidebarReducer(this._state.sidebar, action);
@@ -166,6 +166,7 @@ let store = {
     }
 };
 
-export default store; /*Экспортируем весь "store" по default, экспорт необходим для импорта.*/
+export default store; /*Экспортируем весь "store" по default и будем его использовать в нашем проекте под именем
+"store", экспорт необходим для импорта.*/
 
 window.store = store; /*На случай если нам нужно будет глобально обратиться к "store".*/

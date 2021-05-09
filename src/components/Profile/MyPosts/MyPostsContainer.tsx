@@ -9,7 +9,7 @@ import {connect} from 'react-redux';
 Это прослойка необходима потому, что UI нежелательно общаться с BLL напрямую.
 Библиотека "react-redux" предоставляет продвинутые инструкции по созданию контейнерных компонент и контекста.
 Метод "connect" это HOC. Точнее он возвращает HOC, а этот HOC получает компонент и обрабатывает его.
-HOC (ХОК) - high order component (компонента высшего порядка).
+HOC - high order component (компонента высшего порядка).
 HOC - это функция, которая принимает на входе один компонент, обворачивает его, чтобы передать какие-то данные, и
 на выходе возвращает другой компонент.
 HOC позволяет создавать однообразные контейнерные компоненты.
@@ -35,31 +35,38 @@ AC или TC, как это делается в функции "mapDispatchToPro
 "Provider" необходим для создания контекста, из которого компоненты (особенно контейнерные) могут брать данные
 BLL и DAL.
 */
-import {compose} from 'redux';
+
+import MyPosts from './MyPosts'; /*Подключаем компонент "MyPosts".*/
+
+import {profileAC} from '../../../redux/profile-reducer';/*Подключаем объект "profileAC", что использовать оттуда АC
+"addPostActionCreator" из "profile-reducer".*/
+
+import {PostType} from '../../../types/types'; /*Подключаем типы.*/
+import {AppStateType} from '../../../redux/redux-store'; /*Подключаем типы.*/
+
+
+/*Создаем тип для "MapStateToProps". "MapStateToProps" в этом компоненте должен обязательно содержать следующие поля с
+указанными типами.*/
+type MapStateToPropsType = {
+    postsData: Array<PostType> /*Данные о постах на странице пользователя должны быть массивом с элементами с типом
+    "PostType". Тип "PostType" был создан нами и импортирован сюда.*/
+};
+
+/*Создаем тип для "MapDispatchToProps". "MapDispatchToProps" в этом компоненте должен обязательно содержать следующие
+поля с указанными типами.*/
+type MapDispatchToPropsType = {
+    addPost: (newMessageText: string) => void /*AC для добавления нового поста на странице профиля, который принимает
+    строковой параметр и ничего не возвращает.*/
+};
+
+
 /*
-Функция "compose" из функционального программирования. Эта функция создает композицию обработчиков.
-Библиотека "redux" содержит свою реализацию "compose". При помощи функции "compose" можно объеденять, например,
-несколько обверток вокруг компонента и ХОКи.
-Обвертки и ХОКи указываются снизу вверх. Функция "compose" вызывается дважды и работает схожим образом, как и метод
-"connect" из библиотеки "react-redux".
-*/
-
-import Dialogs from './Dialogs'; /*Подключаем компонент "Dialogs".*/
-
-import {withAuthRedirect} from '../../hoc/WithAuthRedirect'; /*Подключаем созданый нами HOC "withAuthRedirect" для
-добавления редиректа.*/
-
-import {dialogsAC} from '../../redux/dialogs-reducer'; /*Подключаем объект "dialogsAC", что использовать оттуда AC
-"addMessageActionCreator" из "dialogs-reducer".*/
-
-
-/*
-"DialogsContainer" это не классовый компонент и не функциональный компонент.
-"DialogsContainer" является только контейнерным компонентом для компонента "Dialogs".
+"MyPostsContainer" это не классовый компонент и не функциональный компонент.
+"MyPostsContainer" является только контейнерным компонентом для компонента "MyPosts".
 В отличии от классового компонента, этот компонент не имеет методов жизненного цикла.
 Контейнерные компоненты обварачивают презентационные компоненты и передают им данные BLL и DAL.
 Эти данные в нашем приложении контейнерные компоненты получают из контекста,
-созданного при помощи "Provider" (указан в "App.js") из библиотеки "react-redux".
+созданного при помощи "Provider" (указан в "App.tsx") из библиотеки "react-redux".
 Компонент это функция, которая возвращает JSX.
 JSX совмещает в себе JS и HTML.
 В JSX для указания класса в стилях нужно использовать "className" вместо "class".
@@ -73,40 +80,28 @@ JSX совмещает в себе JS и HTML.
 Вызывая тег компонента и передавая ему атрибуты, мы отдаем ему параметры.
 Этот компонент подключается в компоненте "App".
 В этом компоненте мы просто создаем "mapStateToProps" и "mapDispatchToProps", тем самым формируя "props"
-для презентационной компоненты "Dialogs". Поэтому нам не нужно создавать классовый компонент для этого.
-Таким же образом созданы контейнерные компоненты "MyPostsContainer", "NavbarContainer".
+для презентационной компоненты "MyPosts". Поэтому нам не нужно создавать классовый компонент для этого.
+Таким же образом созданы контейнерные компоненты "NavbarContainer", "DialogsContainer".
 */
 
-const mapStateToProps = (state) => { /*Здесь указываются данные из "state", которые необходимо передать в компонент
-"Dialogs". Эта функция возвращает указанные данные в виде объекта.*/
+
+const mapStateToProps = (state: AppStateType): MapStateToPropsType => { /*Здесь указываются данные из "state", которые
+необходимо передать в компонент "MyPosts". Эта функция возвращает указанные данные в виде объекта. На входе
+"mapStateToProps" принимает "state" с типом "AppStateType", который мы создали и импортировали сюда, а на выходе выдает
+данные с типом "MapStateToPropsType".*/
     return {
-        dialogsPage: state.dialogsPage,
+        postsData: state.profilePage.postsData /*Данные о постах на странице пользователя.*/
     }
 };
 
-const mapDispatchToProps = (dispatch) => { /*Здесь указываются данные ("callbacks - "AC" или "TC") "dispatch",
-которые необходимо передать в компонент "Dialogs". Эта функция возвращает указанные данные в виде объекта.
-Функция "mapDispatchToProps" работает следующим образом:
-1) Компонент вызывает callback функцию "addMessage".
-2) Компонент передает этой функции параметр "newMessageText".
-3) Далее этот параметр передается в AC "addMessageActionCreator".
-4) Этот AC вызывается.
-5) Создается объект "action".
-6) Этот объект "action" диспатчится в "dialogsReducer" в "dialogs-reducer.js".*/
-    return {
-        addMessage: (newMessageText) => {
-            dispatch(dialogsAC.addMessageActionCreator(newMessageText));
-        }
-    }
-};
 
-export default compose( /*При помощи функции "compose" объеденяем ХОКи "withAuthRedirect" и "connect", возвращая
-итоговый компонент "AppContainer".*/
-    connect(mapStateToProps, mapDispatchToProps), /*При помощи метода "connect" создаем контейнерный компонент,
-    и тем самым передаем нужные данные BLL и DAL компоненту "Dialogs".*/
-    withAuthRedirect /*При помощи ХОКа "withAuthRedirect" добавляем логику по редиректу в компонент.*/
-)(Dialogs);
-/*
-А также экспортируем получившийся в итоге компонент, который будет использоваться под именем "DialogsContainer",
-по default, экспорт необходим для импорта.
-*/
+export default connect<MapStateToPropsType, MapDispatchToPropsType, {}, AppStateType>(mapStateToProps,
+    {addPost: profileAC.addPost} /*При помощи метода "connect" создаем контейнерный
+        компонент, и тем самым передаем нужные данные BLL и DAL компоненту "MyPosts". Поскольку метод "connect"
+        является "generic", то его можно уточнить: первым в "<>" указан тип для "MapStateToProps", вторым для
+        "MapDispatchToProps", третьим для "собственных props" компонента, четвертым для "state". Эти параметры мы узнали
+        перейдя в файл декларации метода "connect", "Ctrl+click" в "WebStorm".*/
+)(MyPosts);
+/*При помощи метода "connect" создаем контейнерный компонент, и тем самым передаем нужные данные BLL и DAL компоненту
+"MyPosts". Экспортируем получившийся в итоге компонент, который будет использоваться в нашем проекте под именем
+"MyPostsContainer", по default, экспорт необходим для импорта.*/
