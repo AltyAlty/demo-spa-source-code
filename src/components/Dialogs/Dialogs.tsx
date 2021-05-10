@@ -76,7 +76,7 @@ import DialogItem from './DialogItem/DialogItem'; /*Подключаем ком�
 import Message from './Message/Message'; /*Подключаем компонент "Message".*/
 import IncomingMessage from './IncomingMessage/IncomingMessage'; /*Подключаем компонент "IncomingMessage".*/
 
-import {InitialDialogsStateType} from '../../redux/dialogs-reducer'; /*Импортируем типы.*/
+import {InitialDialogsStateType} from '../../redux/dialogs-reducer'; /*Подключаем типы.*/
 
 
 /*Создаем общий тип для всех "props" компонента "Dialogs" . Все это нужно для указания типа "props" в функциональном
@@ -141,7 +141,7 @@ const AddMessageForm:
     - "InjectedFormProps<AddMessageFormValuesType, AddMessageFormOwnPropsType>" - здесь мы уточнили внедренные ХОКом,
     который образуется при помощи компонента "AddMessageReduxForm", "InjectedFormProps". "AddMessageFormValuesType"
     указывает, что приходит из этого ХОКа, а "AddMessageFormOwnPropsType" указывает, что приходит со стороны - в нашем
-    случае "any".
+    случае ничего.
     - "& AddMessageFormOwnPropsType" - также этот компонент содержит некие свои собственные "props", которые не приходят
     от ХОКа выше.
     Это мы сделали на основании файла декларации "InjectedFormProps" ("Ctrl+click" в "WebStorm"). Там указано, что

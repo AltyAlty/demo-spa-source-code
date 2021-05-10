@@ -8,7 +8,7 @@ import {instance, ResponseWithDataType} from './api'; /*Импортируем "
 "login" в "auth-reducer.ts", для осуществления типизации. В добавок импортируем общий тип "ResponseWithDataType" для
 некоторых ответов от сервера со схожей структурой ответа.*/
 
-import {PhotosType, ProfileType} from '../types/types'; /*Импортируем типы.*/
+import {PhotosType, ProfileType} from '../types/types'; /*Подключаем типы.*/
 
 
 type SaveUserPhotoResponseDataType = { /*Создали отдельный тип для "data" для запроса "saveUserPhoto" из "profileAPI".

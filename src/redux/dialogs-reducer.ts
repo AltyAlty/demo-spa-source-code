@@ -7,7 +7,7 @@
 - "Thunk Creators" или "TC".
 */
 
-import {InferActionsTypes} from './redux-store'; /*Импортируем типы.*/
+import {InferActionsTypes} from './redux-store'; /*Подключаем типы.*/
 
 import avatarSource from '../assets/images/user.png'; /*Импортируем из ассетов проекта аватар пользователя.*/
 

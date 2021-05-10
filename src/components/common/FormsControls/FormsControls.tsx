@@ -42,7 +42,7 @@ import {Field, WrappedFieldMetaProps, WrappedFieldProps} from 'redux-form';
 указания типа созданных нами компонентов "Textarea" и "Input". Поэтому импортировали этот тип сюда из библиотеки
 "redux-form".
 */
-import {FieldValidatorType} from '../../../utils/validators/validators'; /*Импортируем типы.*/
+import {FieldValidatorType} from '../../../utils/validators/validators'; /*Подключаем типы.*/
 
 import styles from './FormsControls.module.css'; /*Подключаем стили из CSS-модуля.*/
 

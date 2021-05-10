@@ -113,7 +113,7 @@ import {login} from '../../redux/auth-reducer'; /*Подключаем TC "login
 import styles from './Login.module.css'; /*Подключаем стили из CSS-модуля.*/
 import style from '../common/FormsControls/FormsControls.module.css'; /*Подключаем стили из CSS-модуля.*/
 
-import {AppStateType} from '../../redux/redux-store'; /*Импортируем типы.*/
+import {AppStateType} from '../../redux/redux-store'; /*Подключаем типы.*/
 
 
 /*Создаем тип для "MapStateToProps" для компонента "Login". "MapStateToProps" в этом компоненте должен обязательно

@@ -63,8 +63,8 @@ import {
     страниц в постраничном выводе может отображаться в одной порции таких страниц.*/
 } from '../../redux/users-selectors'; /*Импортируем селекторы для компонента "UsersContainer".*/
 
-import {UserType} from '../../types/types'; /*Импортируем типы.*/
-import {AppStateType} from '../../redux/redux-store'; /*Импортируем типы.*/
+import {UserType} from '../../types/types'; /*Подключаем типы.*/
+import {AppStateType} from '../../redux/redux-store'; /*Подключаем типы.*/
 
 
 /*Создаем тип для "MapStateToProps". "MapStateToProps" в этом компоненте должен обязательно содержать следующие поля с

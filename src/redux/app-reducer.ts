@@ -9,11 +9,11 @@
 import {getAuthUserData} from './auth-reducer'; /*Подключаем TC "getAuthUserData"  для запроса и установки данных
 залогиненного пользователя в "state" из "auth-reducer.ts".*/
 
-import {InferActionsTypes, BaseThunkType} from './redux-store'; /*Импортируем типы.*/
+import {InferActionsTypes, BaseThunkType} from './redux-store'; /*Подключаем типы.*/
 
 
 /*Создаем тип "state" из самого "state" при помощи "typeof".*/
-type InitialStateType = typeof initialState;
+type InitialAppStateType = typeof initialState;
 
 /*Создаем сам "state".*/
 let initialState = { /*Указываем, что "initialState" имеет тип "InitialStateType", созданный нами
@@ -27,9 +27,9 @@ let initialState = { /*Указываем, что "initialState" имеет ти
 Потом "reducer" изменяет (или не изменяет, если объект "action" не подошел) определенную часть "state" и возвращает ее.
 После этого все возвращенные части "state" всех "reducers" собираются в новый "state".
 */
-const appReducer = (state = initialState, action: ActionsType): InitialStateType => { /*Указываем, что
-тип "state" на выходе имеет тот же тип "InitialStateType", что и "state" на входе. На входе объекты "action" имеют тип
-"ActionsType", созданный нами ниже.*/
+const appReducer = (state = initialState, action: ActionsType): InitialAppStateType => { /*Указываем,
+что тип "state" на выходе имеет тот же тип "InitialAppStateType", что и "state" на входе. На входе объекты "action"
+имеют тип "ActionsType", созданный нами ниже.*/
     switch (action.type) {
         case 'react-samurai-01/app-reducer/INITIALIZATION-SUCCESSFUL':
             return { /*Указываем, что приложение успешно инициализировано.*/

@@ -141,7 +141,7 @@ const AddPostForm:
     комбинация получилась следующим образом:
     - "InjectedFormProps<AddPostFormValuesType, AddPostFormOwnPropsType>" - здесь мы уточнили внедренные ХОКом, который
     образуется при помощи компонента "AddPostReduxForm", "InjectedFormProps". "AddPostFormValuesType" указывает, что
-    приходит из этого ХОКа, а "AddPostFormOwnPropsType" указывает, что приходит со стороны - в нашем случае "any".
+    приходит из этого ХОКа, а "AddPostFormOwnPropsType" указывает, что приходит со стороны - в нашем случае ничего.
     - "& AddPostFormOwnPropsType" - также этот компонент содержит некие свои собственные "props", которые не приходят от
     ХОКа выше.
     Это мы сделали на основании файла декларации "InjectedFormProps" ("Ctrl+click" в "WebStorm"). Там указано, что

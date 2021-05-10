@@ -19,7 +19,7 @@ import {createSelector} from 'reselect';
 сложные селекторы на основе нескольких примитивных селекторов или на основе нескольких примитивных и сложных селекторов.
 */
 
-import {AppStateType} from './redux-store'; /*Импортируем типы.*/
+import {AppStateType} from './redux-store'; /*Подключаем типы.*/
 
 
 /*Селекторы для компонента "UsersContainer".*/
