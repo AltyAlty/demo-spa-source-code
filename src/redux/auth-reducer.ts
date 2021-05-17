@@ -44,10 +44,10 @@ const authReducer = (state = initialState, action: ActionsType): InitialAuthStat
 "state" на выходе имеет тот же тип "InitialAuthStateType", что и "state" на входе. На входе объекты "action" имеют тип
 "ActionsType", созданный нами ниже.*/
     switch (action.type) {
-        case 'react-samurai-01/auth-reducer/SET-USER-DATA':
-        case 'react-samurai-01/auth-reducer/SET-CAPTCHA-URL': /*Здесь для обоих случаев один и тот же код потому, что в
-        обоих соотвествующих AC используется "payload". Благодаря деструктуризации мы сможет передать нужные значение
-        свойств из "payload" в нужные свойства "state" при совпадении имен свойств.*/
+        case 'demo-spa/auth-reducer/SET-USER-DATA':
+        case 'demo-spa/auth-reducer/SET-CAPTCHA-URL': /*Здесь для обоих случаев один и тот же код потому, что в обоих
+        соотвествующих AC используется "payload". Благодаря деструктуризации мы сможем передать нужные значения свойств
+        из "payload" в нужные свойства "state" при совпадении имен свойств.*/
             return { /*Устанавливаем данные по залогиненному пользователю в "state".*/
                 ...state, /*Делаем поверхностную копию "state".*/
                 ...action.payload, /*Объект "action" будет иметь объект "payload", который содержит "id", "email",
@@ -91,7 +91,7 @@ export const authAC = { /*Создали специальный объект, с
                       isAuth: boolean /*На входе получает информацию залогинен ли пользователь, которая должна быть
                       булева типа.*/
     ) => ({/*AC для установки данных залогиненного пользователя в "state".*/
-        type: 'react-samurai-01/auth-reducer/SET-USER-DATA', /*Обязательно свойство "type" для AC.*/
+        type: 'demo-spa/auth-reducer/SET-USER-DATA', /*Обязательно свойство "type" для AC.*/
         payload: { /*Объект с данными по залогиненному пользователю. Далее мы его деструктурируем в "authReducer".*/
             id, /*Свойство, которое хранит "ID" залогиненного пользователя.*/
             email, /*Свойство, которое хранит "email" залогиненного пользователя.*/
@@ -102,7 +102,7 @@ export const authAC = { /*Создали специальный объект, с
 
     setCaptchaURL: (captchaURL: string) => ({ /*AC для установки URL изображения с капчей в "state". На входе получает
     "captchaURL", которое дожно быть строкой.*/
-        type: 'react-samurai-01/auth-reducer/SET-CAPTCHA-URL', /*Обязательно свойство "type" для AC.*/
+        type: 'demo-spa/auth-reducer/SET-CAPTCHA-URL', /*Обязательно свойство "type" для AC.*/
         payload: { /*Объект с URL изображения с капчей. Далее мы его деструктурируем в "authReducer".*/
             captchaURL /*Свойство, которое хранит URL изображения с капчей.*/
         }

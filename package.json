@@ -18,6 +18,7 @@
     "@types/redux-form": "^8.3.0",
     "axios": "^0.20.0",
     "classnames": "^2.2.6",
+    "formik": "^2.2.6",
     "npm-check-updates": "^9.0.3",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",

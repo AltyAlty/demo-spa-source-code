@@ -82,7 +82,7 @@ const dialogsReducer = (state = initialState, action: ActionsType): InitialDialo
 тип "state" на выходе имеет тот же тип "InitialDialogsStateType", что и "state" на входе. На входе объекты "action"
 имеют тип "ActionsType", созданный нами ниже.*/
     switch (action.type) {
-        case 'react-samurai-01/dialogs-reducer/ADD-MESSAGE':
+        case 'demo-spa/dialogs-reducer/ADD-MESSAGE':
             let newMessage = { /*Создаем новое исходящее сообщение в виде объекта.*/
                 id: 6, /*Указываем "ID" исходящего сообщения.*/
                 message: action.newMessageText, /*Указываем текст исходящего сообщения.*/
@@ -123,7 +123,7 @@ export const dialogsAC = { /*Создали специальный объект,
 типов для каждого AC в обмен на один общий для них тип, который мы создали выше.*/
     addMessage: (newMessageText: string) => ({ /*AC для добавления нового исходящего сообщения. На входе получает
     "newMessageText", которое дожно быть строкой.*/
-        type: 'react-samurai-01/dialogs-reducer/ADD-MESSAGE', /*Обязательно свойство "type" для AC.*/
+        type: 'demo-spa/dialogs-reducer/ADD-MESSAGE', /*Обязательно свойство "type" для AC.*/
         newMessageText /*Это равносильно "newMessageText: newMessageText". Создаем свойство, которое содержит текст
         исходящего сообщения.*/
     } as const)

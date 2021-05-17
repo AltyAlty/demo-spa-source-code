@@ -52,7 +52,7 @@ const profileReducer = (state = initialState, action: ActionsType): InitialProfi
 тип "state" на выходе имеет тот же тип "InitialProfileStateType", что и "state" на входе. На входе объекты "action"
 имеют тип "ActionsType", созданный нами ниже.*/
     switch (action.type) {
-        case 'react-samurai-01/profile-reducer/ADD-POST': /*Добавляем новый пост на страницу профиля пользователя.*/
+        case 'demo-spa/profile-reducer/ADD-POST': /*Добавляем новый пост на страницу профиля пользователя.*/
             let newPost = { /*Создаем новый пост в виде объекта.*/
                 id: 5, /*Указываем "ID" поста.*/
                 message: action.newPostText, /*Указываем текст поста.*/
@@ -65,29 +65,29 @@ const profileReducer = (state = initialState, action: ActionsType): InitialProfi
                 поста в "state".*/
             };
 
-        case 'react-samurai-01/profile-reducer/SET-USER-PROFILE': /*Устанавливаем данные профиля пользователя на
-        странице его профиля.*/
+        case 'demo-spa/profile-reducer/SET-USER-PROFILE': /*Устанавливаем данные профиля пользователя на странице его
+        профиля.*/
             return {
                 ...state, /*Делаем поверхностную копию "state".*/
                 profile: action.profile /*Устанавливаем данные профиля пользователя в "state".*/
             };
 
-        case 'react-samurai-01/profile-reducer/SET-USER-STATUS': /*Устанавливаем данные статуса пользователя на странице
-        его профиля.*/
+        case 'demo-spa/profile-reducer/SET-USER-STATUS': /*Устанавливаем данные статуса пользователя на странице его
+        профиля.*/
             return {
                 ...state, /*Делаем поверхностную копию "state".*/
                 status: action.status /*Устанавливаем данные статуса пользователя в "state".*/
             };
 
-        case 'react-samurai-01/profile-reducer/DELETE-POST': /*Удаляем пост по его "ID".*/
+        case 'demo-spa/profile-reducer/DELETE-POST': /*Удаляем пост по его "ID".*/
             return {
                 ...state, /*Делаем поверхностную копию "state".*/
                 postsData: state.postsData.filter(p => p.id !== action.postID) /*Отфильтруем массив "postsData", оставив
                 только те элементы, которые не имеют "ID" равного "ID" из полученного объекта "action".*/
             };
 
-        case 'react-samurai-01/profile-reducer/IS-SAVING-USER-PHOTO-SUCCESSFUL': /*Устанавливаем ссылки на фото
-        пользователя на странице профиля в "state".*/
+        case 'demo-spa/profile-reducer/IS-SAVING-USER-PHOTO-SUCCESSFUL': /*Устанавливаем ссылки на фото пользователя на
+        странице профиля в "state".*/
             return {
                 ...state, /*Делаем поверхностную копию "state".*/
                 profile: {...state.profile, photos: action.photos} as ProfileType /*Делаем глубокую копию "state".
@@ -124,19 +124,19 @@ export const profileAC = { /*Создали специальный объект,
 типов для каждого AC в обмен на один общий для них тип, который мы создали выше.*/
     addPost: (newPostText: string) => ({ /*AC для добавления нового поста. На входе получает "newPostText",
     которое дожно быть строкой.*/
-        type: 'react-samurai-01/profile-reducer/ADD-POST', /*Обязательно свойство "type" для AC.*/
+        type: 'demo-spa/profile-reducer/ADD-POST', /*Обязательно свойство "type" для AC.*/
         newPostText /*Это равносильно "newPostText: newPostText". Создаем свойство, которое содержит текст поста.*/
     } as const),
 
     setUserProfile: (profile: ProfileType) => ({ /*AC для установки данных профиля пользователя на странице его профиля.
     На входе получает "profile", которое дожно быть типа "ProfileType", созданного нами и импортированного сюда.*/
-        type: 'react-samurai-01/profile-reducer/SET-USER-PROFILE', /*Обязательно свойство "type" для AC.*/
+        type: 'demo-spa/profile-reducer/SET-USER-PROFILE', /*Обязательно свойство "type" для AC.*/
         profile /*Это равносильно "profile: profile". Создаем свойство, которое содержит данные профиля пользователя.*/
     } as const),
 
     setUserStatus: (status: string) => ({ /*AC для установки данных статуса пользователя на странице его профиля. На
     входе получает "status", которое дожно быть строкой.*/
-        type: 'react-samurai-01/profile-reducer/SET-USER-STATUS', /*Обязательно свойство "type" для AC.*/
+        type: 'demo-spa/profile-reducer/SET-USER-STATUS', /*Обязательно свойство "type" для AC.*/
         status /*Это равносильно "status: status". Создаем свойство, которое содержит данные статуса пользователя на
         странице его профиля.*/
     } as const),
@@ -144,15 +144,14 @@ export const profileAC = { /*Создали специальный объект,
     deletePostActionCreator: (postID: number) => ({/*AC для добавления нового поста. Этот AC создали специально для
     целей тестирования в "profile-reducer.test.ts", данный функционал в нашем приложении пока еще не реализован. На
     входе получает "postID", которое дожно быть числом.*/
-        type: 'react-samurai-01/profile-reducer/DELETE-POST', /*Обязательно свойство "type" для AC.*/
+        type: 'demo-spa/profile-reducer/DELETE-POST', /*Обязательно свойство "type" для AC.*/
         postID /*Это равносильно "postID: postID". Создаем свойство, которое содержит "ID" поста для удаления.*/
     } as const),
 
     isSavingUserPhotoSuccessfulAC: (photos: PhotosType) => ({ /*AC для установки фото пользователя в приложении на
     странице его профиля. На входе получает "photos", которое дожно быть типа "PhotosType", созданного нами и
     импортированного сюда.*/
-        type: 'react-samurai-01/profile-reducer/IS-SAVING-USER-PHOTO-SUCCESSFUL', /*Обязательно свойство "type" для
-        AC.*/
+        type: 'demo-spa/profile-reducer/IS-SAVING-USER-PHOTO-SUCCESSFUL', /*Обязательно свойство "type" для AC.*/
         photos /*Это равносильно "photos: photos". Создаем свойство, которое содержит объект с ссылками на фото
         пользователя с сервера.*/
     } as const)
