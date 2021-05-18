@@ -259,9 +259,9 @@ JSX совмещает в себе JS и HTML.
 Внутри компонента "Login" подключается компонент "LoginReduxForm", в котором обворачиваем компонент "LoginForm"
 HOC-ом "reduxForm", тем самым предоставляя callback "handleSubmit" для компонента "LoginForm".
 */
-export const Login: React.FC<LoginPropsType> = (props) => { /*Указали
-при помощи "React.FC<>", что "props" в этом функциональном компоненте имеют тип "LoginPropsType", созданный нами выше.
-Также указали, что экспортируем этот компонент.*/
+export const Login: React.FC<LoginPropsType> = (props) => { /*Указали при помощи
+"React.FC<>", что "props" в этом функциональном компоненте имеют тип "LoginPropsType", созданный нами выше. Также
+указали, что экспортируем этот компонент.*/
     const captchaURL = useSelector(getCaptchaURL); /*При помощи хука "useSelector", передав в него селектор
     "getCaptchaURL", получаем URL капчи при логинизации.*/
     const isAuth = useSelector(getIsAuth); /*При помощи хука "useSelector", передав в него селектор "getIsAuth",
