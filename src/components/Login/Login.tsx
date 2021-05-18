@@ -10,37 +10,13 @@ import {Redirect} from 'react-router-dom';
 атрибут "to".
 Маршрут для пути редиректа уже должен быть создан.
 */
-import {connect} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 /*
-Библиотека "react-redux" является прослойкой между UI (react) и BLL (redux).
-Это прослойка необходима потому, что UI нежелательно общаться с BLL напрямую.
-Библиотека "react-redux" предоставляет продвинутые инструкции по созданию контейнерных компонент и контекста.
-Метод "connect" это HOC. Точнее он возвращает HOC, а этот HOC получает компонент и обрабатывает его.
-HOC - high order component (компонента высшего порядка).
-HOC - это функция, которая принимает на входе один компонент, обворачивает его, чтобы передать какие-то данные, и
-на выходе возвращает другой компонент.
-HOC позволяет создавать однообразные контейнерные компоненты.
-Метод "connect" используется для создания компонентов и контейнеров.
-Метод "connect" знает о нашем "store" из "redux" и сам передает данные оттуда в указанный компонент.
-Метод "connect" упрощает перекидывание "props".
-Метод "connect" имеет улучшенную оптимизацию перерисовки, т.к он перерисовывает только нужную часть "Virtual DOM".
-При помощи метода "connect" можно удобно создавать контейнерные компоненты.
-У метода "connect" есть свои аналоги "getState", "subscribe", "callSubscriber", "dispatch".
-Метод "connect" вызывается дважды - первый раз он вызывается с параметрами ((две функции)) ввиде данных "state" (функция
-"mapStateToProps") и "dispatch" (наши callbacks - "AC" или "TC", функция "mapDispatchToProps"), причем в первую функцию
-метод "connect" закинет весь "state" из "store", а во вторую функцию закинет "store.dispatch.bind(store)", т.е. наши
-callbacks и потом будет возвращать другую функцию, затем вызывается эта возвращенная функция с параметрами ввиде
-указанного компонента. При каждом изменении "state" вызывается функция "mapStateToProps", формируется новый объект
-с данными из "state" и сравнивается со старым объектом с данными из "state" (их внутренности).
-Если были изменения в нужной для компонента части "state", которая указана в функции "mapStateToProps",
-то метод "connect" перерисовывает компонент. Именно поэтому в "reducers" мы создаем копии "state". Если создается копия
-"state", то получается, что идет ссылка на другой объект. Исходя из этого "connect" считает, что были изменения.
-Когда мы импортируем объекты или функции в классовые компоненты, то на самом деле мы создаем ссылки на них. Например,
-AC или TC в контейнерной компоненте это ссылки на AC или TC из "reducers". Учитывая это, в метод "connect" можно сразу
-указывать AC или TC, так как connect создает контейнерную классовую компоненту и сам может создавать callbacks вокруг
-AC или TC, как это делается в функции "mapDispatchToProps". И тогда функцию "mapDispatchToProps" можно не писать.
-"Provider" необходим для создания контекста, из которого компоненты (особенно контейнерные) могут брать данные
-BLL и DAL.
+Библиотека "react-redux" является прослойкой между UI (react) и BLL (redux). Эта прослойка необходима потому, что UI
+нежелательно общаться с BLL напрямую. Библиотека "react-redux" предоставляет продвинутые инструкции по созданию
+контейнерных компонент и контекста.
+"useSelector" - это hook, который принимает селектор и возвращает данные, которые возвращает этот селектор.
+"useDispatch" - это hook, который принимает AC или TC и диспатчит их.
 */
 import {InjectedFormProps, reduxForm} from 'redux-form';
 /*
@@ -110,33 +86,21 @@ import {createField, GetValuesKeysType, Input} from '../common/FormsControls/For
 
 import {login} from '../../redux/auth-reducer'; /*Подключаем TC "login" из "auth-reducer".*/
 
+import {
+    getCaptchaURL, /*Импортируем селектор, который возвращает URL капчи при логинизации.*/
+    getIsAuth /*Импортируем селектор, который возвращает информацию о том, что являемся ли мы залогинены в приложение
+    или нет.*/
+} from '../../redux/auth-selectors';
+
 import styles from './Login.module.css'; /*Подключаем стили из CSS-модуля.*/
 import style from '../common/FormsControls/FormsControls.module.css'; /*Подключаем стили из CSS-модуля.*/
 
-import {AppStateType} from '../../redux/redux-store'; /*Подключаем типы.*/
-
-
-/*Создаем тип для "MapStateToProps" для компонента "Login". "MapStateToProps" в этом компоненте должен обязательно
-содержать следующие поля с указанными типами.*/
-type MapStateToPropsType = {
-    isAuth: boolean /*Информация о том, что являемся ли мы залогинены в приложение или нет, должна быть булева типа.*/
-    captchaURL: string | null /*URL капчи при логинизации должен быть строкой.*/
-};
-
-/*Создаем тип для "MapDispatchToProps" для компонента "Login". "MapDispatchToProps" в этом компоненте должен обязательно
-содержать следующие поля с указанными типами.*/
-type MapDispatchToPropsType = {
-    login: (email: string, password: string, rememberMe: boolean, captcha: string) => void /*TC для осуществления
-    логинизации должен быть функцией, которая принимает следующие параметры:
-    - "email" пользователя, который должен быть строкой;
-    - пароль пользователя, который должен быть строкой;
-    - информация запомнить ли пользователя, которая должна быть булева типа;
-    - путь к капче, который должен быть строкой.*/
-};
 
 /*Создаем общий тип для всех "props" компонента "Login" путем комбинации двух созданных выше типов "MapStateToPropsType"
 и "MapDispatchToPropsType". Все это нужно для указания типа "props" в функциональном компоненте "Login".*/
-type LoginPropsType = MapStateToPropsType & MapDispatchToPropsType;
+type LoginPropsType = {
+
+};
 
 /*Создаем тип для "собственных props" компонента "LoginForm". "Собственные props" в этом компоненте должны обязательно
 содержать следующие поля с указанными типами.*/
@@ -295,26 +259,28 @@ JSX совмещает в себе JS и HTML.
 Внутри компонента "Login" подключается компонент "LoginReduxForm", в котором обворачиваем компонент "LoginForm"
 HOC-ом "reduxForm", тем самым предоставляя callback "handleSubmit" для компонента "LoginForm".
 */
-const Login: React.FC<LoginPropsType> = ({isAuth,captchaURL ,login}) => { /*Уазываем какие именно
-"props" мы получаем, чтобы не писать далее "props.isAuth" и так далее:
-- "isAuth" - информация о том, что являемся ли мы залогинены в приложение или нет;
-- "captchaURL" - URL капчи при логинизации;
-- "login" - TC для осуществления логинизации.
-Такое мы делаем только в функциональных компонентах.
-Указали при помощи "React.FC<>", что "props" в этом функциональном компоненте имеют тип "LoginPropsType", созданный нами
-выше.*/
+export const Login: React.FC<LoginPropsType> = (props) => { /*Указали
+при помощи "React.FC<>", что "props" в этом функциональном компоненте имеют тип "LoginPropsType", созданный нами выше.
+Также указали, что экспортируем этот компонент.*/
+    const captchaURL = useSelector(getCaptchaURL); /*При помощи хука "useSelector", передав в него селектор
+    "getCaptchaURL", получаем URL капчи при логинизации.*/
+    const isAuth = useSelector(getIsAuth); /*При помощи хука "useSelector", передав в него селектор "getIsAuth",
+    получаем информацию о том, что являемся ли мы залогинены в приложение или нет.*/
+
+    const dispatch = useDispatch(); /*Делаем это для более краткого использования хука "useDispatch".*/
+
     const onSubmitForm = (formData: LoginFormValuesType) => { /*Создали специальный callback "onSubmitForm", который
     будет вызываться при срабатывании события "onSubmit" в форме. Этот callback будет собирать все данные формы (email
     пользователя, пароль пользователя, указание запомнить ли данные входа, и капча, если присуствует) в одном месте. Эти
     данные будут отдаваться TC "login" для осуществления логинизации. Этот callback получает указанные данные на входе в
     объекте "formData" с типом "LoginFormValuesType".*/
-        login(formData.email, formData.password, formData.rememberMe, formData.captcha);
+        dispatch(login(formData.email, formData.password, formData.rememberMe, formData.captcha));
     };
 
     if (isAuth) { /*Если пользователь залогинен, то его должно перенаправить на страницу профиля, вместо показа
     формы для логинизации.*/
         return <Redirect to={'/profile/'}/>
-    }
+    };
 
     /*
     Здесь после return в компоненте начинается HTML разметка.
@@ -334,23 +300,3 @@ const Login: React.FC<LoginPropsType> = ({isAuth,captchaURL ,login}) => { /*Уа
         </div>
     );
 };
-
-
-const mapStateToProps = (state: AppStateType): MapStateToPropsType => ({ /*Здесь указываются данные из "state", которые
-необходимо передать в компонент "Login". Эта функция возвращает указанные данные в виде объекта. На входе
-"mapStateToProps" принимает "state" с типом "AppStateType", который мы создали и импортировали сюда, а на выходе выдает
-данные с типом "MapStateToPropsType".*/
-    isAuth: state.auth.isAuth, /*Информация о том, что являемся ли мы залогинены в приложение или нет.*/
-    captchaURL: state.auth.captchaURL /*URL капчи при логинизации.*/
-});
-
-
-export default connect<MapStateToPropsType, MapDispatchToPropsType, {}, AppStateType>(mapStateToProps, /*При помощи
-метода "connect" создаем контейнерный компонент, и тем самым передаем нужные данные BLL и DAL компоненту "Login".
-Поскольку метод "connect" является "generic", то его можно уточнить: первым в "<>" указан тип для "MapStateToProps",
-вторым для "MapDispatchToProps", третьим для "собственных props" компонента, четвертым для "state". Эти параметры мы
-узнали перейдя в файл декларации метода "connect", "Ctrl+click" в "WebStorm".*/
-    {login} /*TC для осуществления логинизации.*/
-)(Login);
-/*Получившийся в итоге компонент экспортируем, который будет использоваться в нашем проекте под именем "LoginPage", по
-default, экспорт необходим для импорта.*/
