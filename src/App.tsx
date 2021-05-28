@@ -132,17 +132,14 @@ import {compose} from 'redux';
 "connect" из библиотеки "react-redux".
 */
 
-import logo from './logo.svg'; /*Подключаем svg-файл как лого, но он не используется в нашем проекте.*/
-import './App.css'; /*Подключаем файл CSS.*/
-
-import Preloader from './components/common/Preloader/Preloader'; /*Подключаем компонент "Preloader".*/
-import HeaderContainer from './components/Header/HeaderContainer'; /*Подключаем компонент "HeaderContainer".*/
-import NavbarContainer from './components/Navbar/NavbarContainer'; /*Подключаем компонент "NavbarContainer".*/
-import {UsersContainer} from './components/Users/UsersContainer'; /*Подключаем компонент "UsersContainer".*/
-import Music from './components/Music/Music'; /*Подключаем компонент "Music".*/
-import News from './components/News/News'; /*Подключаем компонент "News".*/
-import Settings from './components/Settings/Settings'; /*Подключаем компонент "Settings".*/
-import Friends from './components/Friends/Friends'; /*Подключаем компонент "Friends".*/
+import {Preloader} from './components/common/Preloader/Preloader'; /*Подключаем компонент "Preloader".*/
+import {Header} from './components/Header/Header'; /*Подключаем компонент "Header".*/
+import {Navbar} from './components/Navbar/Navbar'; /*Подключаем компонент "Navbar".*/
+import {Users} from './components/Users/Users'; /*Подключаем компонент "Users".*/
+import {Music} from './components/Music/Music'; /*Подключаем компонент "Music".*/
+import {News} from './components/News/News'; /*Подключаем компонент "News".*/
+import {Settings} from './components/Settings/Settings'; /*Подключаем компонент "Settings".*/
+import {Friends} from './components/Friends/Friends'; /*Подключаем компонент "Friends".*/
 import {Login} from './components/Login/Login'; /*Подключаем компонент "LoginPage".*/
 
 import {withSuspense} from './hoc/WithSuspense'; /*Подключаем наш HOC "WithSuspense.tsx" для реализации "lazy loading"
@@ -151,6 +148,11 @@ import {withSuspense} from './hoc/WithSuspense'; /*Подключаем наш H
 import store, {AppStateType} from './redux/redux-store'; /*Подключаем наш "store" из "redux". Также подключаем тип
 "AppStateType" оттуда.*/
 import {initializeApp} from './redux/app-reducer'; /*Подключаем TC "initializeApp" из "app-reducer".*/
+
+import './App.css'; /*Подключаем файл CSS.*/
+import 'antd/dist/antd.css'; /*Импортируем CSS-стили из UI-фреймфорка "Ant Design".*/
+import {Layout} from 'antd'; /*Импортируем из UI-фреймфорка "Ant Design" "Layout" для получения из него объектов
+"Content" и "Footer", чтобы использовать их как теги для реализации основного содержания страницы и футера.*/
 
 const DialogsContainer = React.lazy(() => import('./components/Dialogs/DialogsContainer'));
 const ProfileContainer = React.lazy(() => import('./components/Profile/ProfileContainer'));
@@ -174,9 +176,16 @@ type MapDispatchToPropsType = {
     ничего не возвращает.*/
 };
 
+/*Создали отдельный тип для объекта "location" из функции "withRouter" из библиотеки "react-router-dom".*/
+type PathnameType = {
+    location: {
+        pathname: string
+    }
+};
+
 /*Создаем общий тип для всех "props" путем комбинации трех созданных выше типов. Все это нужно для указания типа
 "props" в классовом компоненте.*/
-type PropsType = MapStateToPropsType & MapDispatchToPropsType;
+type PropsType = MapStateToPropsType & MapDispatchToPropsType & PathnameType;
 
 
 const ProfileContainerWithSuspense = withSuspense(ProfileContainer); /*Обвернули "withSuspense(ProfileContainer)"
@@ -248,7 +257,11 @@ class App extends React.Component<PropsType/*, StateType*/> /*Указали, ч
         if (!this.props.initialized) { /*Пока мы не убедимся, что приложение инициализировано, мы будем показывать
         компонент "Preloader", тем самым избежим мигания сайта из-за редиректов.*/
             return <Preloader/>
-        }
+        };
+
+        const {Content, Footer} = Layout; /*При помощи деструктуризации берем объекты "Content" и "Footer" из объекта
+        "Layout" из UI-фреймфорка "Ant Design", чтобы использовать их как теги внутри для реализации основного
+        содержания страницы и футера.*/
 
         /*
         Здесь после return в компоненте начинается HTML разметка.
@@ -256,104 +269,116 @@ class App extends React.Component<PropsType/*, StateType*/> /*Указали, ч
         Поскольку то, что возвращает return указано с новой строки, поэтому все возвращаемое помещено в круглые скобки.
         */
         return (
-            <div className='app-wrapper'> {/*Этот элемент "div" и есть наш корневой элемент.*/}
+            <Layout> {/*Этот элемент "Layout" и есть наш корневой элемент. Элемент "Layout" - это макет, то есть это
+            самая внешняя структура проекта, обычно  состоящая из навигации, футера, сайдбара, уведомлений и
+            содержания.*/}
+                <Header/> {/*Отрисовываем компонет "Header", указывая его тег в JSX.*/}
 
-                <HeaderContainer/> {/*Отрисовываем компонет "HeaderContainer", указывая его тег в JSX.*/}
+                <Content className='main-content'> {/*Элемент "Content" - это элемент для включения в него содержания
+                страницы. В данном случае мы включаем все содержимое страницы в этот элемент.*/}
+                    <Layout> {/*Элемент "Layout" - это макет, то есть это самая внешняя структура проекта, обычно
+                    состоящая из навигации, футера, сайдбара, уведомлений и содержания.*/}
+                        <Navbar location={this.props.location}/> {/*Отрисовываем компонет "Navbar", указывая его тег в
+                        JSX. Передаем в этот компонент информацию о пути, на котором сейчас находимся.*/}
 
-                <NavbarContainer/> {/*Отрисовываем компонет "NavbarContainer", указывая его тег в JSX.*/}
+                        <Content className='actual-content'> {/*Этот элемент "Content" содержит основной контент нашего
+                        приложения.*/}
+                            <Switch>
+                                <Route exact path='/' /*Создаем маршрут для пути '/'. "exact" говорит о том, что путь
+                                должен совпадать точь в точь, то есть если, например, будет какой-то подпуть, то такой
+                                путь не подойдет.*/
+                                       render={() => <Redirect to='/profile'/>}/> {/*"render" это анонимная функция из
+                                       библиотеки "react-router-dom", которую вызовет "Route" при совпадении пути.
+                                       "render" позволяет передавать параметры. В данном случае произойдет редирект на
+                                       путь '/profile'.*/}
 
-                <div className='app-wrapper-content'> {/*Этот элемент "div" содержит основной контент нашего приложения.
-                Контент будет меняться в зависимости от выбранного маршрута, которые здесь указаны в тегах "Route".*/}
-                    <Switch>
-                        <Route exact path='/' /*Создаем маршрут для пути '/'. "exact" говорит о том, что путь должен
-                        совпадать точь в точь, то есть если, например, будет какой-то подпуть, то такой путь
-                        не подойдет.*/
-                               render={() => <Redirect to='/profile'/>}/> {/*"render" это анонимная функция из
-                               библиотеки "react-router-dom", которую вызовет "Route" при совпадении пути. "render"
-                               позволяет передавать параметры. В данном случае произойдет редирект на путь
-                               '/profile'.*/}
+                                {/*Это еще одна версия вышеуказанного "Route" редиректом. Оба варианта рабочие, если они
+                                обвернуты в тег <Switch>.*/}
+                                {/*
+                                <Route exact path='/'>
+                                    <Redirect to='/profile'/>
+                                </Route>
+                                */}
 
-                        {/*Это еще одна версия вышеуказанного "Route" редиректом. Оба варианта рабочие, если они
-                        обвернуты в тег <Switch>.*/}
-                        {/*}
-                        <Route exact path='/'>
-                            <Redirect to='/profile'/>
-                        </Route>
-                        */}
+                                <Route path='/dialogs/' /*Создаем маршрут для пути '/dialogs/'.*/
+                                       render={() => <Suspense fallback={<Preloader/>}><DialogsContainer/></Suspense>}/>
+                                {/*"render" это анонимная функция из библиотеки "react-router-dom", которую вызовет
+                                "Route" при совпадении пути. "render" позволяет передавать параметры. Здесь мы также
+                                использовали тег "Suspense", чтобы реализовать "lazy loading" без нашего HOC
+                                "WithSuspense.tsx". Также здесь указано, что пока будет идти загрузка компонента будет
+                                показываться компонент-заглушка "Preloader".*/}
 
-                        <Route path='/dialogs/' /*Создаем маршрут для пути '/dialogs/'.*/
-                               render={() => <Suspense fallback={<Preloader/>}><DialogsContainer/></Suspense>}/>
-                               {/*"render" это анонимная функция из библиотеки "react-router-dom",
-                               которую вызовет "Route" при совпадении пути. "render" позволяет передавать параметры.
-                               Здесь мы также использовали тег "Suspense", чтобы реализовать "lazy loading" без
-                               нашего HOC "WithSuspense.tsx". Также здесь указано, что пока будет идти загрузка
-                               компонента будет показываться компонент-заглушка "Preloader".*/}
+                                <Route path='/profile/:userID?' /*Создаем маршрут для пути '/profile/:userID?'.
+                                ":userID" означает, что у пути может быть какое-то дополнение по типу "ID" пользователя,
+                                это не является параметром запроса. "?" в конце означает, что это дополнение является
+                                опциональным, если это не указать, то просто переход в "/profile" не отрисует
+                                компонент.*/
+                                       render={() => <ProfileContainerWithSuspense/>}/> {/*"render" это анонимная
+                                       функция из библиотеки "react-router-dom", которую вызовет "Route" при совпадении
+                                       пути. "render" позволяет передавать параметры. Здесь мы также используем наш HOC
+                                       "WithSuspense.tsx" для реализации "lazy loading".*/}
 
-                        <Route path='/profile/:userID?' /*Создаем маршрут для пути '/profile/:userID?'. ":userID"
-                        означает, что у пути может быть какое-то дополнение по типу "ID" пользователя, это не является
-                        параметром запроса. "?" в конце означает, что это дополнение является опциональным, если это
-                        не указать, то просто переход в "/profile" не отрисует компонент.*/
-                               render={() => <ProfileContainerWithSuspense/>}/> {/*"render" это анонимная функция из
-                               библиотеки "react-router-dom", которую вызовет "Route" при совпадении пути. "render"
-                               позволяет передавать параметры. Здесь мы также используем наш HOC "WithSuspense.tsx" для
-                               реализации "lazy loading".*/}
+                                {/*Далее представлен еще один способ реализации "lazy loading" для компонентов
+                                "DialogContainer.jsx" и "ProfileContainer.tsx" без использования нашего HOC
+                                "WithSuspense.tsx". Здесь мы сразу несколько тегов "Route" обварачиваем в один тег
+                                "Suspense". В данный момент этот вариант не используется в нашем проекте.*/}
+                                {/*
+                                <Suspense fallback={<Preloader/>}>
+                                    <Route path='/dialogs/'
+                                        render={() => <DialogsContainer/>}/>
+                                    <Route path='/profile/:userID?'
+                                        render={() => <ProfileContainer/>}/>
+                                </Suspense>
+                                */}
 
-                        {/*Далее представлен еще один способ реализации "lazy loading" для компонентов
-                        "DialogContainer.jsx" и "ProfileContainer.tsx" без использования нашего HOC "WithSuspense.tsx".
-                        Здесь мы сразу несколько тегов "Route" обварачиваем в один тег "Suspense". В данный момент
-                        этот вариант не используется в нашем проекте.*/}
-                        {/*
-                        <Suspense fallback={<Preloader/>}>
-                            <Route path='/dialogs/'
-                                   render={() => <DialogsContainer/>}/>
-                            <Route path='/profile/:userID?'
-                                   render={() => <ProfileContainer/>}/>
-                        </Suspense>
-                        */}
+                                <Route path='/users/' /*Создаем маршрут для пути '/users/'.*/
+                                       render={() => <Users/>}/> {/*"render" это анонимная функция из
+                                       библиотеки "react-router-dom", которую вызовет "Route" при совпадении пути.
+                                       "render" позволяет передавать параметры.*/}
 
-                        <Route path='/users/' /*Создаем маршрут для пути '/users/'.*/
-                               render={() => <UsersContainer/>}/> {/*"render" это анонимная функция из библиотеки
-                               "react-router-dom", которую вызовет "Route" при совпадении пути. "render" позволяет
-                               передавать параметры.*/}
+                                <Route path='/news/' /*Создаем маршрут для пути '/news/'.*/
+                                       render={() => <News/>}/> {/*"render" это анонимная функция из библиотеки
+                                       "react-router-dom", которую вызовет "Route" при совпадении пути. "render"
+                                       позволяет передавать параметры.*/}
 
-                        <Route path='/news/' /*Создаем маршрут для пути '/news/'.*/
-                               render={() => <News/>}/> {/*"render" это анонимная функция из библиотеки
-                               "react-router-dom", которую вызовет "Route" при совпадении пути. "render" позволяет
-                               передавать параметры.*/}
+                                <Route path='/music/' /*Создаем маршрут для пути '/music/'.*/
+                                       render={() => <Music/>}/> {/*"render" это анонимная функция из библиотеки
+                                       "react-router-dom", которую вызовет "Route" при совпадении пути. "render"
+                                       позволяет передавать параметры.*/}
 
-                        <Route path='/music/' /*Создаем маршрут для пути '/music/'.*/
-                               render={() => <Music/>}/> {/*"render" это анонимная функция из библиотеки
-                               "react-router-dom", которую вызовет "Route" при совпадении пути. "render" позволяет
-                               передавать параметры.*/}
+                                <Route path='/settings/' /*Создаем маршрут для пути '/settings/'.*/
+                                       render={() => <Settings/>}/> {/*"render" это анонимная функция из библиотеки
+                                       "react-router-dom", которую вызовет "Route" при совпадении пути. "render"
+                                       позволяет передавать параметры.*/}
 
-                        <Route path='/settings/' /*Создаем маршрут для пути '/settings/'.*/
-                               render={() => <Settings/>}/> {/*"render" это анонимная функция из библиотеки
-                               "react-router-dom", которую вызовет "Route" при совпадении пути. "render" позволяет
-                               передавать параметры.*/}
+                                <Route path='/friends/' /*Создаем маршрут для пути '/friends/'.*/
+                                       render={() => <Friends/>}/> {/*"render" это анонимная функция из библиотеки
+                                       "react-router-dom", которую вызовет "Route" при совпадении пути. "render"
+                                       позволяет передавать параметры.*/}
 
-                        <Route path='/friends/' /*Создаем маршрут для пути '/friends/'.*/
-                               render={() => <Friends/>}/> {/*"render" это анонимная функция из библиотеки
-                               "react-router-dom", которую вызовет "Route" при совпадении пути. "render" позволяет
-                               передавать параметры.*/}
+                                <Route path='/login/' /*Создаем маршрут для пути '/login/'. Если нужно, что в компонент
+                                "Login" можно было попасть только по одному адресу, то нужно использовать
+                                "exact path='/login/'". Тогда, например, если перейти по пути '/login/facebook', то мы
+                                не попадем в этот компонент. Аналогичный результат можно получить, если обвернуть все
+                                "Route" в тег <Switch>.*/
+                                       render={() => <Login/>}/> {/*"render" это анонимная функция из библиотеки
+                                       "react-router-dom", которую вызовет "Route" при совпадении пути. "render"
+                                       позволяет передавать параметры.*/}
 
-                        <Route path='/login/' /*Создаем маршрут для пути '/login/'. Если нужно, что в компонент
-                        "Login" можно было попасть только по одному адресу, то нужно использовать
-                        "exact path='/login/'". Тогда, например, если перейти по пути '/login/facebook', то мы не
-                        попадем в этот компонент. Аналогичный результат можно получить, если обвернуть все "Route" в
-                        тег <Switch>.*/
-                               render={() => <Login/>}/> {/*"render" это анонимная функция из библиотеки
-                               "react-router-dom", которую вызовет "Route" при совпадении пути. "render" позволяет
-                               передавать параметры.*/}
+                                <Route path='*' /*Создаем маршрут для пути '*'. Этот путь обозначает неверный URL, то
+                                есть любой отличающийся от любого пути в указанных нами маршрутах. Нужно для отображения
+                                "404" в таких случаях. Чтобы это работало нужно обвернуть все "Route" в тег <Switch>.*/
+                                       render={() => <div>404 NOT FOUND</div>}/> {/*"render" это анонимная функция из
+                                       библиотеки "react-router-dom", которую вызовет "Route" при совпадении пути.
+                                       "render" позволяет передавать параметры.*/}
+                            </Switch>
+                        </Content>
+                    </Layout>
+                </Content>
 
-                        <Route path='*' /*Создаем маршрут для пути '*'. Этот путь обозначает неверный URL, то есть
-                        любой отличающийся от любого пути в указанных нами маршрутах. Нужно для отображения "404"
-                        в таких случаях. Чтобы это работало нужно обвернуть все "Route" в тег <Switch>.*/
-                               render={() => <div>404 NOT FOUND</div>}/> {/*"render" это анонимная функция из библиотеки
-                               "react-router-dom", которую вызовет "Route" при совпадении пути. "render" позволяет
-                               передавать параметры.*/}
-                    </Switch>
-                </div>
-            </div>
+                <Footer className='main-footer'>It's 2021 and there is a footer here</Footer> {/*Отрисовываем
+                футер при помощи элемента "Footer".*/}
+            </Layout>
         );
     }
 };

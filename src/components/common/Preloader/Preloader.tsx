@@ -4,6 +4,7 @@ import React from 'react';
 "WebPack" уже встроен в "ReactJS".
 */
 
+import styles from './Preloader.module.css'; /*Подключаем стили из CSS-модуля.*/
 import preloader from '../../../assets/images/preloader.gif'; /*Импортируем из ассетов анимированное изображение,
 изображающее загрузку.*/
 
@@ -34,8 +35,8 @@ JSX совмещает в себе JS и HTML.
 когда идет какой-то процесс в них (например, AJAX-запрос).
 Этот компонент подключается в компонентах "App", "ProfileInfo", "UsersContainer", и в HOC "WithSuspense".
 */
-const Preloader: React.FC<PropsType> = (props) => { /*Указали при помощи "React.FC<>", что
-"props" в этом функциональном компоненте имеют тип "PropsType".*/
+export const Preloader: React.FC<PropsType> = (props) => { /*Указали при помощи "React.FC<>",
+что "props" в этом функциональном компоненте имеют тип "PropsType". Также указали, что экспортируем этот компонент.*/
 
     /*
     Здесь после return в компоненте начинается HTML разметка.
@@ -43,12 +44,8 @@ const Preloader: React.FC<PropsType> = (props) => { /*Указали при по
     Поскольку то, что возвращает return указано с новой строки, поэтому все возвращаемое помещено в круглые скобки.
     */
     return (
-        <div> {/*Этот элемент "div" и есть наш корневой элемент.*/}
+        <div className={styles.preloader}> {/*Этот элемент "div" и есть наш корневой элемент.*/}
             <img alt='' src={preloader}/> {/*Отрисовываем элемент "img" с изображением анимации загрузки.*/}
         </div>
     )
 };
-
-
-export default Preloader; /*Экспортируем компонент "Preloader" по default и будем его использовать в нашем проекте под
-именем "Preloader", экспорт необходим для импорта.*/

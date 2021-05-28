@@ -16,7 +16,7 @@ import React, {Suspense, ComponentType} from 'react';
 Импортируем "ComponentType" для типизации.
 */
 
-import Preloader from '../components/common/Preloader/Preloader'; /*Подключаем компонент "Preloader".*/
+import {Preloader} from '../components/common/Preloader/Preloader'; /*Подключаем компонент "Preloader".*/
 
 
 export function withSuspense<WrappedProps> (Component: ComponentType<WrappedProps>) { /*Это и есть наш HOC, который в

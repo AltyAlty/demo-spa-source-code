@@ -27,7 +27,7 @@ import userPhoto from '../../../assets/images/user.png'; /*Импортируе�
 import profileLogoSource from '../../../assets/images/profilelogo.jpg'; /*Импортируем из ассетов лого для страницы
 профиля.*/
 
-import Preloader from '../../common/Preloader/Preloader'; /*Подключаем компонент "Preloader".*/
+import {Preloader} from '../../common/Preloader/Preloader'; /*Подключаем компонент "Preloader".*/
 import ProfileStatus from './ProfileStatus'; /*Подключаем компонент "ProfileStatus", но в данный момент
 не используется (аналог компонента "ProfileStatusWithHooks", но без хуков).*/
 import ProfileStatusWithHooks from './ProfileStatusWithHooks'; /*Подключаем компонент "ProfileStatusWithHooks".*/
@@ -260,7 +260,7 @@ const ProfileData: React.FC<ProfileDataPropsType> = ({profile, isOwner, activate
         <div> {/*Этот элемент "div" и есть наш корневой элемент.*/}
             {isOwner && <div> {/*Если пользователь является владельцем открытого профиля, то отображаем
             элемент "div",*/}
-                <button onClick={activateEditMode}>edit</button> {/*внутри которого есть элемент "button", для
+                <button onClick={activateEditMode}>Edit</button> {/*внутри которого есть элемент "button", для
                 отображения кнопки перехода в режим редактирования данных профиля, для чего указано событие
                 при нажатии "activateEditMode".*/}
             </div>}

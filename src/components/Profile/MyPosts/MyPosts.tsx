@@ -72,7 +72,7 @@ import {createField, GetValuesKeysType, Textarea} from '../../common/FormsContro
 
 import styles from './MyPosts.module.css'; /*Подключаем стили из CSS-модуля.*/
 
-import Post from './Post/Post'; /*Подключаем компонент "Post".*/
+import {Post} from './Post/Post'; /*Подключаем компонент "Post".*/
 
 import {PostType} from '../../../types/types';
 
@@ -229,8 +229,6 @@ const MyPosts: React.FC<MyPostsPropsType> = React.memo(({postsData, addPost}) =>
 Такое мы делаем только в функциональных компонентах.
 Также указали при помощи "React.FC<>", что "props" в этом функциональном компоненте имеют тип
 "MyPostsPropsType", созданный нами выше.*/
-    console.log('RENDER'); /*Выводил в консоль слова "RENDER". На данный момент нужно только в учебных целях в
-    рамках проверки "React.memo()".*/
 
     /*
     В JSX в массив можно вкладывать компоненты.

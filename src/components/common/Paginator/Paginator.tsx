@@ -107,7 +107,7 @@ const Paginator: React.FC<PropsType> = ({ /*Указываем какие име
 
     for (let i = 1; i <= pagesCount; i++) { /*Заполняем массив "pages" путем перебора "pagesCount".*/
         pages.push(i); /*При помощи метода "push()" добавляем в конец массива "pages" каждый "i".*/
-    }
+    };
 
     /*
     "portionCount" - how many portions of pages we have. Количество порций страниц, которое мы имеем.

@@ -13,13 +13,12 @@
 }
 
 .dialogsItems a { /*Стили для элементов "a" внутри элементов с классом "dialogsItems".*/
-    color: firebrick; /*Задаем цвет текста внутри элемента.*/
     text-decoration: none; /*Отключаем оформление текста внутри элемента, чтобы не было подчеркивания при нажатии
     на ссылку.*/
 }
 
 .dialogsItems .active{ /*Стили для элементов с классом "active" внутри элементов с классом "dialogsItems".*/
-    color: gold; /*Задаем цвет текста внутри элемента.*/
+    color: #793192; /*Задаем цвет текста внутри элемента.*/
 }
 
 .dialog img { /*Стили для элементов "img" внутри элементов с классом "dialog".*/
@@ -29,13 +28,13 @@
 }
 
 .messages { /*Стили для элементов с классом "messages".*/
-    background-color: darkseagreen; /*Задаем цвет заднего фона.*/
+    background-color: #5e39ae; /*Задаем цвет заднего фона.*/
     padding: 10px; /*Задаем paddings.*/
     color: white; /*Задаем цвет текста внутри элемента.*/
 }
 
 .incomingMessages { /*Стили для элементов с классом "incomingMessages".*/
-    background-color: rosybrown; /*Задаем цвет заднего фона.*/
+    background-color: #3952ae; /*Задаем цвет заднего фона.*/
     text-align: right; /*Задаем выравнивание текста по правой стороне.*/
     padding: 10px; /*Задаем paddings.*/
     color: white; /*Задаем цвет текста внутри элемента.*/
@@ -50,5 +49,5 @@
 
 .message, .incomingMessage { /*Стили для элементов с классом "message" или для элементов с классом "incomingMessage".*/
     min-height: 40px; /*Задаем минимальную height элемента.*/
-    border: 1px outset greenyellow; /*Задаем толщину, стиль и цвет границы.*/
+    border: 2px outset #8c8888; /*Задаем толщину, стиль и цвет границы.*/
 }
