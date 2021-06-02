@@ -156,10 +156,12 @@ import {Layout} from 'antd'; /*Импортируем из UI-фреймфорк
 
 const DialogsContainer = React.lazy(() => import('./components/Dialogs/DialogsContainer'));
 const ProfileContainer = React.lazy(() => import('./components/Profile/ProfileContainer'));
+const ChatPage = React.lazy(() => import('./pages/Chat/ChatPage'));
 /*
 Здесь вместо стандартного импорта компонентов "DialogContainer.jsx" и "ProfileContainer.tsx" (чтобы они не попали
 в бандлы) в целях реализации "lazy loading" мы используем "React.lazy". Ниже в роутах мы обварачиваем эти компоненты
-в "Suspense" или в наш HOC "WithSuspense.tsx" для реализации "lazy loading".
+в "Suspense" или в наш HOC "WithSuspense.tsx" для реализации "lazy loading". Также здесь нужно помнить, что надо делать
+экспорт компонентов по умолчанию при использовании "React.lazy()", иначе придется писать дополнительный код.
 */
 
 
@@ -188,11 +190,17 @@ type PathnameType = {
 type PropsType = MapStateToPropsType & MapDispatchToPropsType & PathnameType;
 
 
-const ProfileContainerWithSuspense = withSuspense(ProfileContainer); /*Обвернули "withSuspense(ProfileContainer)"
-в отдельную переменную "ProfileContainerWithSuspense", чтобы это можно было использовать как тег ниже в маршруте
+const ProfileContainerWithSuspense = withSuspense(ProfileContainer); /*Обвернули "withSuspense(ProfileContainer)" в
+отдельную переменную "ProfileContainerWithSuspense", чтобы это можно было использовать как тег ниже в маршруте
 "/profile/:userID?". Мы это сделали после типизации HOC "withSuspense", нам из-за этого пришлось добавить в этот маршрут
 "() => ", поскольку HOC возвращает новый компонент, но не отрисовывает его. Поэтому для отрисовки нам теперь там нужен
 тег (в маршруте "/dialogs/" мы уже использовали тег так-то).*/
+
+const ChatPageWithSuspense = withSuspense(ChatPage); /*Обвернули "withSuspense(ChatPage)" в отдельную переменную
+"ChatPageWithSuspense", чтобы это можно было использовать как тег ниже в маршруте "/chat/". Мы это сделали после
+типизации HOC "withSuspense", нам из-за этого пришлось добавить в этот маршрут "() => ", поскольку HOC возвращает новый
+компонент, но не отрисовывает его. Поэтому для отрисовки нам теперь там нужен тег (в маршруте "/dialogs/" мы уже
+использовали тег так-то).*/
 
 
 /*
@@ -364,6 +372,11 @@ class App extends React.Component<PropsType/*, StateType*/> /*Указали, ч
                                        render={() => <Login/>}/> {/*"render" это анонимная функция из библиотеки
                                        "react-router-dom", которую вызовет "Route" при совпадении пути. "render"
                                        позволяет передавать параметры.*/}
+
+                                <Route path='/chat/' /*Создаем маршрут для пути '/chat/'.*/
+                                       render={() => <ChatPageWithSuspense/>}/> {/*"render" это анонимная функция из
+                                       библиотеки "react-router-dom", которую вызовет "Route" при совпадении пути.
+                                       "render" позволяет передавать параметры.*/}
 
                                 <Route path='*' /*Создаем маршрут для пути '*'. Этот путь обозначает неверный URL, то
                                 есть любой отличающийся от любого пути в указанных нами маршрутах. Нужно для отображения

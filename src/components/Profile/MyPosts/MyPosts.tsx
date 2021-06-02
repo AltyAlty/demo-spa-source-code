@@ -262,6 +262,7 @@ const MyPosts: React.FC<MyPostsPropsType> = React.memo(({postsData, addPost}) =>
     с типом "AddPostFormValuesType".*/
         addPost(formData.newPostText); /*Здесь мы вызываем AC "addPost", полученный из "props", и передаем ему
         текст нового поста пользователя на странице профиля.*/
+        formData.newPostText = ''; /*После вывода поста зануляем поле для ввода текста.*/
     };
 
     /*

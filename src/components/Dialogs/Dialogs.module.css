@@ -28,16 +28,16 @@
 }
 
 .messages { /*Стили для элементов с классом "messages".*/
-    background-color: #5e39ae; /*Задаем цвет заднего фона.*/
+    background-color: floralwhite; /*Задаем цвет заднего фона.*/
     padding: 10px; /*Задаем paddings.*/
-    color: white; /*Задаем цвет текста внутри элемента.*/
+    margin-right: 5px;
+    margin-left: 5px;
 }
 
 .incomingMessages { /*Стили для элементов с классом "incomingMessages".*/
-    background-color: #3952ae; /*Задаем цвет заднего фона.*/
+    background-color: antiquewhite; /*Задаем цвет заднего фона.*/
     text-align: right; /*Задаем выравнивание текста по правой стороне.*/
     padding: 10px; /*Задаем paddings.*/
-    color: white; /*Задаем цвет текста внутри элемента.*/
 }
 
 .messages img, .incomingMessages img { /*Стили для элементов "img" внутри элементов с классом "messages" или внутри
@@ -49,5 +49,5 @@
 
 .message, .incomingMessage { /*Стили для элементов с классом "message" или для элементов с классом "incomingMessage".*/
     min-height: 40px; /*Задаем минимальную height элемента.*/
-    border: 2px outset #8c8888; /*Задаем толщину, стиль и цвет границы.*/
+    border: 1px outset #8c8888; /*Задаем толщину, стиль и цвет границы.*/
 }

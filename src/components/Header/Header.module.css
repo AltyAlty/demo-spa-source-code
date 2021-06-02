@@ -3,5 +3,5 @@ div .header { /*Стили для элементов с классом "header".
 }
 
 .header img { /*Стили для элементов "img" внутри элементов с классом "header".*/
-    height: 64px; /*Задаем "width".*/
+    height: 64px; /*Задаем "height".*/
 }

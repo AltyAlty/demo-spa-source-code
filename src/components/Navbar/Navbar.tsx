@@ -48,7 +48,8 @@ import {
     HeartOutlined,
     AlertOutlined,
     ThunderboltOutlined,
-    ToolOutlined
+    ToolOutlined,
+    CommentOutlined
 } from '@ant-design/icons'; /*Импортируем иконки из UI-фреймфорка "Ant Design".*/
 
 
@@ -82,7 +83,7 @@ JSX совмещает в себе JS и HTML.
 Принято объект с параметрами именовать как "props".
 Вызывая тег компонента и передавая ему атрибуты, мы отдаем ему параметры.
 "Navbar" является компонентом, который отрисовывает меню навигации нашего сайта.
-Этот компонент подключается в компоненте "NavbarContainer".
+Этот компонент подключается в компоненте "App".
 */
 export const Navbar: React.FC<PropsType> = (props) => { /*Указали при помощи "React.FC<>", что
 "props" в этом функциональном компоненте имеют тип "PropsType". Также указали, что экспортируем этот компонент.*/
@@ -147,6 +148,7 @@ export const Navbar: React.FC<PropsType> = (props) => { /*Указали при 
 
         case '/friends/':
         case '/users/':
+        case '/chat/':
             getSubMenuKey('sub2');
             break;
 
@@ -203,6 +205,10 @@ export const Navbar: React.FC<PropsType> = (props) => { /*Указали при 
 
                         <Menu.Item key='/users/' icon={<TeamOutlined/>}>
                             <Link to='/users/'>Users</Link>
+                        </Menu.Item>
+
+                        <Menu.Item key='/chat/' icon={<CommentOutlined/>}>
+                            <Link to='/chat/'>Chat</Link>
                         </Menu.Item>
                     </SubMenu>
 

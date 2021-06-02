@@ -272,6 +272,7 @@ const Dialogs: React.FC<DialogsPropsType> = ({dialogsPage, addMessage}) => { /*�
     "AddMessageFormValuesType".*/
         addMessage(formData.newMessageText); /*Здесь мы вызываем AC "addMessage", полученный из "props", и
         передаем ему текст исходящего сообщения.*/
+        formData.newMessageText = ''; /*После вывода исходящего сообщения зануляем поле для ввода текста.*/
     };
 
     /*
