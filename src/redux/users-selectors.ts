@@ -83,10 +83,3 @@ export const getUsersFilter = (state: AppStateType) => { /*Это созданн
 сюда.*/
     return state.usersPage.filter
 };
-
-export const getIsNotJustCreated = (state: AppStateType) => { /*Это созданный нами без библиотеки "reselect" селектор.
-Он возвращает специальное свойство, которое показывает то, что мы успели уже указать данные для фильтрации пользователей
-в постраничном выводе или не успели. На входе этот селектор принимает "state" с типом "AppStateType", который мы создали
-и импортировали сюда.*/
-    return state.usersPage.isNotJustCreated
-};

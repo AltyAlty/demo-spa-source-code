@@ -84,7 +84,7 @@ const User: React.FC<PropsType> = ({/*Указываем какие именно
                 перехода на профиль пользователя.*/}
                     <NavLink to={'/profile/' + user.id}> {/*Создаем маршрут для пути перехода на страницу выбранного
                     пользователя. Отрисуется компонент "Profile".*/}
-                        <img src={user.photos.small != null ? user.photos.small : userPhoto}
+                        <img src={user.photos.small !== null ? user.photos.small : userPhoto}
                              alt='' className={styles.userPhoto}/> {/*Отображаем фото пользователя, если его нет, то
                              подгружаем дефолтный аватар из проекта приложения.*/}
                     </NavLink>

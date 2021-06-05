@@ -281,7 +281,7 @@ export const saveProfile = (profile: ProfileType): ThunkType =>
     if (response.resultCode === ResultCodeEnum.Success) { /*Если в ответе от сервера в свойстве "resultCode" указано "0"
     (т.е. операция прошла успешно), то диспатчим TC "getUserProfile" для запроса и установки данных по профилю
     пользователя на странице профиля, передав в этот TC "ID" залогиненного пользователя.*/
-        if (userID != null) { /*Внутри здесь делаем проверку, чтобы "userID" не был "null", так как "TypeScript" пишет
+        if (userID !== null) { /*Внутри здесь делаем проверку, чтобы "userID" не был "null", так как "TypeScript" пишет
         ошибку.*/
             dispatch(getUserProfile(userID));
         } else { /*Если же окажется, что "userID" все-таки равен "null", то будет выведена ошибка, что "userID" не может
