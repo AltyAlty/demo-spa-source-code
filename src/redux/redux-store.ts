@@ -57,7 +57,8 @@ import dialogsReducer from './dialogs-reducer'; /*Импортируем "reduce
 import sidebarReducer from './sidebar-reducer'; /*Импортируем "reducer", отвечающий за сайдбар.*/
 import usersReducer from './users-reducer'; /*Импортируем "reducer", отвечающий за страницу пользователей.*/
 import authReducer from './auth-reducer'; /*Импортируем "reducer", отвечающий за аутентификацию пользователей.*/
-import appReducer from './app-reducer'; /*Импортируем "reducer", отвечающий за инициализацию приложеня.*/
+import appReducer from './app-reducer'; /*Импортируем "reducer", отвечающий за инициализацию приложения.*/
+import chatReducer from './chat-reducer'; /*Импортируем "reducer", отвечающий за чат в нашем приложении.*/
 
 
 /*Делаем на основе нашего корневого "reducer" "rootReducer" тип при помощи "typeof". В итоге там получится что-то вроде
@@ -136,7 +137,8 @@ let rootReducer = combineReducers({ /*При помощи метода "combineR
     auth: authReducer,
     form: formReducer, /*Здесь важно, чтобы часть "state", которая создается библиотекой "redux-form", называлась
     именно "form", иначе придется многое переписывать дополнительно.*/
-    app: appReducer
+    app: appReducer,
+    chat: chatReducer
 });
 
 
