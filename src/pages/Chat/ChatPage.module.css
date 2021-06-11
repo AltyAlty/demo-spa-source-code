@@ -24,3 +24,7 @@
 .chatMessageText { /*Стили для элементов с классом "chatMessageText".*/
     padding: 0 2px; /*Задаем "paddings".*/
 }
+
+.wsError {
+    font-weight: bold; /*Указываем, чтобы текст был жирным.*/
+}
