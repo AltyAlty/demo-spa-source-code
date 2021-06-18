@@ -143,7 +143,7 @@ export const Header: React.FC<PropsType> = (props) => { /*Указали при 
                         </Col>
 
                         <Col span={2}>
-                            <a>{login}</a>
+                            <a href=''>{login}</a>
                         </Col>
 
                         <Col span={2}>
