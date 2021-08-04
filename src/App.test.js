@@ -30,7 +30,7 @@ test('renders learn react link', () => {
 /*Тест №2. Компонент отрисовывается без падений.*/
 test('renders without crashing', () => { /*"test" позволит определить IDE, что это тест.*/
   const div = document.createElement('div'); /*1. При помощи нативного JS создаем элемент "div" в памяти.*/
-  ReactDOM.render(<AppMain />, div); /*2. Отрисовываем этот элемент "div"  в нашем компоненте "App".*/
+  ReactDOM.render(<AppMain />, div); /*2. Отрисовываем этот элемент "div" в нашем компоненте "App".*/
   ReactDOM.unmountComponentAtNode(div); /*3. Потом демонтируем этот элемент "div", то есть убираем мусор из памяти.*/
   /*Если на шаге 2 все хорошо, то значит, что тест пройден. Чтобы он проходил успешно мы перенесли все обвертки
   над "App" из "index.js" в "App.tsx".*/

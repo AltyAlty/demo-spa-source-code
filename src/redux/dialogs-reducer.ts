@@ -82,7 +82,7 @@ const dialogsReducer = (state = initialState, action: ActionsType): InitialDialo
 тип "state" на выходе имеет тот же тип "InitialDialogsStateType", что и "state" на входе. На входе объекты "action"
 имеют тип "ActionsType", созданный нами ниже.*/
     switch (action.type) {
-        case 'demo-spa/dialogs-reducer/ADD-MESSAGE':
+        case 'demo-spa/dialogs-reducer/ADD-MESSAGE': /*Добавляем новое исъодящее сообщение на странице диалогов.*/
             let newMessage = { /*Создаем новое исходящее сообщение в виде объекта.*/
                 id: 6, /*Указываем "ID" исходящего сообщения.*/
                 message: action.newMessageText, /*Указываем текст исходящего сообщения.*/

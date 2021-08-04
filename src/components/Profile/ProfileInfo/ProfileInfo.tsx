@@ -131,7 +131,7 @@ const ProfileInfo: React.FC<ProfileInfoPropsType> = ({/*Указали при п
 
     if (!profile) { /*Если данные профиля пользователя отсутствуют, то отрисовываем компонент-заглушку "Preloader".*/
         return <Preloader/>
-    }
+    };
 
     const onUserPhotoSelected = (event: ChangeEvent<HTMLInputElement>) => { /*Создали функцию, которая при вызове
     сначала проверяет, что массив файлов с фото пользователя не пустой, и если он не пустой, то потом отправляет первый
@@ -142,7 +142,7 @@ const ProfileInfo: React.FC<ProfileInfoPropsType> = ({/*Указали при п
         "files" может не быть. Вместо этого можно было написать так:
         "if (event.target.files && event.target.files.length)", такая бы проверка тоже удовлетворила "TypeScript".*/
             saveUserPhoto(event.target.files[0]);
-        }
+        };
     };
 
     const onSubmit = (formData: ProfileDataFormValuesType) => { /*Создали callback функцию, которая при вызове совершает

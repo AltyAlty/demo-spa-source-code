@@ -114,7 +114,7 @@ export const Header: React.FC<PropsType> = (props) => { /*Указали при 
                 изображением логотипа сайта "headerLogoSource". Этот элемент "Image" содержит атрибут "preview" со
                 значением "false", чтобы была отключена опция увеличения изображения для просмотра, которая
                 предоставляется UI-фреймворком "Ant Design".*/}
-                    <Image src={headerLogoSource} alt='' preview={false}/>
+                    <img src={headerLogoSource} alt=''/>
                 </Col>
 
                 <Col span={17}> {/*Второй элемент "Col" занимает 17 единиц из 24-х. Внутри находится элемент "Menu",
@@ -143,7 +143,7 @@ export const Header: React.FC<PropsType> = (props) => { /*Указали при 
                         </Col>
 
                         <Col span={2}>
-                            <a href=''>{login}</a>
+                            <a href='/profile/'>{login}</a>
                         </Col>
 
                         <Col span={2}>

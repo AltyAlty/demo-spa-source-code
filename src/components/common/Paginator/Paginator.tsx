@@ -28,7 +28,7 @@ import React, {useState} from 'react';
 import styles from './Paginator.module.css'; /*Подключаем стили из CSS-модуля.*/
 import cn from 'classnames';
 /*
-"classnames" - это библиотека для простого условного объединения имен классов .Для этого мы здесь используем
+"classnames" - это библиотека для простого условного объединения имен классов. Для этого мы здесь используем
 функцию "cn" из этой библиотеки.
 Как можно добавить два класса:
 className = {styles.first + ' ' + styles.second} (без библиотеки "classnames")
@@ -112,7 +112,7 @@ const Paginator: React.FC<PropsType> = ({ /*Указываем какие име
     /*
     "portionCount" - how many portions of pages we have. Количество порций страниц, которое мы имеем.
 
-    "portionSize" - how many pages in a portion, you can get it from state. Максимальное количество страниц в одной
+    "portionSize" - how many pages is in a portion, you can get it from state. Максимальное количество страниц в одной
     порции. Мы это берем из "state".
 
     "lowerLimitOfCurrentPortion" - the number of the page which is a lower bound of the current portion of pages. Номер
@@ -126,8 +126,6 @@ const Paginator: React.FC<PropsType> = ({ /*Указываем какие име
 
     "setCurrentPortionNumber" - a function that can change the number of the current portion of pages, used in
     "useState". Функция, которая может менять номер текущей порции страниц, используется в хуке "useState".
-
-    "useState" - a hook from "ReactJS". Хук из "ReactJS".
     */
 
     let portionCount = Math.ceil(pagesCount / portionSize); /*Вычисляем количество порций страниц, путем деления
@@ -153,7 +151,7 @@ const Paginator: React.FC<PropsType> = ({ /*Указываем какие име
             {currentPortionNumber > 1 && /*Если текущий номер порции страниц больше 1,*/
             <button onClick={() => { /*то отрисовываем элемент "button", при нажатии на который будет уменьшаться
             текущий номер порции страниц на 1, то есть мы будем переходить назад на предыдущую порцию страниц (например,
-            с "от 21 до 40" до  "1 до 20"). Соотвественно изначально это кнопка не отрисовывается, так как мы
+            с "от 21 до 40" до "1 до 20"). Соотвественно изначально это кнопка не отрисовывается, так как мы
             по дефолтку находимся на 1-ой порции страниц.*/
                 setCurrentPortionNumber(currentPortionNumber - 1)
             }}>
@@ -189,7 +187,7 @@ const Paginator: React.FC<PropsType> = ({ /*Указываем какие име
             номера порции страниц,*/
             <button onClick={() => { /*то отрисовываем элемент "button", при нажатии на который будет увеличиваться
             текущий номер порции страниц на 1, то есть мы будем переходить вперед на следующуюю порцию страниц
-            (например, с "от 1 до 20" до  "21 до 40"). Соотвественно на последнее порции страниц это кнопка
+            (например, с "от 1 до 20" до "21 до 40"). Соотвественно на последнее порции страниц это кнопка
             не отрисовывается, так текущая порция страниц, которая является последней порцией страниц, равна
             максимальному количеству порций страниц.*/
                 setCurrentPortionNumber(currentPortionNumber + 1)

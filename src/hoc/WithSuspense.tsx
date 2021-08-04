@@ -5,7 +5,7 @@
 целей можно использовать "lazy loading" или загружать бОльшее количество бандлов. Бандлы собираются путем пробега
 "WebPack" по импортам в проекте. Компоненты в "lazy loading" нужно обворачивать в "Suspense" из "ReactJS". Для этого
 обварачивания мы создали этот HOC "WithSuspense.tsx". Далее мы используем этот HOC в компоненте "App.tsx" для
-компонентов "DialogContainer.jsx" и "ProfileContainer.tsx".
+компонентов "ProfileContainer.tsx" и "ChatPage.tsx".
 */
 
 import React, {Suspense, ComponentType} from 'react';

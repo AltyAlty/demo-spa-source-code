@@ -160,9 +160,9 @@ export const profileAC = { /*Создали специальный объект,
 
 /*Создаем типы для "Thunk Creators".*/
 type ThunkType = BaseThunkType<ActionsType | FormAction>; /*Создали тип для "thunks". Поскольку в TC
-"login" мы диспатчим "stopSubmit" из библиотеки "redux-form", поэтому здесь мы указали еще "FormAction" из библиотеки
-"redux-form", так как в файле декларации "stopSubmit" указано, что он "extends" от "FormAction". Но из-за этого теперь
-мы можем диспатчить любой объект "action", что естественно нежелательно для нас.*/
+"saveProfile" мы диспатчим "stopSubmit" из библиотеки "redux-form", поэтому здесь мы указали еще "FormAction" из
+библиотеки "redux-form", так как в файле декларации "stopSubmit" указано, что он "extends" от "FormAction". Но из-за
+этого теперь мы можем диспатчить любой объект "action", что естественно нежелательно для нас.*/
 
 
 /*

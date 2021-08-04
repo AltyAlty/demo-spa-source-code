@@ -23,12 +23,12 @@ import {InjectedFormProps, reduxForm} from 'redux-form';
 Библиотека "redux-form" нужна для работы с формами.
 Эта библиотека добавляет в "store", то есть в глобальный "state" свой "reducer" и
 обрабатывает какую-то свою ветку данных. Эта ветка процессит все формы на сайте, что позволяет нам меньше делать работы
-организации данных форм в "state".
+по организации данных форм в "state".
 Эта библиотека предоставляет специальный HOC. Задача компонента, которым этот HOC обвернет другой компонент,
 является общаться со своей частью в "reducer".
 Эта библиотека является устаревшей, поэтому лучше использовать более актуальные аналоги, например, "react-final-form",
 который работыет на хуках. Так же может подойти "formik".
-Эта библиотека, добавляя свою часть в глобальный "state", обязуется заниматься круговоротом данных (FLEX) со всеми
+Эта библиотека, добавляя свою часть в глобальный "state", обязуется заниматься круговоротом данных (FLUX) со всеми
 формами в приложении. То есть нам самим не нужно будет что-то диспатчить. Часть "state", которую создает эта библиотека,
 не является по сути данными, относящимися к BLL, но при этом находятся в глобальном "state".
 Также эта библиотека упрощает создание валидации форм, так как в ее "state" есть полезные для этого данные (поля и
@@ -173,7 +173,7 @@ const LoginForm: React.FC<InjectedFormProps<LoginFormValuesType, LoginFormOwnPro
     обворачиваем "reduxForm" (то есть компонент "LoginForm"), и собственные "props" этого компонента "LoginForm",
     которые не приходят от ХОКа выше (так нужно для внутренней работы "InjectedFormProps"); а вторым параметром
     принимаются еще раз некие свои собственные "props", которые не приходят от ХОКа выше (так уже надо для работы самого
-    этого компонента "LoginForm"). Третьим параметром принимается вид ошибки формы типа строка, но данном случае мы
+    этого компонента "LoginForm"). Третьим параметром принимается вид ошибки формы типа строка, но в данном случае мы
     этого не указываем. Только все эти три параметра указываются как бы вместе как единый параметр, а не через запятую
     как три разных параметра. ВОЗМОЖНО, это потому, что "InjectedFormProps" это объект (как единое целое состоит из
     разных свойств, которые можно типизировать суммой разных типов), а тот же "reduxForm" это функция (принимает
@@ -189,23 +189,23 @@ const LoginForm: React.FC<InjectedFormProps<LoginFormValuesType, LoginFormOwnPro
         <form onSubmit={handleSubmit}> {/*Здесь в элементе "form "в событии "onSubmit" указывает
         callback "handleSubmit". Этот элемент "form" и есть наш корневой элемент"*/}
             {createField<LoginFormValuesKeysType>
-            ("Email", "email", Input, [required, maxLength30])}
+            ('Email', 'email', Input, [required, maxLength30])}
             {/*Создали поле для ввода почты на основе импортированной функции "createField". Уточняем здесь функцию
             "createField", что она имеет тип "LoginFormValuesKeysType", созданный нами выше.*/}
             {createField<LoginFormValuesKeysType>
-            ("Password", "password", Input, [required, maxLength30], {type: "password"})}
+            ('Password', 'password', Input, [required, maxLength30], {type: 'password'})}
             {/*Создали поле для ввода пароля на основе импортированной функции "createField". Уточняем здесь функцию
             "createField", что она имеет тип "LoginFormValuesKeysType", созданный нами выше.*/}
             {createField<LoginFormValuesKeysType>
-            (undefined, "rememberMe", Input, [], {type: "checkbox"}, "Remember me?")}
+            (undefined, 'rememberMe', Input, [], {type: 'checkbox'}, 'Remember me?')}
             {/*Добавили чек-бокс "Запомнить меня?" на основе импортированной функции "createField". "undefined" означает
             отсутствие свойства.  Уточняем здесь функцию "createField", что она имеет тип "LoginFormValuesKeysType",
             созданный нами выше.*/}
 
-            {captchaURL && <img src={captchaURL} alt=""/>} {/*Если есть капча, то отрисуем элемент "img"
+            {captchaURL && <img src={captchaURL} alt=''/>} {/*Если есть капча, то отрисуем элемент "img"
             с изображением капчи.*/}
             {captchaURL && createField<LoginFormValuesKeysType>
-            ("Enter the captcha", "captcha", Input, [required])}
+            ('Enter the captcha', 'captcha', Input, [required])}
             {/*Если есть капча, то отрисуем поле для ввода текства с капчи. Это поле создается на основе импортированной
             функции "createField". Уточняем здесь функцию "createField", что она имеет тип "LoginFormValuesKeysType",
             созданный нами выше.*/}
@@ -232,7 +232,7 @@ const LoginReduxForm = reduxForm<LoginFormValuesType, LoginFormOwnPropsType>({ /
 - "formData" - то есть какие именно данные собирает форма в компоненте, вокруг которого обворачиваем "reduxForm" (то
 есть компонент "LoginForm");
 - "собственные props" компонента, вокруг которого обворачиваем "reduxForm" (то есть компонент "LoginForm");
-- вид ошибки формы типа строка, но данном случае мы этого не указываем.*/
+- вид ошибки формы типа строка, но в данном случае мы этого не указываем.*/
     form: 'login' /*Это то самое уникальное имя для данных этой формы, которые будут попадать в глобальный "state".*/
 })(LoginForm);
 

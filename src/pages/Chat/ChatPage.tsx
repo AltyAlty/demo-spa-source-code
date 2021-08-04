@@ -225,7 +225,7 @@ const ChatMessages: React.FC = () => {
 
     const scrollEventHandler = (event: React.UIEvent<HTMLDivElement, UIEvent>) => { /*Создаем специальную
     callback-функцию, которая будет вызываться снизу в корневом элементе "div" при срабатывании события "onScroll", то
-    в моменты прокрутки нашего чата. На входе принимает событие типа "React.UIEvent<HTMLDivElement, UIEvent>".*/
+    есть в моменты прокрутки нашего чата. На входе принимает событие типа "React.UIEvent<HTMLDivElement, UIEvent>".*/
         const element = event.currentTarget; /*Получаем свойство "currentTarget" полученного события.*/
 
         if (Math.abs((element.scrollHeight - element.scrollTop) - element.clientHeight) < 200) {

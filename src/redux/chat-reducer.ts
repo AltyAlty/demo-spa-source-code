@@ -19,10 +19,6 @@ import {
 } from '../api/chat-api' /*Импортируем API для работы с WebSocket-каналом нашего сервера с целью реализации чата в нашем
 приложении. Также подключаем типы оттуда.*/
 
-import {FormAction} from 'redux-form'; /*Импортируем специальный AC "stopSubmit" из библиотеки "redux-form", который
-сообщает UI, что что-то пошло не так, и останавливает "submit" данных в форме. Импортировали "FormAction", чтобы создать
-тип для объектов "action", который передается в "thunks" и TC.*/
-
 import {InferActionsTypes, BaseThunkType} from './redux-store'; /*Подключаем типы.*/
 import {Dispatch} from 'redux'; /*Импортировали "Dispatch" из библиотеки "redux", чтобы создать тип для "dispatch",
 который передается в "thunks" и TC.*/
@@ -56,7 +52,7 @@ const chatReducer = (state = initialState, action: ActionsType)
 "action" имеют тип "ActionsType", созданный нами ниже.*/
     switch (action.type) {
         case 'demo-spa/chat-reducer/SET-CHAT-MESSAGES': /*Устанавливаем информацию о сообщениях из чата.*/
-            return { /*Устанавливаем информацию о сообщениях из чата в "state".*/
+            return {
                 ...state, /*Делаем поверхностную копию "state".*/
                 chatMessages: [...state.chatMessages, ...action.chatMessages.map(m => ({...m, id: v1()}))]
                     .filter((m, index, array) => index >= array.length - 100)
@@ -81,14 +77,14 @@ const chatReducer = (state = initialState, action: ActionsType)
             };
 
         case 'demo-spa/chat-reducer/CLEAR-CHAT-MESSAGES': /*Обнуляем информацию о сообщениях из чата.*/
-            return { /*Обнуляем информацию о сообщениях из чата в "state".*/
+            return {
                 ...state, /*Делаем поверхностную копию "state".*/
                 chatMessages: [] /*Обнуляем информацию о сообщениях из чата в "state".*/
             };
 
         case 'demo-spa/chat-reducer/SET-WS-STATUS': /*Указываем статус готовности WebSocket-канала для отправки
         информации по нему.*/
-            return { /*Указываем статус готовности WebSocket-канала для отправки информации по нему в "state".*/
+            return {
                 ...state, /*Делаем поверхностную копию "state".*/
                 WSStatus: action.WSStatus /*Указываем статус готовности WebSocket-канала для отправки информации по нему
                 в "state".*/
@@ -143,10 +139,7 @@ export const chatAC = { /*Создали специальный объект, с
 
 
 /*Создаем типы для "Thunk Creators".*/
-type ThunkType = BaseThunkType<ActionsType | FormAction>; /*Создали тип для "thunks". Поскольку в TC
-"login" мы диспатчим "stopSubmit" из библиотеки "redux-form", поэтому здесь мы указали еще "FormAction" из библиотеки
-"redux-form", так как в файле декларации "stopSubmit" указано, что он "extends" от "FormAction". Но из-за этого теперь
-мы можем диспатчить любой объект "action", что естественно нежелательно для нас.*/
+type ThunkType = BaseThunkType<ActionsType>; /*Создали тип для "thunks".
 
 
 /*
@@ -267,8 +260,8 @@ export const sendChatMessage = (chatMessage: string): ThunkType => async (dispat
 /*Это TC для отправки сообщений в чат по WebSocket-каналу. На входе получает сообщение для чата, которое должно быть
 строкой. Здесь вместо использования ".then" мы используем "async/await". Промис будет ожидаться в "await". "async"
 делает TC асинхронным. Этот TC на выходе возвращает "thunk", который имеет тип "ThunkType", созданный нами выше. Мы
-могли здесь также указать тип "dispatch", "getState()" и  дополнительных аргументов, но типизируя то, что возвращает TC,
-то есть "thunk", мы также типизировали, что в  "thunk" будет передаваться дальше, то есть те самые "dispatch",
+могли здесь также указать тип "dispatch", "getState()" и дополнительных аргументов, но типизируя то, что возвращает TC,
+то есть "thunk", мы также типизировали, что в "thunk" будет передаваться дальше, то есть те самые "dispatch",
 "getState()" и дополнительные аргументы.*/
     chatAPI.sendChatMessage(chatMessage); /*Отправляем наше сообщение в чат.*/
 };

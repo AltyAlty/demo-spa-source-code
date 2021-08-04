@@ -167,7 +167,7 @@ const AddMessageForm:
             <div> {/*Создаем элемент "div", в котором создадим поле для ввода текста исходящего сообщения при помощи
             импортированной функции "createField".*/}
                 {createField<AddMessageFormValuesKeysType>
-                ("Enter your message", "newMessageText", Textarea, [required, maxLength10])}
+                ('Enter your message', 'newMessageText', Textarea, [required, maxLength10])}
                 {/*Создали поле для ввода исходящего сообщения на основе импортированной функции "createField". Уточняем
                 здесь функцию "createField", что она имеет тип "AddMessageFormValuesKeysType", созданный нами выше.*/}
             </div>
@@ -190,7 +190,7 @@ const AddMessageReduxForm = reduxForm<AddMessageFormValuesType, AddMessageFormOw
 - "formData" - то есть какие именно данные собирает форма в компоненте, вокруг которого обворачиваем "reduxForm" (то
 есть компонент "AddMessageForm");
 - "собственные props" компонента, вокруг которого обворачиваем "reduxForm" (то есть компонент "AddMessageForm");
-- вид ошибки формы типа строка, но данном случае мы этого не указываем.*/
+- вид ошибки формы типа строка, но в данном случае мы этого не указываем.*/
     form: 'dialogAddMessageForm' /*Это то самое уникальное имя для данных этой формы, которые будут попадать
     в глобальный "state".*/
 })(AddMessageForm);

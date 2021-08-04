@@ -44,11 +44,11 @@ const authReducer = (state = initialState, action: ActionsType): InitialAuthStat
 "state" на выходе имеет тот же тип "InitialAuthStateType", что и "state" на входе. На входе объекты "action" имеют тип
 "ActionsType", созданный нами ниже.*/
     switch (action.type) {
-        case 'demo-spa/auth-reducer/SET-USER-DATA':
+        case 'demo-spa/auth-reducer/SET-USER-DATA': /*Устанавливаем данные по залогиненному пользователю в "state".*/
         case 'demo-spa/auth-reducer/SET-CAPTCHA-URL': /*Здесь для обоих случаев один и тот же код потому, что в обоих
         соотвествующих AC используется "payload". Благодаря деструктуризации мы сможем передать нужные значения свойств
         из "payload" в нужные свойства "state" при совпадении имен свойств.*/
-            return { /*Устанавливаем данные по залогиненному пользователю в "state".*/
+            return {
                 ...state, /*Делаем поверхностную копию "state".*/
                 ...action.payload, /*Объект "action" будет иметь объект "payload", который содержит "id", "email",
                 "login" и "isAuth". Аналогично может прийти такой же объект "payload", но он может содержать только

@@ -1,4 +1,13 @@
 /*
+Это файл "reducer", отвечающего за страницу профиля. Каждый "reducer" состоит из:
+- констант, содержащих значения для свойства "type" объекта "action"
+- "initialState" - своей части "state"
+- самой функции "reducer"
+- "Action Creators" или "AC"
+- "Thunk Creators" или "TC".
+*/
+
+/*
 Нам нужен этот "reducer", чтобы избежать моргания страницы (кроме страницы профиля) после "F5", так как после каждого
 обновления страницы отправляется запрос на логинизацию, и пока осуществляется этот запрос мы будем считаться
 незалогиненными, соотвественно будем видеть страницу логинизации, а когда запрос на логинизацию завершится мы увидим
@@ -6,7 +15,7 @@
 что мы залогинены.
 */
 
-import {getAuthUserData} from './auth-reducer'; /*Подключаем TC "getAuthUserData"  для запроса и установки данных
+import {getAuthUserData} from './auth-reducer'; /*Подключаем TC "getAuthUserData" для запроса и установки данных
 залогиненного пользователя в "state" из "auth-reducer.ts".*/
 
 import {InferActionsTypes, BaseThunkType} from './redux-store'; /*Подключаем типы.*/
@@ -31,8 +40,8 @@ const appReducer = (state = initialState, action: ActionsType): InitialAppStateT
 что тип "state" на выходе имеет тот же тип "InitialAppStateType", что и "state" на входе. На входе объекты "action"
 имеют тип "ActionsType", созданный нами ниже.*/
     switch (action.type) {
-        case 'demo-spa/app-reducer/INITIALIZATION-SUCCESSFUL':
-            return { /*Указываем, что приложение успешно инициализировано.*/
+        case 'demo-spa/app-reducer/INITIALIZATION-SUCCESSFUL': /*Указываем, что приложение успешно инициализировано.*/
+            return {
                 ...state, /*Делаем поверхностную копию "state". На данный момент этого не требуется, так как далее
                 мы меняем примитив.*/
                 initialized: true /*Меняем свойство, показывающее инициализировано ли приложение.*/
