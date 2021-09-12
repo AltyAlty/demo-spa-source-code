@@ -142,6 +142,11 @@ import {Settings} from './components/Settings/Settings'; /*Подключаем 
 import {Friends} from './components/Friends/Friends'; /*Подключаем компонент "Friends".*/
 import {Login} from './components/Login/Login'; /*Подключаем компонент "Login".*/
 
+import {UseStateTheory} from './components/theory/UseStateTheory/UseStateTheory'; /*Подключаем компонент
+"UseStateTheory".*/
+import {UseEffectTheory} from './components/theory/UseEffectTheory/UseEffectTheory'; /*Подключаем компонент
+"UseStateTheory".*/
+
 import {withSuspense} from './hoc/WithSuspense'; /*Подключаем наш HOC "WithSuspense.tsx" для реализации "lazy loading"
 для компонентов "ProfileContainer.tsx" и "ChatPage.tsx".*/
 
@@ -373,6 +378,16 @@ class App extends React.Component<PropsType/*, StateType*/> /*Указали, ч
                                        render={() => <Login/>}/> {/*"render" это анонимная функция из библиотеки
                                        "react-router-dom", которую вызовет "Route" при совпадении пути. "render"
                                        позволяет передавать параметры.*/}
+
+                                <Route path='/usestatetheory/' /*Создаем маршрут для пути '/usestatetheory/'.*/
+                                       render={() => <UseStateTheory/>}/> {/*"render" это анонимная функция из
+                                       библиотеки "react-router-dom", которую вызовет "Route" при совпадении пути.
+                                       "render" позволяет передавать параметры.*/}
+
+                                <Route path='/useeffecttheory/' /*Создаем маршрут для пути '/usestatetheory/'.*/
+                                       render={() => <UseEffectTheory/>}/> {/*"render" это анонимная функция из
+                                       библиотеки "react-router-dom", которую вызовет "Route" при совпадении пути.
+                                       "render" позволяет передавать параметры.*/}
 
                                 <Route path='/chat/' /*Создаем маршрут для пути '/chat/'.*/
                                        render={() => <ChatPageWithSuspense/>}/> {/*"render" это анонимная функция из

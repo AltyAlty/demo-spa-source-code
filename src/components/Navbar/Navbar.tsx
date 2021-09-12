@@ -49,7 +49,8 @@ import {
     AlertOutlined,
     ThunderboltOutlined,
     ToolOutlined,
-    CommentOutlined
+    CommentOutlined,
+    BookOutlined
 } from '@ant-design/icons'; /*Импортируем иконки из UI-фреймфорка "Ant Design".*/
 
 
@@ -155,6 +156,8 @@ export const Navbar: React.FC<PropsType> = (props) => { /*Указали при 
         case '/news/':
         case '/music/':
         case '/settings/':
+        case '/usestatetheory/':
+        case '/useeffecttheory/':
             getSubMenuKey('sub3');
             break;
     };
@@ -223,6 +226,14 @@ export const Navbar: React.FC<PropsType> = (props) => { /*Указали при 
 
                         <Menu.Item key='/settings/' icon={<ToolOutlined/>}>
                             <Link to='/settings/'>Settings</Link>
+                        </Menu.Item>
+
+                        <Menu.Item key='/usestatetheory/' icon={<BookOutlined />}>
+                            <Link to='/usestatetheory/'>UseState Theory</Link>
+                        </Menu.Item>
+
+                        <Menu.Item key='/useeffecttheory/' icon={<BookOutlined />}>
+                            <Link to='/useeffecttheory/'>UseEffect Theory</Link>
                         </Menu.Item>
                     </SubMenu>
 

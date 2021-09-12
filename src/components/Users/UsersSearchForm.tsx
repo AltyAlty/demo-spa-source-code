@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 /*
 Подключаем сам "ReactJS", необходим везде, где мы что-то из него используем (например, JSX).
 "WebPack" уже встроен в "ReactJS".

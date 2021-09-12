@@ -52,7 +52,7 @@ JSX совмещает в себе JS и HTML.
 "DialogItem" является компонентом, который описывает, как должны выглядеть диалоги.
 Этот компонент подключается в компоненте "Dialogs".
 */
-const DialogItem: React.FC<PropsType> = ({id, name, avatar}) => { /*При помощии деструктуризации "props"
+const DialogItem: React.FC<PropsType> = ({id, name, avatar}) => { /*При помощи деструктуризации "props"
 указываем какие именно "props" мы получаем, чтобы не писать далее "props.id", "props.name" и так далее:
 - "id" - "ID" диалога;
 - "name" - имя, с кем ведется диалог;

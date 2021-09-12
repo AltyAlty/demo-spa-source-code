@@ -2,6 +2,7 @@ import React, {ChangeEvent} from 'react';
 /*
 Подключаем сам "ReactJS", необходим везде, где мы что-то из него используем (например, JSX).
 "WebPack" уже встроен в "ReactJS".
+
 "ChangeEvent" импортировали для типизации событий.
 */
 

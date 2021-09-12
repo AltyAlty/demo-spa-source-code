@@ -62,7 +62,7 @@ const Profile: React.FC<PropsType> = ({profile,
                                        updateUserStatus,
                                        isOwner,
                                        saveUserPhoto,
-                                       saveProfile}) => { /*При помощии деструктуризации "props" указываем какие именно
+                                       saveProfile}) => { /*При помощи деструктуризации "props" указываем какие именно
     "props" мы получаем, чтобы не писать далее
     "props.profile", "props.status" и так далее:
     - "profile" - данные профиля пользователя для страницы профиля;

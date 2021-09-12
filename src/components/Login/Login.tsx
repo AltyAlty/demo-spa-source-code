@@ -153,7 +153,7 @@ callback "handleSubmit".
 */
 const LoginForm: React.FC<InjectedFormProps<LoginFormValuesType, LoginFormOwnPropsType> & LoginFormOwnPropsType> =
     ({handleSubmit, error, captchaURL}) => {
-    /*При помощии деструктуризации "props" указываем какие именно "props" мы получаем, чтобы не писать далее
+    /*При помощи деструктуризации "props" указываем какие именно "props" мы получаем, чтобы не писать далее
     "props.handleSubmit", "props.error" и так далее:
     - callback "handleSubmit";
     - "error" - текст ошибки, которая может появиться при использовании формы, формируется при помощи библиотеки

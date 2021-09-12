@@ -1,0 +1,29 @@
+.searchUsersArea {
+    padding: 0; /*Убираем поля.*/
+
+    display: inline-block; /*Делаем этот элемент "inline-block", чтобы прижать его к левой стороне, применив
+    "text-align: left" к их родительскому элементу (то есть к ".userList" из "UseEffectTheory.module.css").*/
+}
+
+.searchUsersAreaInput{
+    padding: 0; /*Убираем поля.*/
+    margin-right: 2px; /*Отступ слева.*/
+
+    width: 200px; /*Задаем width.*/
+}
+
+.searchUsersAreaButton {
+    padding: 0; /*Убираем поля.*/
+    margin-left: 2px; /*Отступ слева.*/
+
+    width: 50px; /*Задаем width.*/
+    height: 30px; /*Задаем height.*/
+}
+
+.searchUsersAreaResetButton {
+    padding: 0; /*Убираем поля.*/
+    margin-left: 2px; /*Отступ слева.*/
+
+    width: 50px; /*Задаем width.*/
+    height: 30px; /*Задаем height.*/
+}

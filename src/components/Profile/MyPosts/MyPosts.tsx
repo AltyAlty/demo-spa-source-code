@@ -134,7 +134,7 @@ JSX совмещает в себе JS и HTML.
 const AddPostForm:
     React.FC<InjectedFormProps<AddPostFormValuesType, AddPostFormOwnPropsType> & AddPostFormOwnPropsType> =
     ({handleSubmit}) => {
-    /*При помощии деструктуризации "props" указываем какие именно "props" мы получаем, чтобы не писать далее
+    /*При помощи деструктуризации "props" указываем какие именно "props" мы получаем, чтобы не писать далее
     "props.handleSubmit". Такое мы делаем только в функциональных компонентах.
     Указали при помощи "React.FC<>", что "props" в этом функциональном компоненте имеют тип
     "InjectedFormProps<AddPostFormValuesType, AddPostFormOwnPropsType> & AddPostFormOwnPropsType>". Такая

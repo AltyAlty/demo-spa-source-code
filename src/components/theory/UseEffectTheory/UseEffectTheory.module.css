@@ -1,0 +1,18 @@
+.wholeGitHubSearch {
+    margin-top: 10px; /*Делаем margin от верхней стороны.*/
+
+    text-align: left; /*"inline-block" элементы "div" (то есть наши ".list" и ".info") можно прижать к левой стороне,
+    применив "text-align: left" к их родительскому элементу.*/
+}
+
+.userList {
+    padding: 0; /*Убираем поля.*/
+    margin-right: 20px; /*Отступ справа.*/
+
+    display: inline-block; /*Делаем этот элемент "inline-block", чтобы прижать его к левой стороне, применив
+    "text-align: left" к их родительскому элементу (то есть к ".wholeGitHubSearch").*/
+
+    text-align: left; /*"inline-block" элементы "div" (то есть наши ".searchArea" из "SearchUsersArea.module.css" и
+    ".searchResultsArea" из "Timer.module.css") можно прижать к левой стороне, применив
+    "text-align: left" к их родительскому элементу.*/
+}

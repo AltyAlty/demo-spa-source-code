@@ -40,7 +40,7 @@ JSX совмещает в себе JS и HTML.
 "IncomingMessage" является компонентом, который описывает, как должны выглядеть входящие сообщения.
 Этот компонент подключается в компоненте "Dialogs".
 */
-const IncomingMessage: React.FC<PropsType> = ({message, avatar}) => { /*При помощии деструктуризации "props"
+const IncomingMessage: React.FC<PropsType> = ({message, avatar}) => { /*При помощи деструктуризации "props"
 указываем какие именно "props" мы получаем, чтобы не писать далее "props.message" и так далее:
 - "message" - текст исходящего сообщения;
 - "avatar" - аватар того, от кого отправлено исходящее сообщение.

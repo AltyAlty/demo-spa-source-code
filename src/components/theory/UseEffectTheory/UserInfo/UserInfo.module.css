@@ -1,0 +1,21 @@
+.userInfo {
+    padding: 0; /*Убираем поля.*/
+    margin-left: 20px; /*Отступ слева.*/
+
+    vertical-align: top; /*Прижимаем элемент "div" к верхней стороне родительского элемента.*/
+
+    display: inline-block; /*Делаем этот элемент "inline-block", чтобы прижать его к левой стороне, применив
+    "text-align: left" к их родительскому элементу (то есть к ".wholeGitHubSearch" из "UseEffectTheory.module.css").*/
+
+    font-size: 16pt; /*Устанавливаем размер шрифта.*/
+}
+
+.userInfo img {
+    padding: 0; /*Убираем поля.*/
+    margin-top: 15px; /*Делаем margin от верхней стороны.*/
+
+    width: 300px; /*Задаем width.*/
+    height: 300px; /*Задаем height.*/
+
+    border: black 2px solid; /*Задаем толщину, стиль и цвет границы.*/
+}
