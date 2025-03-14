@@ -1,13 +1,16 @@
-.paginator { /*Стили для элементов с классом "paginator".*/
-    margin: 10px; /*Задаем margins.*/
+.paginator {
+    margin: 10px;
 }
 
-.pageNumber { /*Стили для элементов с классом "pageNumber".*/
-    padding: 2px; /*Задаем paddings.*/
-    border: 1px solid grey; /*Задаем толщину, стиль и цвет границы.*/
+.pageNumber {
+    padding: 2px;
+    border: 1px solid grey;
 }
 
-.pageNumber.selectedPage { /*Стили для элементов одновременно с классом "pageNumber" и с классом "selectedPage".*/
-    font-weight: bold; /*Задаем стиль текста.*/
-    border-color: black; /*Задаем цвет границы.*/
+/*Стили для элементов одновременно с классом "pageNumber" и с классом "selectedPage".*/
+.pageNumber.selectedPage {
+    /*Задаем стиль текста.*/
+    font-weight: bold;
+    /*Задаем цвет границы.*/
+    border-color: black;
 }

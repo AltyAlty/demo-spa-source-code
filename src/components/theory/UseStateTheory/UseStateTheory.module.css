@@ -1,53 +1,51 @@
 .wholeGame {
-    margin-top: 100px; /*Делаем margin от верхней стороны.*/
-    margin-right: 190px; /*Делаем margin от правой стороны.*/
-
-    text-align: center; /*"inline-block" элементы "div" (то есть наши ".playerOneSection", ".playerTwoSection" и
-    ".decreaseAllLivesSection") можно центрировать, применив "text-align: center" к их родительскому элементу.*/
+    margin-top: 100px;
+    margin-right: 190px;
+    /*"inline-block" элементы "div" (то есть наши ".playerOneSection", ".playerTwoSection" и ".decreaseAllLivesSection")
+    можно центрировать, применив "text-align: center" к их родительскому элементу.*/
+    text-align: center;
 }
 
 .playerOneSection,
 .playerTwoSection,
 .decreaseAllLivesSection {
-    display: inline-block; /*Делаем эти элементы "inline-block", чтобы центрировать их, применив "text-align: center" к
-    их родительскому элементу (то есть к ".wholeGame").*/
-
-    position: relative; /*Это нам нужно, чтобы сделать внутренние элементы "absolute" для выравнивания их внутри
-    родительского элемента.*/
+    /*Делаем эти элементы "inline-block", чтобы центрировать их, применив "text-align: center" к их родительскому
+    элементу (то есть к ".wholeGame").*/
+    display: inline-block;
+    /*Это нам нужно, чтобы сделать внутренние элементы "absolute" для выравнивания их внутри родительского элемента.*/
+    position: relative;
 }
 
 .playerOneSection,
 .playerTwoSection {
-    border: black 2px solid; /*Задаем толщину, стиль и цвет границы.*/
-    border-radius: 5px; /*Задаем радиус скругления уголков рамки.*/
-    background-color: rgb(188, 188, 240); /*Задаем цвет заднего фона.*/
-
-    width: 200px; /*Задаем width.*/
-    height: 200px; /*Задаем height.*/
+    border: black 2px solid;
+    border-radius: 5px;
+    background-color: rgb(188, 188, 240);
+    width: 200px;
+    height: 200px;
 }
 
 .decreaseAllLivesSection {
-    margin-left: 10px; /*Делаем margin от левой стороны.*/
-    margin-right: 10px; /*Делаем margin от правой стороны.*/
-
-    top: 40px; /*Поскольку этот элемент теперь "relative", то сдвигаем его вних от верхней стороны.*/
+    margin-left: 10px;
+    margin-right: 10px;
+    /*Поскольку этот элемент теперь "relative", то сдвигаем его вниз от верхней стороны.*/
+    top: 40px;
 }
 
 .increasePlayerOneLifeButton,
 .increasePlayerTwoLifeButton,
 .decreaseAllLivesButton {
-    border-radius: 5px; /*Задаем радиус скругления уголков рамки.*/
-
-    width: 80px; /*Задаем width.*/
-    height: 30px; /*Задаем height.*/
+    border-radius: 5px;
+    width: 80px;
+    height: 30px;
 }
 
 .playerOneName,
 .playerTwoName,
 .playerOneLife,
 .playerTwoLife {
-    border: black 1px solid; /*Задаем толщину, стиль и цвет границы.*/
-    border-radius: 5px; /*Задаем радиус скругления уголков рамки.*/
+    border: black 1px solid;
+    border-radius: 5px;
 }
 
 .playerOneName,
@@ -56,29 +54,33 @@
 .playerTwoLife,
 .increasePlayerOneLifeSection,
 .increasePlayerTwoLifeSection {
-    width: 80px; /*Задаем width.*/
-    height: 30px; /*Задаем height.*/
-
-    position: absolute; /*Поскольку родительские элементы теперь "relative", то мы можем сделать эти элементы "absolute"
-    для выравнивания их внутри родительских элементов.*/
-    left: 30%; /*Сдвигаем эти элементы от левой стороны.*/
-
-    line-height: 22px; /*Это нужно для выравнивания текста вертикально по центру в дочерних элементах "span".*/
+    width: 80px;
+    height: 30px;
+    /*Поскольку родительские элементы теперь "relative", то мы можем сделать эти элементы "absolute" для выравнивания их
+    внутри родительских элементов.*/
+    position: absolute;
+    /*Сдвигаем эти элементы от левой стороны.*/
+    left: 30%;
+    /*Это нужно для выравнивания текста вертикально по центру в дочерних элементах "span".*/
+    line-height: 22px;
 }
 
 .playerOneName,
 .playerTwoName {
-    top: 10px; /*Сдвигаем эти элементы от верхней стороны.*/
+    /*Сдвигаем эти элементы от верхней стороны.*/
+    top: 10px;
 }
 
 .playerOneLife,
 .playerTwoLife {
-    top: 42.5%; /*Сдвигаем эти элементы от верхней стороны.*/
+    /*Сдвигаем эти элементы от верхней стороны.*/
+    top: 42.5%;
 }
 
 .increasePlayerOneLifeSection,
 .increasePlayerTwoLifeSection {
-    bottom: 10px; /*Сдвигаем эти элементы от нижней стороны.*/
+    /*Сдвигаем эти элементы от нижней стороны.*/
+    bottom: 10px;
 }
 
 .playerOneName span,
@@ -87,7 +89,7 @@
 .playerTwoLife span,
 .increasePlayerOneLifeSection span,
 .increasePlayerTwoLifeSection span {
-    vertical-align: middle; /*Это нужно для выравнивания текста вертикально по центру.*/
-
-    font-weight: bold; /*Делаем шрифт жирным.*/
+    /*Это нужно для выравнивания текста вертикально по центру.*/
+    vertical-align: middle;
+    font-weight: bold;
 }

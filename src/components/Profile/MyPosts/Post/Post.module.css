@@ -1,5 +1,6 @@
-.item img { /*Стили для элементов "img" внутри элементов с классом "item".*/
-    width: 50px; /*Задаем width.*/
-    height: 50px; /*Задаем height.*/
-    border-radius: 30px; /*Задаем радиус скругления уголков рамки.*/
+/*Стили для элементов "img" внутри элементов с классом "item".*/
+.item img {
+    width: 50px;
+    height: 50px;
+    border-radius: 30px;
 }

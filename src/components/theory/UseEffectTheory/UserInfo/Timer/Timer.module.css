@@ -1,5 +1,5 @@
 .timerSeconds {
-    font-size: 25pt; /*Устанавливаем размер шрифта.*/
-
-    text-align: center; /*Выравниваем текст по центру.*/
+    font-size: 25pt;
+    /*Выравниваем текст по центру.*/
+    text-align: center;
 }

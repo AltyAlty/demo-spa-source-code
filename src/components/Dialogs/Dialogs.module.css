@@ -1,53 +1,57 @@
-.dialogs { /*Стили для элементов с классом "dialogs".*/
-    display: grid; /*Это grid-элементы. Здесь мы не используем псевдонимы для частей сетки,
-    поэтому будет автоматическое разделение на три столбца, как указано в "grid-template-columns" ниже.
-    Первый столбец будет списком диалогов, второй - исходящие сообщения в каком-либо диалогое, третий - входящие
-    сообщения в каком-либо диалоге.*/
-    grid-template-columns: 2fr 5fr 5fr; /*Первый столбец занимает 2/12 от ширины, а второй и третий столбцы
-    по 5/12 от ширины.*/
+.dialogs {
+    /*Это grid-элементы. Здесь мы не используем псевдонимы для частей сетки, поэтому будет автоматическое разделение на
+    три столбца, как указано в "grid-template-columns" ниже. Первый столбец будет списком диалогов, второй - исходящие
+    сообщения в каком-либо диалогов, третий - входящие сообщения в каком-либо диалоге.*/
+    display: grid;
+    /*Первый столбец занимает 2/12 от ширины, а второй и третий столбцы по 5/12 от ширины.*/
+    grid-template-columns: 2fr 5fr 5fr;
 }
 
-.dialogsItems { /*Стили для элементов с классом "dialogsItems".*/
-    background-color: lemonchiffon; /*Задаем цвет заднего фона.*/
-    padding: 10px; /*Задаем paddings.*/
+.dialogsItems {
+    background-color: lemonchiffon;
+    padding: 10px;
 }
 
-.dialogsItems a { /*Стили для элементов "a" внутри элементов с классом "dialogsItems".*/
-    text-decoration: none; /*Отключаем оформление текста внутри элемента, чтобы не было подчеркивания при нажатии
-    на ссылку.*/
+/*Стили для элементов "a" внутри элементов с классом "dialogsItems".*/
+.dialogsItems a {
+    text-decoration: none;
 }
 
-.dialogsItems .active{ /*Стили для элементов с классом "active" внутри элементов с классом "dialogsItems".*/
-    color: #793192; /*Задаем цвет текста внутри элемента.*/
+/*Стили для элементов с классом "active" внутри элементов с классом "dialogsItems".*/
+.dialogsItems .active {
+    color: #793192;
 }
 
-.dialog img { /*Стили для элементов "img" внутри элементов с классом "dialog".*/
-    width: 30px; /*Задаем width.*/
-    height: 30px; /*Задаем height.*/
-    border-radius: 30px; /*Задаем радиус скругления уголков рамки.*/
+/*Стили для элементов "img" внутри элементов с классом "dialog".*/
+.dialog img {
+    width: 30px;
+    height: 30px;
+    border-radius: 30px;
 }
 
-.messages { /*Стили для элементов с классом "messages".*/
-    background-color: floralwhite; /*Задаем цвет заднего фона.*/
-    padding: 10px; /*Задаем paddings.*/
+.messages {
+    background-color: floralwhite;
+    padding: 10px;
     margin-right: 5px;
     margin-left: 5px;
 }
 
-.incomingMessages { /*Стили для элементов с классом "incomingMessages".*/
-    background-color: antiquewhite; /*Задаем цвет заднего фона.*/
-    text-align: right; /*Задаем выравнивание текста по правой стороне.*/
-    padding: 10px; /*Задаем paddings.*/
+.incomingMessages {
+    background-color: antiquewhite;
+    /*Задаем выравнивание текста по правой стороне.*/
+    text-align: right;
+    padding: 10px;
 }
 
-.messages img, .incomingMessages img { /*Стили для элементов "img" внутри элементов с классом "messages" или внутри
-элементов с классом "incomingMessages".*/
-    width: 40px; /*Задаем width.*/
-    height: 40px; /*Задаем height.*/
-    border-radius: 30px; /*Задаем радиус скругления уголков рамки.*/
+/*Стили для элементов "img" внутри элементов с классом "messages" или внутри элементов с классом "incomingMessages".*/
+.messages img, .incomingMessages img {
+    width: 40px;
+    height: 40px;
+    border-radius: 30px;
 }
 
-.message, .incomingMessage { /*Стили для элементов с классом "message" или для элементов с классом "incomingMessage".*/
-    min-height: 40px; /*Задаем минимальную height элемента.*/
-    border: 1px outset #8c8888; /*Задаем толщину, стиль и цвет границы.*/
+/*Стили для элементов с классом "message" или для элементов с классом "incomingMessage".*/
+.message, .incomingMessage {
+    min-height: 40px;
+    border: 1px outset #8c8888;
 }

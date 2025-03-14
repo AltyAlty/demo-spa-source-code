@@ -1,20 +1,11 @@
-/*
-Селектор - это функция, которая принимает "state", достает из него то, что ей нужно и возвращает это в BLL.
-Селекторы осуществляют определенную выборку данных из "state".
-Здесь содержаться селекторы для данных из "auth-reducer.ts".
-*/
+/*Здесь содержатся селекторы для данных из файла "chat-reducer.ts".*/
 
-import {AppStateType} from './redux-store'; /*Подключаем типы.*/
+/*Импортируем тип "AppStateType".*/
+import {AppStateType} from './redux-store';
 
-
-export const getChatMessages = (state: AppStateType) => { /*Это созданный нами без библиотеки "reselect" селектор. Он
-возвращает информацию о сообщениях из чата для вывода их в нашем приложении. На входе этот селектор принимает "state" с
-типом "AppStateType", который мы создали и импортировали сюда.*/
-    return state.chat.chatMessages
-};
-
-export const getWSStatus = (state: AppStateType) => { /*Это созданный нами без библиотеки "reselect" селектор. Он
-возвращает статус готовности WebSocket-канала для отправки информации по нему. На входе этот селектор принимает "state"
-с типом "AppStateType", который мы создали и импортировали сюда.*/
-    return state.chat.WSStatus
-};
+/*Это созданный нами без библиотеки Reselect селектор. Он возвращает информацию о сообщениях из чата для вывода их в
+нашем приложении.*/
+export const getChatMessages = (state: AppStateType) => { return state.chat.chatMessages};
+/*Это созданный нами без библиотеки "reselect" селектор. Он возвращает статус готовности WebSocket-канала для отправки
+информации по нему.*/
+export const getWSStatus = (state: AppStateType) => { return state.chat.WSStatus};

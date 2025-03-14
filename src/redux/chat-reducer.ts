@@ -1,271 +1,202 @@
-/*
-Это файл "reducer", отвечающего за чат в нашем приложении. Каждый "reducer" состоит из:
-- констант, содержащих значения для свойства "type" объекта "action"
-- "initialState" - своей части "state"
-- самой функции "reducer"
-- "Action Creators" или "AC"
-- "Thunk Creators" или "TC".
-*/
-
-import {v1} from 'uuid'; /*Библиотека "uuid" помогает организовать идентификацию при помощи создания универсального
-уникального идентификатора ("UUID"). Импортируем функцию "v1" для создания "UUID" варианта 1.*/
-
+/*Библиотека UUID помогает организовать идентификацию при помощи создания универсального уникального идентификатора
+(UUID). Импортируем функцию "v1()" для создания UUID варианта 1.*/
+import {v1} from 'uuid';
+/*Импортируем API для работы с WebSocket-каналом нашего сервера с целью реализации чата в нашем приложении. Также
+импортируем типы "ChatMessageAPIType", "WSStatusType", "ChatMessagesReceivingSubscriberType" и
+"WSStatusChangingSubscriberType".*/
 import {
-    chatAPI,
-    ChatMessageAPIType,
-    WSStatusType,
-    ChatMessagesReceivingSubscriberType,
-    WSStatusChangingSubscriberType
-} from '../api/chat-api' /*Импортируем API для работы с WebSocket-каналом нашего сервера с целью реализации чата в нашем
-приложении. Также подключаем типы оттуда.*/
-
-import {InferActionsTypes, BaseThunkType} from './redux-store'; /*Подключаем типы.*/
-import {Dispatch} from 'redux'; /*Импортировали "Dispatch" из библиотеки "redux", чтобы создать тип для "dispatch",
-который передается в "thunks" и TC.*/
-
+    chatAPI, ChatMessageAPIType, WSStatusType, ChatMessagesReceivingSubscriberType, WSStatusChangingSubscriberType
+} from '../api/chat-api'
+/*Импортируем типы "InferActionsTypes" и "BaseThunkType".*/
+import {InferActionsTypes, BaseThunkType} from './redux-store';
+/*Импортируем функцию "Dispatch()" из библиотеки Redux, чтобы создать тип для dispatch-функции, которая передается в
+thunks и TC.*/
+import {Dispatch} from 'redux';
 
 /*Создаем тип для объектов, которые будут приходить от сервера и содержать информацию о сообщении из чата, а также в
-"reducer" получать новое строковое свойство "id" при помощи функции "v1" из библиотеки "uuid".*/
-type ChatMessageType = ChatMessageAPIType & {id: string};
+редьюсере получать новое строковое свойство "id" при помощи функции "v1()" из библиотеки UUID.*/
+type ChatMessageType = ChatMessageAPIType & { id: string };
 
-/*Создаем тип "state" из самого "state" при помощи "typeof".*/
 type InitialChatStateType = typeof initialState;
 
-/*Создаем сам "state".*/
 let initialState = {
-    chatMessages: [] as ChatMessageType[], /*Свойство для хранения сообщений из чата для вывода их в нашем приложении.
-    Должно быть массивом элементов с типом "ChatMessageType", который был создан нами и импортирован сюда.*/
-
-    WSStatus: 'pending' as WSStatusType  /*Это статус готовности WebSocket-канала для отправки информации по нему
-    (изначально "pending"). Должен быть типа "WSStatusType", который был создан нами и импортирован сюда.*/
+    /*Свойство для хранения сообщений из чата для вывода их в нашем приложении. Должно быть массивом элементов с типом
+    "ChatMessageType".*/
+    chatMessages: [] as ChatMessageType[],
+    /*Это статус готовности WebSocket-канала для отправки информации по нему (изначально "pending"). Должен быть типа
+    "WSStatusType".*/
+    WSStatus: 'pending' as WSStatusType
 };
 
-
-/*
-Это "reducer" - чистая функция, которая принимает объект "action" и копию части "state".
-Потом "reducer" изменяет (или не изменяет, если объект "action" не подошел) определенную часть "state" и возвращает ее.
-После этого все возвращенные части "state" всех "reducers" собираются в новый "state".
-*/
-const chatReducer = (state = initialState, action: ActionsType)
-    : InitialChatStateType => {
-/*Указываем, что тип "state" на выходе имеет тот же тип "InitialChatStateType", что и "state" на входе. На входе объекты
-"action" имеют тип "ActionsType", созданный нами ниже.*/
+/*Создаем редьюсер, отвечающий за чат в нашем приложении.*/
+export const chatReducer = (state = initialState, action: ActionsType): InitialChatStateType => {
     switch (action.type) {
-        case 'demo-spa/chat-reducer/SET-CHAT-MESSAGES': /*Устанавливаем информацию о сообщениях из чата.*/
+        /*Устанавливаем информацию о сообщениях из чата.*/
+        case 'demo-spa/chat-reducer/SET-CHAT-MESSAGES': {
             return {
-                ...state, /*Делаем поверхностную копию "state".*/
-                chatMessages: [...state.chatMessages, ...action.chatMessages.map(m => ({...m, id: v1()}))]
-                    .filter((m, index, array) => index >= array.length - 100)
-                /*Делаем глубокую копию "state". Дописываем информацию о новых сообщениях из чата в "state" (то есть не
+                /*Делаем поверхностную копию state.*/
+                ...state,
+                /*Делаем глубокую копию state. Дописываем информацию о новых сообщениях из чата в state (то есть не
                 затираем старую информацию).
 
-                Сначала мапим массив сообщений для чата, которые хотим добавить в "state", и добавляем к каждому
-                элементу массива (а это у нас объекты) свойство "id", которое формируется при помощи функции "v1()" из
-                библиотеки "uuid" для создания универсальных уникальных идентификаторов. В итоге каждое сообщение для
-                чата будет иметь свой уникальный индекс под свойством "id". Нам это необходимо, чтобы избежать лишних
-                перерисовок, так как без уникальных идентификаторов при удалении одного сообщения из чата менялись бы
-                индексы у всех остальных сообщений в чате (уменьшались бы на 1), что вызывало бы многократные
-                перерисовки.
+                Сначала мапим массив сообщений для чата, которые хотим добавить в state, и добавляем к каждому элементу
+                массива (а это у нас объекты) свойство "id", формируемое при помощи функции "v1()" из библиотеки UUID
+                для создания универсальных уникальных идентификаторов. В итоге каждое сообщение для чата будет иметь
+                свой уникальный индекс под свойством "id".
+
+                Нам это необходимо, чтобы избежать лишних перерисовок, так как без уникальных идентификаторов при
+                удалении одного сообщения из чата менялись бы индексы у всех остальных сообщений в чате (уменьшались бы
+                на 1), что вызывало бы многократные перерисовки.
 
                 Далее при помощи метода "filter()" (первым параметром приходят элементы массива, вторым параметром
                 приходят их индексы, а третьим параметром приходит сам массив) оставляем только те сообщения, индекс
-                которых больше или равен значению, которое получается из разности длины массива (то есть сколько всего
-                сообщений для чата у нас есть в "state") и числа "100". Чем большее число мы вычтем, тем меньшее число
-                мы получим, значит тем большее количество индексов будет, соотвественно тем больше выведется сообщений в
+                которых больше или равен значению, получаемого из разности длины массива (то есть сколько всего
+                сообщений для чата у нас есть в state) и числа 100. Чем большее число мы вычтем, тем меньшее число мы
+                получим, значит тем большее количество индексов будет, соответственно, тем больше выведется сообщений в
                 чате. Но сервер хранит не больше 100 сообщений, поэтому больше 100 сообщений мы вывести не сможем. Все
                 это мы делаем для регулировки максимального количества выведенных сообщений в чате.*/
+                chatMessages: [
+                    ...state.chatMessages,
+                    ...action.chatMessages.map(m => {
+                        return {...m, id: v1()}
+                    })
+                ]
+                    .filter((m, index, array) => index >= array.length - 100)
             };
+        }
 
-        case 'demo-spa/chat-reducer/CLEAR-CHAT-MESSAGES': /*Обнуляем информацию о сообщениях из чата.*/
+        /*Обнуляем информацию о сообщениях из чата.*/
+        case 'demo-spa/chat-reducer/CLEAR-CHAT-MESSAGES': {
             return {
-                ...state, /*Делаем поверхностную копию "state".*/
-                chatMessages: [] /*Обнуляем информацию о сообщениях из чата в "state".*/
+                /*Делаем поверхностную копию state.*/
+                ...state,
+                /*Обнуляем информацию о сообщениях из чата в state.*/
+                chatMessages: []
             };
+        }
 
-        case 'demo-spa/chat-reducer/SET-WS-STATUS': /*Указываем статус готовности WebSocket-канала для отправки
-        информации по нему.*/
+        /*Указываем статус готовности WebSocket-канала для отправки информации по нему.*/
+        case 'demo-spa/chat-reducer/SET-WS-STATUS': {
             return {
-                ...state, /*Делаем поверхностную копию "state".*/
-                WSStatus: action.WSStatus /*Указываем статус готовности WebSocket-канала для отправки информации по нему
-                в "state".*/
+                /*Делаем поверхностную копию state.*/
+                ...state,
+                /*Указываем статус готовности WebSocket-канала для отправки информации по нему в state.*/
+                WSStatus: action.WSStatus
             };
+        }
 
-        default: /*Если объект "action" никуда не подошел, то по default возвращается тот же "state", чтобы не вызвать
-        перерисовку.*/
+        default: {
             return state;
+        }
     }
 };
 
+type ActionsType = InferActionsTypes<typeof chatAC>;
 
-/*Создаем типы для объектов "action".*/
-type ActionsType = InferActionsTypes<typeof chatAC>; /*Здесь мы все созданные раннее типы для объектов "action"
-объеденили в один тип. Мы его получили следующим образом: используем экспортированный сюда тип "InferActionsTypes" для
-определения типов всех объектов "action" у упакованных в единый объект "chatAC" AC.*/
-
-
-/*
-Action Creators.
-AC создает объект, который передается в reducer.
-Этот объект как минимум должен иметь свойство "type", которое определяет, что необходимо выполнить в reducer.
-*/
-export const chatAC = { /*Создали специальный объект, содержащий все наши AC. Также удалили все типы, созданные
-раннее на основе каждого AC. Также вверху удалили все константы со значениями для "type" и указывываем их сразу в AC,
-так как "TypeScript" не даст нам допустить ошибку при указании этих "types" в "reducer". Согласно модульному паттерну
-"Redux Ducks", чтобы избежать случаев одиноковых значений свойств "type" из-за чего один и тот же объект "action" может
-сработать в нескольких "reducers", в значениях свойств "type" в объекте "action" указываются
-"имя-проекта/имя-файла/имя-объекта-action". Также в конце везде добавили "as const", чтобы "reducer" адекватно
-воспринимал объекты "action". Все AC мы поместили в единый объект с целью избавиться от большого количества отдельных
-типов для каждого AC в обмен на один общий для них тип, который мы создали выше.*/
-    setChatMessages: (chatMessages: ChatMessageAPIType[]) => ({ /*AC для установки сообщений для чата в "state". На
-    входе получает информацию о сообщениях для чата как массив элементов с типом "ChatMessageAPIType", который был
-    создан нами и импортирован сюда.*/
-        type: 'demo-spa/chat-reducer/SET-CHAT-MESSAGES', /*Обязательно свойство "type" для AC.*/
-        chatMessages /*Это равносильно "chatMessages: chatMessages". Создаем свойство, которое содержит информацию о
-        сообщениях для чата.*/
+export const chatAC = {
+    /*AC для установки сообщений для чата в state. На входе получает информацию о сообщениях для чата как массив
+    элементов с типом "ChatMessageAPIType".*/
+    setChatMessages: (chatMessages: ChatMessageAPIType[]) => ({
+        type: 'demo-spa/chat-reducer/SET-CHAT-MESSAGES',
+        /*Это равносильно "chatMessages: chatMessages". Создаем свойство, которое содержит информацию о сообщениях для
+        чата.*/
+        chatMessages
     } as const),
 
-    clearChatMessages: () => ({ /*AC для обнуления сообщений для чата в "state".*/
-        type: 'demo-spa/chat-reducer/CLEAR-CHAT-MESSAGES' /*Обязательно свойство "type" для AC.*/
+    /*AC для обнуления сообщений для чата в state.*/
+    clearChatMessages: () => ({
+        type: 'demo-spa/chat-reducer/CLEAR-CHAT-MESSAGES'
     } as const),
 
-    setWSStatus: (WSStatus: WSStatusType) => ({ /*AC для указания статуса готовности WebSocket-канала для
-    отправки информации по нему в "state". На входе получает такой статус типа "WSStatusType", который мы создали
-    выше.*/
-        type: 'demo-spa/chat-reducer/SET-WS-STATUS', /*Обязательно свойство "type" для AC.*/
-        WSStatus /*Это равносильно "WSStatus: WSStatus". Создаем свойство, которое содержит статус готовности
-        WebSocket-канала для отправки информации по нему.*/
+    /*AC для указания статуса готовности WebSocket-канала для отправки информации по нему в state. На входе получает
+    такой статус типа "WSStatusType".*/
+    setWSStatus: (WSStatus: WSStatusType) => ({
+        type: 'demo-spa/chat-reducer/SET-WS-STATUS',
+        /*Создаем свойство, которое содержит статус готовности WebSocket-канала для отправки информации по нему.*/
+        WSStatus
     } as const)
 };
 
+type ThunkType = BaseThunkType<ActionsType>;
 
-/*Создаем типы для "Thunk Creators".*/
-type ThunkType = BaseThunkType<ActionsType>; /*Создали тип для "thunks".
+/*Создаем вспомогательную функцию "_newChatMessagesHandler()", которая будет хранить в себе функцию перехватчика
+сообщений для чата по WebSocket-каналу. Такая функция должна быть типа "ChatMessagesReceivingSubscriberType", или null,
+то есть отсутствовать.*/
+let _newChatMessagesHandler: ChatMessagesReceivingSubscriberType | null = null;
 
-
-/*
-Thunk creators.
-"Thunk" это функция, которая может выполнять AJAX-запросы и "dispatch".
-Поскольку "reducers" нужны объекты "action" и "reducers" работают синхронно (AJAX-запросы несинхронные, поэтому будут
-замедлять этот процесс),
-а также "reducers" являются чистыми функциями, то мы не можем напрямую диспатчить "thunk".
-В таком случае, "thunk" должен сначала сам запуститься, внутри него задиспатчаться объекты "action" и
-в дальнейшем будут раскиданы по "reducers".
-В параметрах "thunk" всегда приходит функция "dispatch".
-"store" из "Redux" запускает "thunk" и закидывает в него функцию "dispatch" потому, что она у него есть.
-Но, например, для добавления сообщения нам нужен текст этого сообщения. Чтобы передать этот текст в "thunk" нам нужно
-использовать замыкание из нативного JS. Полезное замыкание нужно, когда нам необходимо передать функции какие-то
-дополнительные данные. Замыкание появляется там, где одна функция возвращает другую функцию, и эта 2-я функция имеет
-доступ к данным 1-й функции. Этой 1-й родительской функцией является "Thunk creator" (по аналогии с "Action creator").
-В TC передается текст сообщения, а сам "thunk" возьмет это сообщения из замыкания. В итоге мы диспатчм "TC",
-а не сам "thunk". Также для этого нам нужен некий промежуточный слой "thunk middleware" между "store.dispatch" и
-"reducers". Если в "store" придет объект "action", то "thunk middleware" передаст его в "reducers". Если же в "store"
-придет "thunk", то "thunk middleware" запустить этот "thunk", закинет в него функцию "dispatch" и на выходе будет
-объект "action", который затем будет передан в "reducers". Если в "thunk" будет несколько AC, то сначала отправится
-первый AC в "thunk middleware", потом второй AC и так далее до тех пор, пока не переберутся все AC. Это и есть
-замыкание. Для установки "thunk middleware" нам нужна библиотека "redux-thunk". Установка происходит в файле со "store"
-из "redux". В TC мы диспатчим не сам AC, а их вызовы.
-*/
-let _newChatMessagesHandler: ChatMessagesReceivingSubscriberType | null = null; /*Создаем вспомогательную функцию
-"_newChatMessagesHandler", которая будет хранить в себе функцию перехватчика сообщений для чата по WebSocket-каналу.
-Такая функция должна быть типа "ChatMessagesReceivingSubscriberType", который был создан нами и импортирован сюда, или
-"null", то есть отсутствовать.*/
-
-const newChatMessagesHandlerCreator = (dispatch: Dispatch) => { /*Создаем вспомогательную функцию (высшего порядка)
-"newChatMessagesHandlerCreator", которая будет проверять есть ли у нас уже перехватчик сообщений для чата, и если нет,
-то будет присваивать и возвращать такой перехватчик, который будет получать сообщения для чата и устанавливать их в
-"state" при помощи AC "setChatMessages". Здесь нам нужна указанная проверка, так как мы вызываем эту функцию в
-нескольких местах (при подписке и отписке), поэтому получаем одну и туже функцию несколько раз, соотвественно если уже
-есть перехватчик сообщений для чата, то для исключения упомянутых повторов в таком случае просто возвращаем уже
-существующий перехватчик сообщений для чата (типо мемоизация).
-*/
+/*Создаем вспомогательную функцию (высшего порядка) "newChatMessagesHandlerCreator()", которая будет проверять есть ли у
+нас уже перехватчик сообщений для чата, и если нет, то будет присваивать и возвращать такой перехватчик, который будет
+получать сообщения для чата и устанавливать их в state при помощи AC "setChatMessages()". Здесь нам нужна указанная
+проверка, так как мы вызываем эту функцию в нескольких местах (при подписке и отписке), поэтому получаем одну и туже
+функцию несколько раз, соответственно, если уже есть перехватчик сообщений для чата, то для исключения упомянутых
+повторов в таком случае просто возвращаем уже существующий перехватчик сообщений для чата (это похоже на мемоизацию).*/
+const newChatMessagesHandlerCreator = (dispatch: Dispatch) => {
     if (_newChatMessagesHandler === null) {
-        _newChatMessagesHandler = (chatMessages) => {
-            dispatch(chatAC.setChatMessages(chatMessages));
-        };
-    };
+        _newChatMessagesHandler = (chatMessages) => { dispatch(chatAC.setChatMessages(chatMessages)) };
+    }
 
     return _newChatMessagesHandler;
 };
 
-let _WSStatusChangingHandler: WSStatusChangingSubscriberType | null = null; /*Создаем вспомогательную функцию
-"_WSStatusChangingHandler", которая будет хранить в себе функцию перехватчика изменений статуса готовности
-WebSocket-канала для отправки информации по нему. Такая функция должна быть типа "WSStatusChangingSubscriberType",
-который был создан нами и импортирован сюда, или "null", то есть отсутствовать.*/
+/*Создаем вспомогательную функцию "_WSStatusChangingHandler()", которая будет хранить в себе функцию перехватчика
+изменений статуса готовности WebSocket-канала для отправки информации по нему. Такая функция должна быть типа
+"WSStatusChangingSubscriberType", или null, то есть отсутствовать.*/
+let _WSStatusChangingHandler: WSStatusChangingSubscriberType | null = null;
 
-const WSStatusChangingHandlerCreator = (dispatch: Dispatch) => { /*Создаем вспомогательную функцию (высшего порядка)
-"WSStatusChangingHandlerCreator", которая будет проверять есть ли у нас уже перехватчик изменений статуса готовности
-WebSocket-канала для отправки информации по нему, и если нет, то будет присваивать и возвращать такой перехватчик,
-который будет получать указанный статус и устанавливать его в "state" при помощи AC "setWSStatus". Здесь нам нужна
-указанная проверка, так как мы вызываем эту функцию в нескольких местах (при подписке и отписке), поэтому получаем одну
-и туже функцию несколько раз, соотвественно если уже есть перехватчик сообщений для чата, то для исключения упомянутых
-повторов в таком случае просто возвращаем уже существующий перехватчик сообщений для чата (типо мемоизация).
-*/
+/*Создаем вспомогательную функцию (высшего порядка) "WSStatusChangingHandlerCreator()", которая будет проверять есть ли
+у нас уже перехватчик изменений статуса готовности WebSocket-канала для отправки информации по нему, и если нет, то
+будет присваивать и возвращать такой перехватчик, который будет получать указанный статус и устанавливать его в state
+при помощи AC "setWSStatus()". Здесь нам нужна указанная проверка, так как мы вызываем эту функцию в нескольких местах
+(при подписке и отписке), поэтому получаем одну и туже функцию несколько раз, соответственно, если уже есть перехватчик
+сообщений для чата, то для исключения упомянутых повторов в таком случае просто возвращаем уже существующий перехватчик
+сообщений для чата (это похоже на мемоизацию).*/
+const WSStatusChangingHandlerCreator = (dispatch: Dispatch) => {
     if (_WSStatusChangingHandler === null) {
-        _WSStatusChangingHandler = (WSStatus) => {
-            dispatch(chatAC.setWSStatus(WSStatus));
-        };
-    };
+        _WSStatusChangingHandler = (WSStatus) => { dispatch(chatAC.setWSStatus(WSStatus)) };
+    }
 
     return _WSStatusChangingHandler;
 };
 
-export const startGettingChatMessages = (): ThunkType => async (dispatch) => {
-/*Это TC для инициализации WebSocket-канала, установки информации по сообщениям для чата в "state", которые будут
+/*Это TC для инициализации WebSocket-канала, установки информации по сообщениям для чата в state, которые будут
 получаться через этот WebSocket-канал, и установки статуса готовности WebSocket-канала для отправки информации по нему в
-"state". Здесь вместо использования ".then" мы используем "async/await". Промис будет ожидаться в "await". "async" делает
-TC асинхронным. Этот TC на выходе возвращает "thunk", который имеет тип "ThunkType", созданный нами выше. Мы могли здесь
-также указать тип "dispatch", "getState()" и дополнительных аргументов, но типизируя то, что возвращает TC, то есть
-"thunk", мы также типизировали, что в "thunk" будет передаваться дальше, то есть те самые "dispatch", "getState()" и
-дополнительные аргументы.*/
-    chatAPI.startWSChannel(); /*Инициализируем WebSocket-канал для получения сообщений для чата.*/
-
-    chatAPI.subscribe('chat-messages-receiving', newChatMessagesHandlerCreator(dispatch)); /*Подписываем функцию
-    "newChatMessagesHandlerCreator" на получение новых сообщений для чата, передав в нее функцию "dispatch",
-    необходимую ей для ее внутренней работы.*/
-
-    chatAPI.subscribe('ws-status-changing', WSStatusChangingHandlerCreator(dispatch)); /*Подписываем функцию
-    "WSStatusChangingHandlerCreator" на изменение статуса готовности WebSocket-канала для отправки информации по нему,
-    передав в нее функцию "dispatch", необходимую ей для ее внутренней работы.*/
+state.*/
+export const startGettingChatMessages = (): ThunkType => async (dispatch) => {
+    /*Инициализируем WebSocket-канал для получения сообщений для чата.*/
+    chatAPI.startWSChannel();
+    /*Подписываем функцию "newChatMessagesHandlerCreator()" на получение новых сообщений для чата, передав в нее
+    dispatch-функцию, необходимую ей для ее внутренней работы.*/
+    chatAPI.subscribe('chat-messages-receiving', newChatMessagesHandlerCreator(dispatch));
+    /*Подписываем функцию "WSStatusChangingHandlerCreator()" на изменение статуса готовности WebSocket-канала для
+    отправки информации по нему, передав в нее dispatch-функцию, необходимую ей для ее внутренней работы.*/
+    chatAPI.subscribe('ws-status-changing', WSStatusChangingHandlerCreator(dispatch));
 };
 
-/*const unsubscribe = chatAPI.subscribe(newChatMessagesHandlerCreator);*/ /*Это еще одна реализации отписки, продолжение
-ниже в TC "stopGettingChatMessages".*/
+/*Это еще одна реализации отписки, продолжение ниже в TC "stopGettingChatMessages()".*/
+// const unsubscribe = chatAPI.subscribe(newChatMessagesHandlerCreator);
 
-export const stopGettingChatMessages = (): ThunkType => async (dispatch) => {
 /*Это TC для закрытия WebSocket-канала, остановки получения информации по сообщениям для чата, которые получались через
-этот WebSocket-канал, остановки получения статуса готовности WebSocket-канала для отправки информации по нему. Здесь
-вместо использования ".then" мы используем "async/await". Промис будет ожидаться в "await". "async" делает TC
-асинхронным. Этот TC на выходе возвращает "thunk", который имеет тип "ThunkType", созданный нами выше. Мы могли здесь
-также указать тип "dispatch", "getState()" и дополнительных аргументов, но типизируя то, что возвращает TC, то есть
-"thunk", мы также типизировали, что в "thunk" будет передаваться дальше, то есть те самые "dispatch", "getState()" и
-дополнительные аргументы.*/
-    chatAPI.unsubscribe('chat-messages-receiving', newChatMessagesHandlerCreator(dispatch)); /*Отписываем
-    функцию "newChatMessagesHandlerCreator" от получения новых сообщений для чата, передав в нее функцию "dispatch",
-    необходимую ей для ее внутренней работы.*/
+этот WebSocket-канал, остановки получения статуса готовности WebSocket-канала для отправки информации по нему.*/
+export const stopGettingChatMessages = (): ThunkType => async (dispatch) => {
+    /*Отписываем функцию "newChatMessagesHandlerCreator()" от получения новых сообщений для чата, передав в нее
+    dispatch-функцию, необходимую ей для ее внутренней работы.*/
+    chatAPI.unsubscribe('chat-messages-receiving', newChatMessagesHandlerCreator(dispatch));
+    /*Отписываем функцию "WSStatusChangingHandlerCreator()" от получения статуса готовности WebSocket-канала для
+    отправки информации по нему, передав в нее dispatch-функцию, необходимую ей для ее внутренней работы.*/
+    chatAPI.unsubscribe('ws-status-changing', WSStatusChangingHandlerCreator(dispatch));
+    /*Закрываем WebSocket-канал, чтобы прекратить получение сообщений для чата.*/
+    chatAPI.stopWSChannel();
+    /*Обнуляем информацию о сообщениях из чата в state при помощи AC "clearChatMessages()", чтобы не получить несколько
+    копий сообщений в чате на случай если мы потом переподключаемся к WebSocket-каналу.*/
+    dispatch(chatAC.clearChatMessages());
 
-    chatAPI.unsubscribe('ws-status-changing', WSStatusChangingHandlerCreator(dispatch)); /*Отписываем функцию
-    "WSStatusChangingHandlerCreator" от получения статуса готовности WebSocket-канала для отправки информации по нему,
-    передав в нее функцию "dispatch", необходимую ей для ее внутренней работы.*/
-
-    chatAPI.stopWSChannel(); /*Закрываем WebSocket-канал, чтобы прекратить получение сообщений для чата.*/
-
-    dispatch(chatAC.clearChatMessages()); /*Обнуляем информацию о сообщениях из чата в "state" при помощи AC
-    "clearChatMessages", чтобы не получить несколько копий сообщений в чате на случай если мы потом переподключимся к
-    WebSocket-каналу.*/
-
-    /*unsubscribe();*/ /*Продолжение еще одной реализации отписки.*/
+    /*Продолжение еще одной реализации отписки выше.*/
+    // unsubscribe();
 };
 
-export const sendChatMessage = (chatMessage: string): ThunkType => async (dispatch) => {
 /*Это TC для отправки сообщений в чат по WebSocket-каналу. На входе получает сообщение для чата, которое должно быть
-строкой. Здесь вместо использования ".then" мы используем "async/await". Промис будет ожидаться в "await". "async"
-делает TC асинхронным. Этот TC на выходе возвращает "thunk", который имеет тип "ThunkType", созданный нами выше. Мы
-могли здесь также указать тип "dispatch", "getState()" и дополнительных аргументов, но типизируя то, что возвращает TC,
-то есть "thunk", мы также типизировали, что в "thunk" будет передаваться дальше, то есть те самые "dispatch",
-"getState()" и дополнительные аргументы.*/
-    chatAPI.sendChatMessage(chatMessage); /*Отправляем наше сообщение в чат.*/
+строкой.*/
+export const sendChatMessage = (chatMessage: string): ThunkType => async (dispatch) => {
+    /*Отправляем наше сообщение в чат.*/
+    chatAPI.sendChatMessage(chatMessage);
 };
-
-
-export default chatReducer; /*Экспортируем "chatReducer" по default и будем его использовать в нашем проекте под
-именем "authReducer", экспорт необходим для импорта.*/

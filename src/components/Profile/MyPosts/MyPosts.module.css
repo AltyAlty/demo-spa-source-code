@@ -1,7 +1,7 @@
-.postsBlock { /*Стили для элементов с классом "postsBlock".*/
-    padding: 10px; /*Задаем paddings.*/
+.postsBlock {
+    padding: 10px;
 }
 
-.posts { /*Стили для элементов с классом "posts".*/
-    margin-top: 10px; /*Задаем margins от верхнего края.*/
+.posts {
+    margin-top: 10px;
 }
