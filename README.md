@@ -24,6 +24,14 @@ developers, as well as to serve as a learning resource for myself when revisitin
 
 <hr>
 
+<p align="center">
+  <a href="https://altyalty.github.io/demo-spa-source-code/">
+    <strong>Link to the demo</strong>
+  </a>
+</p>
+
+<hr>
+
 <h3 align="center" font-size='25px'>Tech Stack</h3>
 
 <table align="center">

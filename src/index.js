@@ -155,20 +155,3 @@ ReactDOM.render(
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();
-
-/*
-Элементы и функции из библиотек
-Store/State
-Reducers
-Selectors
-
-CSS,
-Элементы и компоненты из UI-фреймворков
-Изображения и медиа
-
-Компоненты
-HOCs
-Прочие импорты
-
-Типы
-*/
