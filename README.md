@@ -35,7 +35,7 @@ developers, as well as to serve as a learning resource for myself when revisitin
 <h3 align="center" font-size='25px'>Tech Stack</h3>
 
 <table align="center">
-  <tr>    
+  <tr>
     <td align="center" width="121">
         <img src="./readme-images/javascript-icon.png" alt="icon" width="65" height="65" />
       <br>Javascript
@@ -47,7 +47,7 @@ developers, as well as to serve as a learning resource for myself when revisitin
     <td align="center" width="121">
         <img src="./readme-images/typescript-icon.png" alt="icon" width="65" height="65" />
       <br>Typescript 4.3.5
-    </td>    
+    </td>
     <td align="center" width="121">
         <img src="./readme-images/node-js-icon.png" alt="icon" width="65" height="65" />
       <br>Node.js 16.20.2
@@ -126,7 +126,7 @@ developers, as well as to serve as a learning resource for myself when revisitin
     <td align="center" width="200">
         <b>Script</b>
     </td>
-    <td align="center" width="300">
+    <td align="center" width="400">
         <b>Description</b>
     </td>
   </tr>
@@ -149,12 +149,30 @@ developers, as well as to serve as a learning resource for myself when revisitin
     </td>
   </tr>
 
-  <tr>    
+  <tr>
     <td>
         npm test
     </td>
     <td>
         Runs the unit tests
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+        npm run build
+    </td>
+    <td>
+        Makes a build for GitHub Pages (read index.js before doing that)
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+        gh-pages -d build
+    </td>
+    <td>
+        Deploys the build to GitHub Pages
     </td>
   </tr>
 </table>
