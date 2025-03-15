@@ -126,7 +126,7 @@ developers, as well as to serve as a learning resource for myself when revisitin
     <td align="center" width="200">
         <b>Script</b>
     </td>
-    <td align="center" width="400">
+    <td align="center" width="440">
         <b>Description</b>
     </td>
   </tr>
