@@ -136,7 +136,7 @@ developers, as well as to serve as a learning resource for myself when revisitin
         npm install
     </td>
     <td>
-        Installs the modules
+        Installs project dependencies 
     </td>
   </tr>
   
@@ -145,7 +145,7 @@ developers, as well as to serve as a learning resource for myself when revisitin
         npm start
     </td>
     <td>
-        Runs the application
+        Runs application
     </td>
   </tr>
 
@@ -154,7 +154,7 @@ developers, as well as to serve as a learning resource for myself when revisitin
         npm test
     </td>
     <td>
-        Runs the unit tests
+        Runs unit tests
     </td>
   </tr>
 
